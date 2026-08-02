@@ -64,15 +64,7 @@ export const Navbar: React.FC = () => {
         </p>
 
         <div className="hidden md:flex items-center gap-3">
-          <a 
-            href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="flex items-center gap-1.5 hover:underline"
-          >
-            <PhoneCall className="w-3.5 h-3.5" />
-            <span>{whatsappNumber}</span>
-          </a>
+          <span className="font-mono text-[10px] text-amber-200 uppercase tracking-widest">STYLEWING OFFICIAL</span>
         </div>
       </div>
 
