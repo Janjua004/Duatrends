@@ -1,0 +1,494 @@
+[
+  {
+    "id": "product-101",
+    "title": "StyleWing Dil-e-Raqsum 3 PC Lawn",
+    "slug": "stylewing-dil-e-raqsum-3-pc-lawn",
+    "sku": "SW-PAR-001",
+    "price": 4500.0,
+    "compareAtPrice": 5625.0,
+    "category": "Unstitched Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": true,
+    "isTrending": true,
+    "isNewArrival": true,
+    "isOffer": true,
+    "clicks": 120,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-102",
+    "title": "StyleWing Mahara Velvet Festive Suit",
+    "slug": "stylewing-mahara-velvet-festive-suit",
+    "sku": "SW-PAR-002",
+    "price": 5100.0,
+    "compareAtPrice": 6375.0,
+    "category": "Party Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": true,
+    "isTrending": false,
+    "isNewArrival": true,
+    "isOffer": true,
+    "clicks": 135,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-103",
+    "title": "StyleWing Noor-e-Bahar 3 PC Lawn",
+    "slug": "stylewing-noor-e-bahar-3-pc-lawn",
+    "sku": "SW-PAR-003",
+    "price": 5700.0,
+    "compareAtPrice": 7125.0,
+    "category": "Unstitched Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": true,
+    "isTrending": true,
+    "isNewArrival": true,
+    "isOffer": true,
+    "clicks": 150,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-104",
+    "title": "StyleWing Sapphire Chiffon Formal",
+    "slug": "stylewing-sapphire-chiffon-formal",
+    "sku": "SW-PAR-004",
+    "price": 6300.0,
+    "compareAtPrice": 7875.0,
+    "category": "Party Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": true,
+    "isTrending": false,
+    "isNewArrival": true,
+    "isOffer": true,
+    "clicks": 165,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-105",
+    "title": "StyleWing Digital Printed Summer Casual",
+    "slug": "stylewing-digital-printed-summer-casual",
+    "sku": "SW-PAR-005",
+    "price": 6900.0,
+    "compareAtPrice": 8625.0,
+    "category": "Unstitched Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": true,
+    "isTrending": true,
+    "isNewArrival": true,
+    "isOffer": true,
+    "clicks": 180,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-106",
+    "title": "StyleWing Royal Gold Zari Work Formal",
+    "slug": "stylewing-royal-gold-zari-work-formal",
+    "sku": "SW-PAR-006",
+    "price": 7500.0,
+    "compareAtPrice": 9375.0,
+    "category": "Party Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": true,
+    "isTrending": false,
+    "isNewArrival": true,
+    "isOffer": true,
+    "clicks": 195,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-107",
+    "title": "StyleWing Pastels Cotton Net Set",
+    "slug": "stylewing-pastels-cotton-net-set",
+    "sku": "SW-PAR-007",
+    "price": 8100.0,
+    "compareAtPrice": 10125.0,
+    "category": "Unstitched Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": false,
+    "isTrending": true,
+    "isNewArrival": true,
+    "isOffer": true,
+    "clicks": 210,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-108",
+    "title": "StyleWing Emerald Green Organza Suit",
+    "slug": "stylewing-emerald-green-organza-suit",
+    "sku": "SW-PAR-008",
+    "price": 8700.0,
+    "compareAtPrice": 10875.0,
+    "category": "Party Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": false,
+    "isTrending": false,
+    "isNewArrival": true,
+    "isOffer": true,
+    "clicks": 225,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-109",
+    "title": "StyleWing Black Rose Chiffon Festive",
+    "slug": "stylewing-black-rose-chiffon-festive",
+    "sku": "SW-PAR-009",
+    "price": 9300.0,
+    "compareAtPrice": 11625.0,
+    "category": "Unstitched Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": false,
+    "isTrending": true,
+    "isNewArrival": false,
+    "isOffer": true,
+    "clicks": 240,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-110",
+    "title": "StyleWing Ivory Embroidered Kurti",
+    "slug": "stylewing-ivory-embroidered-kurti",
+    "sku": "SW-PAR-0010",
+    "price": 9900.0,
+    "compareAtPrice": 12375.0,
+    "category": "Party Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": false,
+    "isTrending": false,
+    "isNewArrival": false,
+    "isOffer": true,
+    "clicks": 255,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-111",
+    "title": "StyleWing Crimson Red Bridal Suit",
+    "slug": "stylewing-crimson-red-bridal-suit",
+    "sku": "SW-PAR-0011",
+    "price": 10500.0,
+    "compareAtPrice": 13125.0,
+    "category": "Unstitched Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": false,
+    "isTrending": true,
+    "isNewArrival": false,
+    "isOffer": true,
+    "clicks": 270,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  },
+  {
+    "id": "product-112",
+    "title": "StyleWing Rose Gold Silk Dupatta Set",
+    "slug": "stylewing-rose-gold-silk-dupatta-set",
+    "sku": "SW-PAR-0012",
+    "price": 11100.0,
+    "compareAtPrice": 13875.0,
+    "category": "Party Wear",
+    "description": "Exquisite luxury ladies outfit featuring high grade embroidery, premium fabric, and elegant craftsmanship inspired by StyleWing collection.",
+    "images": [
+      "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80"
+    ],
+    "colors": [
+      "Pastel Pink",
+      "Emerald Green",
+      "Royal Velvet"
+    ],
+    "sizes": [
+      "Unstitched",
+      "Small",
+      "Medium",
+      "Large"
+    ],
+    "stock": 25,
+    "rating": 4.8,
+    "reviewCount": 35,
+    "isFeatured": false,
+    "isTrending": false,
+    "isNewArrival": false,
+    "isOffer": true,
+    "clicks": 285,
+    "specifications": {
+      "Fabric": "Premium Lawn / Chiffon / Silk",
+      "Dupatta": "Embroidered Dupatta (2.5 MTR)",
+      "Shirt": "Embroidered Front & Back (2.5 MTR)",
+      "Trouser": "Dyed Cotton Trouser (2.5 MTR)",
+      "Care": "Dry Clean Recommended"
+    }
+  }
+]
