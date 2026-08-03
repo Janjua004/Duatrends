@@ -1,63 +1,186 @@
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Product } from '../types';
 
-// StyleWing Cloud Database API Configuration
-const API_ENDPOINT = 'https://api.npoint.io/468bc70d306b3a246ad1';
+// Default Supabase / Cloud REST storage keys
+const STORAGE_SUPABASE_URL_KEY = 'stylewing_supabase_url';
+const STORAGE_SUPABASE_ANON_KEY = 'stylewing_supabase_anon_key';
+const STORAGE_CUSTOM_REST_URL_KEY = 'stylewing_custom_rest_url';
+
+let cachedSupabaseClient: SupabaseClient | null = null;
+
+/**
+ * Get active Supabase client instance if configured
+ */
+export function getSupabaseClient(): SupabaseClient | null {
+  const url = localStorage.getItem(STORAGE_SUPABASE_URL_KEY);
+  const key = localStorage.getItem(STORAGE_SUPABASE_ANON_KEY);
+
+  if (url && key) {
+    if (!cachedSupabaseClient) {
+      cachedSupabaseClient = createClient(url, key);
+    }
+    return cachedSupabaseClient;
+  }
+  return null;
+}
+
+/**
+ * Configure Supabase or Custom REST credentials in local storage
+ */
+export function configureCloudDatabase(supabaseUrl?: string, supabaseKey?: string, restUrl?: string) {
+  if (supabaseUrl && supabaseKey) {
+    localStorage.setItem(STORAGE_SUPABASE_URL_KEY, supabaseUrl.trim());
+    localStorage.setItem(STORAGE_SUPABASE_ANON_KEY, supabaseKey.trim());
+    cachedSupabaseClient = createClient(supabaseUrl.trim(), supabaseKey.trim());
+  }
+  if (restUrl) {
+    localStorage.setItem(STORAGE_CUSTOM_REST_URL_KEY, restUrl.trim());
+  }
+}
+
+/**
+ * Clear configured cloud database settings
+ */
+export function clearCloudDatabaseConfig() {
+  localStorage.removeItem(STORAGE_SUPABASE_URL_KEY);
+  localStorage.removeItem(STORAGE_SUPABASE_ANON_KEY);
+  localStorage.removeItem(STORAGE_CUSTOM_REST_URL_KEY);
+  cachedSupabaseClient = null;
+}
+
+/**
+ * Test connectivity to configured Supabase or REST Cloud Database
+ */
+export async function testCloudConnection(): Promise<{ success: boolean; message: string }> {
+  const supabase = getSupabaseClient();
+  const customRestUrl = localStorage.getItem(STORAGE_CUSTOM_REST_URL_KEY);
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('products').select('*').limit(1);
+      if (error) {
+        // Table might not exist yet, test simple ping
+        const { error: pingErr } = await supabase.from('_health').select('*').limit(1);
+        if (pingErr && pingErr.code !== 'PGRST116' && pingErr.code !== '42P01') {
+          return { success: false, message: `Supabase Error: ${error.message}` };
+        }
+      }
+      return { success: true, message: 'Connected to Supabase Cloud Database!' };
+    } catch (err: any) {
+      return { success: false, message: `Supabase connection failed: ${err.message || err}` };
+    }
+  }
+
+  if (customRestUrl) {
+    try {
+      const res = await fetch(customRestUrl, { method: 'GET' });
+      if (res.ok) {
+        return { success: true, message: 'Connected to Custom REST Database API!' };
+      }
+      return { success: false, message: `REST API returned status ${res.status}` };
+    } catch (err: any) {
+      return { success: false, message: `REST API connection failed: ${err.message || err}` };
+    }
+  }
+
+  return {
+    success: false,
+    message: 'No cloud database configured. Please enter your Supabase URL & Anon Key or REST API endpoint.'
+  };
+}
 
 /**
  * Fetch latest products from the cloud database server
  */
 export async function fetchProductsFromCloud(): Promise<Product[] | null> {
-  try {
-    const customUrl = localStorage.getItem('stylewing_custom_api_url');
-    const targetUrl = customUrl || API_ENDPOINT;
+  // 1. Try Supabase Client
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('id', { ascending: false });
 
-    const response = await fetch(targetUrl, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      return null;
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const formatted = data.map(item => typeof item.data === 'object' ? item.data : item);
+        localStorage.setItem('stylewing_products', JSON.stringify(formatted));
+        return formatted as Product[];
+      }
+    } catch (err) {
+      console.warn('Supabase fetch error:', err);
     }
-
-    const data = await response.json();
-    const productsList = data?.record || (Array.isArray(data) ? data : null);
-
-    if (Array.isArray(productsList) && productsList.length > 0) {
-      localStorage.setItem('stylewing_products', JSON.stringify(productsList));
-      return productsList as Product[];
-    }
-    return null;
-  } catch (err) {
-    console.warn('Cloud database fetch warning:', err);
-    return null;
   }
+
+  // 2. Try Custom REST endpoint if set
+  const customRestUrl = localStorage.getItem(STORAGE_CUSTOM_REST_URL_KEY);
+  if (customRestUrl) {
+    try {
+      const response = await fetch(customRestUrl, { method: 'GET' });
+      if (response.ok) {
+        const data = await response.json();
+        const productsList = Array.isArray(data) ? data : data?.products || data?.record || null;
+        if (Array.isArray(productsList) && productsList.length > 0) {
+          localStorage.setItem('stylewing_products', JSON.stringify(productsList));
+          return productsList as Product[];
+        }
+      }
+    } catch (err) {
+      console.warn('REST API fetch error:', err);
+    }
+  }
+
+  // 3. Fallback to local storage cache
+  const cached = localStorage.getItem('stylewing_products');
+  return cached ? JSON.parse(cached) : null;
 }
 
 /**
  * Sync updated products array to the cloud database server automatically
  */
 export async function syncProductsToCloud(products: Product[]): Promise<boolean> {
-  try {
-    // Save to local device cache immediately
-    localStorage.setItem('stylewing_products', JSON.stringify(products));
+  // Always update local cache immediately
+  localStorage.setItem('stylewing_products', JSON.stringify(products));
 
-    const customUrl = localStorage.getItem('stylewing_custom_api_url');
-    const targetUrl = customUrl || API_ENDPOINT;
+  // 1. Try Supabase Client
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      // Upsert full catalog into 'products' table
+      const rows = products.map(p => ({
+        id: p.id,
+        title: p.title,
+        price: p.price,
+        data: p,
+        updated_at: new Date().toISOString()
+      }));
 
-    const response = await fetch(targetUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(products),
-    });
+      const { error } = await supabase
+        .from('products')
+        .upsert(rows, { onConflict: 'id' });
 
-    return response.ok;
-  } catch (err) {
-    console.warn('Cloud sync error:', err);
-    return false;
+      if (!error) return true;
+      console.warn('Supabase upsert error:', error);
+    } catch (err) {
+      console.warn('Supabase sync error:', err);
+    }
   }
+
+  // 2. Try Custom REST API endpoint if set
+  const customRestUrl = localStorage.getItem(STORAGE_CUSTOM_REST_URL_KEY);
+  if (customRestUrl) {
+    try {
+      const response = await fetch(customRestUrl, {
+        method: customRestUrl.includes('firebaseio.com') || customRestUrl.includes('api.') ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(products),
+      });
+
+      if (response.ok) return true;
+    } catch (err) {
+      console.warn('REST API sync error:', err);
+    }
+  }
+
+  return false;
 }

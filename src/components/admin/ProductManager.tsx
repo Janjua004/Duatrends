@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { Product } from '../../types';
-import { Plus, Edit, Trash2, Search, X, Upload, Link, Check, Image as ImageIcon, Ruler, Download, FileJson, RefreshCw, Copy, CheckCircle2, Info } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, X, Upload, Link, Check, Image as ImageIcon, Ruler, Download, FileJson, RefreshCw, Copy, CheckCircle2, Info, Database, ShieldCheck } from 'lucide-react';
 import rawScrapedProducts from '../../data/scraped_products.json';
+import { configureCloudDatabase, testCloudConnection, clearCloudDatabaseConfig } from '../../services/cloudStore';
 
 const ALL_AVAILABLE_SIZES = [
   { id: 'UNSTITCHED', label: 'UNSTITCHED (3PC Fabric)' },
@@ -18,10 +19,40 @@ export const ProductManager: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [isCloudConfigOpen, setIsCloudConfigOpen] = useState(false);
+  const [supabaseUrl, setSupabaseUrl] = useState(() => localStorage.getItem('stylewing_supabase_url') || '');
+  const [supabaseKey, setSupabaseKey] = useState(() => localStorage.getItem('stylewing_supabase_anon_key') || '');
+  const [customRestUrl, setCustomRestUrl] = useState(() => localStorage.getItem('stylewing_custom_rest_url') || '');
+  const [testResult, setTestResult] = useState<{ success?: boolean; message?: string } | null>(null);
+  const [isTesting, setIsTesting] = useState(false);
   const [syncJsonText, setSyncJsonText] = useState('');
   const [copiedExport, setCopiedExport] = useState(false);
   const [isSyncingNow, setIsSyncingNow] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const handleSaveCloudConfig = async (e: React.FormEvent) => {
+    e.preventDefault();
+    configureCloudDatabase(supabaseUrl, supabaseKey, customRestUrl);
+    showToast('Cloud Database connection settings saved!');
+    
+    setIsTesting(true);
+    const res = await testCloudConnection();
+    setIsTesting(false);
+    setTestResult(res);
+
+    if (res.success) {
+      showToast('Cloud connection verified! Syncing catalog...');
+      await syncCloudNow();
+    }
+  };
+
+  const handleTestCloudConnection = async () => {
+    configureCloudDatabase(supabaseUrl, supabaseKey, customRestUrl);
+    setIsTesting(true);
+    const res = await testCloudConnection();
+    setIsTesting(false);
+    setTestResult(res);
+  };
 
   // Form State
   const [title, setTitle] = useState('');
@@ -333,19 +364,31 @@ export const ProductManager: React.FC = () => {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={async () => {
-            setIsSyncingNow(true);
-            const ok = await syncCloudNow();
-            setIsSyncingNow(false);
-            showToast(ok ? 'All product changes pushed to live server database!' : 'Synced to local device storage');
-          }}
-          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-lg whitespace-nowrap flex items-center gap-2 transition-all flex-shrink-0"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${isSyncingNow ? 'animate-spin' : ''}`} />
-          <span>{isSyncingNow ? 'Syncing...' : 'Sync Cloud DB Now'}</span>
-        </button>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsCloudConfigOpen(true)}
+            className="px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-colors"
+            title="Configure Supabase or Custom Cloud Database"
+          >
+            <Database className="w-4 h-4 text-amber-400" />
+            <span>Cloud DB Config</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={async () => {
+              setIsSyncingNow(true);
+              const ok = await syncCloudNow();
+              setIsSyncingNow(false);
+              showToast(ok ? 'All product changes pushed to live server database!' : 'Synced to local device storage. Click Cloud DB Config to connect Supabase.');
+            }}
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-lg whitespace-nowrap flex items-center gap-2 transition-all"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isSyncingNow ? 'animate-spin' : ''}`} />
+            <span>{isSyncingNow ? 'Syncing...' : 'Sync Cloud DB Now'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Search Filter */}
@@ -763,6 +806,152 @@ export const ProductManager: React.FC = () => {
               </button>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* Cloud Database Connection Settings Modal */}
+      {isCloudConfigOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
+          <div className="bg-gray-900 border border-gray-800 rounded-3xl max-w-xl w-full p-6 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            
+            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+              <div className="flex items-center gap-2">
+                <Database className="w-5 h-5 text-amber-400" />
+                <h3 className="font-serif font-bold text-lg text-white">
+                  Cloud Database & Multi-Device Sync Setup
+                </h3>
+              </div>
+              <button onClick={() => setIsCloudConfigOpen(false)} className="text-gray-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCloudConfig} className="space-y-4 text-xs">
+              
+              <div className="p-3 bg-blue-950/40 border border-blue-800/40 rounded-2xl space-y-1.5">
+                <h4 className="font-bold text-blue-300 flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-blue-400" />
+                  <span>How Supabase Cloud DB Works</span>
+                </h4>
+                <p className="text-gray-300 text-[11px] leading-relaxed">
+                  Supabase is a free cloud database backend. Once connected, any product you add or edit automatically updates on Supabase, so <strong>all users on any phone or browser (including Private/Incognito)</strong> instantly see your live products!
+                </p>
+              </div>
+
+              {/* Supabase URL */}
+              <div className="space-y-1">
+                <label className="block text-gray-200 font-bold">Supabase Project URL</label>
+                <input 
+                  type="url"
+                  placeholder="https://your-project-ref.supabase.co"
+                  value={supabaseUrl}
+                  onChange={(e) => setSupabaseUrl(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-amber-400 font-mono text-xs"
+                />
+              </div>
+
+              {/* Supabase Anon Key */}
+              <div className="space-y-1">
+                <label className="block text-gray-200 font-bold">Supabase Anon Public Key</label>
+                <input 
+                  type="password"
+                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  value={supabaseKey}
+                  onChange={(e) => setSupabaseKey(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-amber-400 font-mono text-xs"
+                />
+              </div>
+
+              {/* Custom REST / Firebase URL */}
+              <div className="space-y-1">
+                <label className="block text-gray-300 font-medium">Or Custom REST / Firebase Realtime DB URL (Optional)</label>
+                <input 
+                  type="url"
+                  placeholder="https://your-project.firebaseio.com/products.json"
+                  value={customRestUrl}
+                  onChange={(e) => setCustomRestUrl(e.target.value)}
+                  className="w-full px-3.5 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-amber-400 font-mono text-xs"
+                />
+              </div>
+
+              {/* SQL Setup Helper Code */}
+              <div className="p-3 bg-gray-950 border border-gray-800 rounded-2xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-gray-300 text-[11px]">1-Click Supabase Table SQL Setup:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const sql = `create table if not exists public.products (\n  id text primary key,\n  title text,\n  price numeric,\n  data jsonb,\n  updated_at timestamp default now()\n);`;
+                      navigator.clipboard.writeText(sql);
+                      showToast('Copied SQL setup statement to clipboard!');
+                    }}
+                    className="text-amber-400 hover:underline text-[10px] font-mono"
+                  >
+                    Copy SQL
+                  </button>
+                </div>
+                <pre className="p-2 bg-gray-900 rounded-lg text-[10px] text-amber-200 font-mono overflow-x-auto">
+{`create table public.products (
+  id text primary key,
+  title text,
+  price numeric,
+  data jsonb,
+  updated_at timestamp default now()
+);`}
+                </pre>
+              </div>
+
+              {/* Test Connection Output */}
+              {testResult && (
+                <div className={`p-3 rounded-2xl text-xs flex items-center gap-2 border ${
+                  testResult.success 
+                    ? 'bg-emerald-950/60 border-emerald-800 text-emerald-300' 
+                    : 'bg-rose-950/60 border-rose-800 text-rose-300'
+                }`}>
+                  {testResult.success ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <X className="w-4 h-4 text-rose-400" />}
+                  <span>{testResult.message}</span>
+                </div>
+              )}
+
+              {/* Buttons */}
+              <div className="pt-3 flex items-center justify-between border-t border-gray-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearCloudDatabaseConfig();
+                    setSupabaseUrl('');
+                    setSupabaseKey('');
+                    setCustomRestUrl('');
+                    setTestResult(null);
+                    showToast('Cleared Cloud DB Config.');
+                  }}
+                  className="text-gray-400 hover:text-rose-400 text-xs font-semibold"
+                >
+                  Clear Config
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleTestCloudConnection}
+                    disabled={isTesting}
+                    className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 border border-gray-700"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isTesting ? 'animate-spin' : ''}`} />
+                    <span>{isTesting ? 'Testing...' : 'Test Connection'}</span>
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn-pink-gradient px-5 py-2 rounded-xl font-bold text-xs shadow-lg"
+                  >
+                    Save & Sync DB
+                  </button>
+                </div>
+              </div>
+
+            </form>
           </div>
         </div>
       )}
