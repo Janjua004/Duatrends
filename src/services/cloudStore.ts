@@ -6,13 +6,15 @@ const STORAGE_SUPABASE_URL_KEY = 'stylewing_supabase_url';
 const STORAGE_SUPABASE_ANON_KEY = 'stylewing_supabase_anon_key';
 const STORAGE_CUSTOM_REST_URL_KEY = 'stylewing_custom_rest_url';
 
+const DEFAULT_SUPABASE_URL = 'https://iznrzssyzhecqpmxftmy.supabase.co';
+
 let cachedSupabaseClient: SupabaseClient | null = null;
 
 /**
  * Get active Supabase client instance if configured
  */
 export function getSupabaseClient(): SupabaseClient | null {
-  const url = localStorage.getItem(STORAGE_SUPABASE_URL_KEY);
+  const url = localStorage.getItem(STORAGE_SUPABASE_URL_KEY) || DEFAULT_SUPABASE_URL;
   const key = localStorage.getItem(STORAGE_SUPABASE_ANON_KEY);
 
   if (url && key) {

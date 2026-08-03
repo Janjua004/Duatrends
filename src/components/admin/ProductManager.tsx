@@ -20,7 +20,7 @@ export const ProductManager: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [isCloudConfigOpen, setIsCloudConfigOpen] = useState(false);
-  const [supabaseUrl, setSupabaseUrl] = useState(() => localStorage.getItem('stylewing_supabase_url') || '');
+  const [supabaseUrl, setSupabaseUrl] = useState(() => localStorage.getItem('stylewing_supabase_url') || 'https://iznrzssyzhecqpmxftmy.supabase.co');
   const [supabaseKey, setSupabaseKey] = useState(() => localStorage.getItem('stylewing_supabase_anon_key') || '');
   const [customRestUrl, setCustomRestUrl] = useState(() => localStorage.getItem('stylewing_custom_rest_url') || '');
   const [testResult, setTestResult] = useState<{ success?: boolean; message?: string } | null>(null);
