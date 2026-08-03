@@ -61,7 +61,7 @@ const MainContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-poppins selection:bg-brand-pink selection:text-white transition-colors duration-200">
+    <div className="min-h-screen flex flex-col justify-between bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-poppins selection:bg-brand-pink selection:text-white transition-colors duration-200 overflow-x-hidden w-full max-w-full">
       
       {/* Toast Notification */}
       {toastMessage && (

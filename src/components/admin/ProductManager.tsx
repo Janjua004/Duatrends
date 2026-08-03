@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { Product } from '../../types';
-import { Plus, Edit, Trash2, Search, X, Upload, Link, Check, Image as ImageIcon, Ruler } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, X, Upload, Link, Check, Image as ImageIcon, Ruler, Download, FileJson, RefreshCw, Copy, CheckCircle2, Info } from 'lucide-react';
+import rawScrapedProducts from '../../data/scraped_products.json';
 
 const ALL_AVAILABLE_SIZES = [
   { id: 'UNSTITCHED', label: 'UNSTITCHED (3PC Fabric)' },
@@ -13,9 +14,13 @@ const ALL_AVAILABLE_SIZES = [
 ];
 
 export const ProductManager: React.FC = () => {
-  const { products, addProduct, updateProduct, deleteProduct, showToast } = useStore();
+  const { products, addProduct, updateProduct, deleteProduct, showToast, isCloudSynced, syncCloudNow } = useStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [syncJsonText, setSyncJsonText] = useState('');
+  const [copiedExport, setCopiedExport] = useState(false);
+  const [isSyncingNow, setIsSyncingNow] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   // Form State
@@ -41,6 +46,69 @@ export const ProductManager: React.FC = () => {
     p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
     p.sku.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Export JSON file download
+  const handleExportJSON = () => {
+    const jsonStr = JSON.stringify(products, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'scraped_products.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Downloaded scraped_products.json! Replace src/data/scraped_products.json to publish globally.');
+  };
+
+  // Copy JSON string to clipboard
+  const handleCopyJSON = () => {
+    const jsonStr = JSON.stringify(products, null, 2);
+    navigator.clipboard.writeText(jsonStr);
+    setCopiedExport(true);
+    setTimeout(() => setCopiedExport(false), 3000);
+    showToast('Copied products JSON to clipboard!');
+  };
+
+  // Import JSON file or text
+  const handleImportJSON = () => {
+    if (!syncJsonText.trim()) {
+      showToast('Please paste JSON code or select a JSON file.');
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(syncJsonText.trim());
+      if (!Array.isArray(parsed)) {
+        showToast('Invalid format: JSON must be an array of products.');
+        return;
+      }
+      localStorage.setItem('stylewing_products', JSON.stringify(parsed));
+      showToast(`Successfully imported ${parsed.length} products! Reloading to apply...`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (err) {
+      showToast('Error parsing JSON: Please check the syntax.');
+    }
+  };
+
+  // Handle uploaded JSON file into text area
+  const handleFileUploadJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      if (content) {
+        setSyncJsonText(content);
+        showToast(`Loaded ${file.name}`);
+      }
+    };
+    reader.readAsText(file);
+  };
 
   const handleOpenAddModal = () => {
     setEditingProduct(null);
@@ -205,18 +273,78 @@ export const ProductManager: React.FC = () => {
     <div className="space-y-6">
       
       {/* Header controls */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-serif text-2xl font-bold text-white">Product Inventory Management</h2>
-          <p className="text-xs text-gray-400">Total {products.length} products loaded into memory</p>
+          <p className="text-xs text-gray-400">Total {products.length} products active in store database</p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={handleExportJSON}
+            className="px-3.5 py-2.5 rounded-xl font-semibold text-xs bg-gray-800 hover:bg-gray-700 text-white flex items-center gap-2 border border-gray-700 shadow transition-colors"
+            title="Download scraped_products.json to publish changes globally for all visitors"
+          >
+            <Download className="w-4 h-4 text-brand-pink" />
+            <span>Export Products JSON</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setSyncJsonText(JSON.stringify(products, null, 2));
+              setIsSyncModalOpen(true);
+            }}
+            className="px-3.5 py-2.5 rounded-xl font-semibold text-xs bg-gray-800 hover:bg-gray-700 text-white flex items-center gap-2 border border-gray-700 shadow transition-colors"
+            title="Import or sync products JSON on any device"
+          >
+            <FileJson className="w-4 h-4 text-emerald-400" />
+            <span>Import / Sync JSON</span>
+          </button>
+
+          <button
+            onClick={handleOpenAddModal}
+            className="btn-pink-gradient px-4 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-2 shadow-lg"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add New Product</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Automatic Multi-Device Live Cloud Database Sync Banner */}
+      <div className="bg-gradient-to-r from-emerald-950/40 via-gray-900 to-blue-950/40 border border-emerald-800/40 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg text-xs">
+        <div className="flex items-start gap-3">
+          <div className="p-2 bg-emerald-900/40 text-emerald-400 rounded-xl mt-0.5 relative">
+            <RefreshCw className={`w-5 h-5 flex-shrink-0 ${isSyncingNow ? 'animate-spin' : ''}`} />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+          </div>
+          <div className="space-y-1">
+            <h4 className="font-bold text-white text-xs flex items-center gap-2">
+              <span className="text-emerald-400 font-mono">● LIVE CLOUD DATABASE ACTIVE</span>
+              <span className="bg-emerald-950 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded-full text-[10px]">
+                Automatic Sync Enabled
+              </span>
+            </h4>
+            <p className="text-gray-300 leading-relaxed text-[11px]">
+              Every product you add, edit, or delete automatically updates on our live cloud server database in real-time. When visitors open the store on any phone, laptop, or browser, all product changes appear everywhere automatically without manual steps!
+            </p>
+          </div>
         </div>
 
         <button
-          onClick={handleOpenAddModal}
-          className="btn-pink-gradient px-4 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-2 shadow-lg"
+          type="button"
+          onClick={async () => {
+            setIsSyncingNow(true);
+            const ok = await syncCloudNow();
+            setIsSyncingNow(false);
+            showToast(ok ? 'All product changes pushed to live server database!' : 'Synced to local device storage');
+          }}
+          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-lg whitespace-nowrap flex items-center gap-2 transition-all flex-shrink-0"
         >
-          <Plus className="w-4 h-4" />
-          <span>Add New Product</span>
+          <RefreshCw className={`w-3.5 h-3.5 ${isSyncingNow ? 'animate-spin' : ''}`} />
+          <span>{isSyncingNow ? 'Syncing...' : 'Sync Cloud DB Now'}</span>
         </button>
       </div>
 
@@ -550,6 +678,91 @@ export const ProductManager: React.FC = () => {
                 <button type="submit" className="btn-pink-gradient px-6 py-2.5 rounded-xl font-bold shadow-lg">Save Product</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Import / Sync JSON Modal */}
+      {isSyncModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-gray-900 border border-gray-800 rounded-3xl max-w-2xl w-full p-6 space-y-4 shadow-2xl">
+            
+            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+              <div className="flex items-center gap-2">
+                <FileJson className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-serif font-bold text-lg text-white">
+                  Import / Sync Products JSON Across Devices
+                </h3>
+              </div>
+              <button onClick={() => setIsSyncModalOpen(false)} className="text-gray-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-gray-300">
+              Paste the exported JSON data below or upload a <code className="bg-gray-950 px-1 py-0.5 rounded text-emerald-400">scraped_products.json</code> file to sync product catalog onto this device.
+            </p>
+
+            {/* Quick Actions */}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <label className="bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold px-3 py-2 rounded-xl cursor-pointer flex items-center gap-1.5 border border-gray-700">
+                <Upload className="w-4 h-4 text-emerald-400" />
+                <span>Upload JSON File</span>
+                <input type="file" accept=".json" onChange={handleFileUploadJSON} className="hidden" />
+              </label>
+
+              <button
+                type="button"
+                onClick={handleCopyJSON}
+                className="bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 border border-gray-700"
+              >
+                {copiedExport ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-blue-400" />}
+                <span>{copiedExport ? 'Copied to Clipboard!' : 'Copy Current JSON'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSyncJsonText(JSON.stringify(rawScrapedProducts, null, 2));
+                  showToast('Loaded initial scraped_products.json template');
+                }}
+                className="bg-gray-800 hover:bg-gray-700 text-amber-300 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 border border-gray-700"
+              >
+                <RefreshCw className="w-4 h-4" />
+                <span>Load Default Products</span>
+              </button>
+            </div>
+
+            {/* Textarea */}
+            <div>
+              <textarea
+                rows={10}
+                value={syncJsonText}
+                onChange={(e) => setSyncJsonText(e.target.value)}
+                placeholder="Paste JSON array here..."
+                className="w-full p-3 bg-gray-950 border border-gray-800 rounded-2xl text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+
+            {/* Modal Footer Buttons */}
+            <div className="pt-2 flex justify-end gap-2 border-t border-gray-800">
+              <button
+                type="button"
+                onClick={() => setIsSyncModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl bg-gray-800 text-gray-300 font-semibold text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleImportJSON}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-lg flex items-center gap-2"
+              >
+                <Check className="w-4 h-4" />
+                <span>Apply & Import Products</span>
+              </button>
+            </div>
+
           </div>
         </div>
       )}

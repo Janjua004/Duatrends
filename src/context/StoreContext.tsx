@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, CartItem, Order, Coupon, Review, Category, PaymentOption } from '../types';
 import rawScrapedProducts from '../data/scraped_products.json';
+import { fetchProductsFromCloud, syncProductsToCloud } from '../services/cloudStore';
 
 interface StoreContextType {
   products: Product[];
@@ -22,6 +23,8 @@ interface StoreContextType {
   appliedCoupon: Coupon | null;
   activeAdminTab: string;
   toastMessage: string | null;
+  isCloudSynced: boolean;
+  syncCloudNow: () => Promise<boolean>;
 
   // Admin Auth State
   isAdminLoggedIn: boolean;
@@ -215,9 +218,28 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [activeAdminTab, setActiveAdminTab] = useState<string>('dashboard');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isCloudSynced, setIsCloudSynced] = useState<boolean>(false);
 
   const flatShippingFee = 250;
   const freeShippingLimit = 5000;
+
+  // Fetch latest products from cloud server database automatically on load
+  useEffect(() => {
+    async function initCloudSync() {
+      const remoteProducts = await fetchProductsFromCloud();
+      if (remoteProducts && remoteProducts.length > 0) {
+        setProducts(sanitizeData(remoteProducts));
+        setIsCloudSynced(true);
+      }
+    }
+    initCloudSync();
+  }, []);
+
+  const syncCloudNow = async (): Promise<boolean> => {
+    const success = await syncProductsToCloud(products);
+    setIsCloudSynced(success);
+    return success;
+  };
 
   // LocalStorage syncing
   useEffect(() => {
@@ -479,7 +501,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showToast(`Order status updated to ${status}`);
   };
 
-  // Product CRUD
+  // Product CRUD with Automatic Cloud Syncing
   const addProduct = (newP: Omit<Product, 'id' | 'clicks' | 'rating' | 'reviewCount'>) => {
     const created: Product = {
       ...newP,
@@ -488,18 +510,30 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       rating: 5.0,
       reviewCount: 0,
     };
-    setProducts(prev => [created, ...prev]);
-    showToast('New Product Created!');
+    setProducts(prev => {
+      const updated = [created, ...prev];
+      syncProductsToCloud(updated).then(success => setIsCloudSynced(success));
+      return updated;
+    });
+    showToast('New Product Created & Synced to Cloud Server! ✨');
   };
 
   const updateProduct = (updated: Product) => {
-    setProducts(prev => prev.map(p => p.id === updated.id ? updated : p));
-    showToast('Product updated successfully!');
+    setProducts(prev => {
+      const updatedList = prev.map(p => p.id === updated.id ? updated : p);
+      syncProductsToCloud(updatedList).then(success => setIsCloudSynced(success));
+      return updatedList;
+    });
+    showToast('Product updated & synced across all devices! ✨');
   };
 
   const deleteProduct = (id: string) => {
-    setProducts(prev => prev.filter(p => p.id !== id));
-    showToast('Product deleted.');
+    setProducts(prev => {
+      const updatedList = prev.filter(p => p.id !== id);
+      syncProductsToCloud(updatedList).then(success => setIsCloudSynced(success));
+      return updatedList;
+    });
+    showToast('Product deleted & updated on server.');
   };
 
   // Coupon CRUD
@@ -596,7 +630,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       updateReviewStatus,
       addReview,
 
-      showToast
+      showToast,
+      isCloudSynced,
+      syncCloudNow
     }}>
       {children}
     </StoreContext.Provider>

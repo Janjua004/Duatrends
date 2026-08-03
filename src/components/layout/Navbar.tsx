@@ -53,17 +53,17 @@ export const Navbar: React.FC = () => {
     <header className="relative z-40 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 transition-colors shadow-sm">
       
       {/* Red Announcement Ticker */}
-      <div className="bg-red-600 text-white text-[11px] font-bold py-2 px-4 text-center tracking-wider uppercase flex items-center justify-between">
-        <div className="hidden md:flex items-center gap-2">
+      <div className="bg-red-600 text-white text-[11px] font-bold py-2 px-4 text-center tracking-wider uppercase flex items-center justify-between overflow-hidden">
+        <div className="hidden md:flex items-center gap-2 flex-shrink-0">
           <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
           <span>STYLEWING LUXURY EDITION</span>
         </div>
 
-        <p className="flex-1 truncate mx-2">
+        <p className="flex-1 min-w-0 truncate mx-2 text-center">
           FLAT 25% OFF ON ALL UNSTITCHED SUITS | 25% ADVANCE DOWNPAYMENT AVAILABLE
         </p>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3 flex-shrink-0">
           <span className="font-mono text-[10px] text-amber-200 uppercase tracking-widest">STYLEWING OFFICIAL</span>
         </div>
       </div>
