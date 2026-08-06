@@ -98,9 +98,6 @@ const MainContent: React.FC = () => {
       {/* Customer Auth Modal (Login / Signup / Forgot Password) */}
       <AuthModal />
 
-      {/* Quick View Product Modal */}
-      <QuickViewModal />
-
       {/* Floating WhatsApp CTA */}
       <FloatingWhatsApp />
 

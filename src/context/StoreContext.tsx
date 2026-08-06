@@ -335,6 +335,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         };
         setCurrentUser(adminUser);
         return { success: true, message: 'Welcome to Dua Trends Admin Dashboard!' };
+      } else {
+        return { success: false, message: 'Invalid Admin Password! Access Denied.' };
       }
     }
 
@@ -353,15 +355,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           phone: data.user.user_metadata?.phone || '',
           city: data.user.user_metadata?.city || '',
           address: data.user.user_metadata?.address || '',
-          role: cleanEmail.endsWith('@duatrends.com') ? 'admin' : 'customer',
+          role: 'customer',
           createdAt: data.user.created_at
         };
         setCurrentUser(loggedUser);
-        if (loggedUser.role === 'admin') {
-          setIsAdminLoggedIn(true);
-          sessionStorage.setItem('stylewing_admin_session', 'active');
-          setActiveView('admin');
-        }
         return { success: true, message: 'Logged in via Supabase Auth!' };
       }
     }
@@ -369,11 +366,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
     if (user) {
       setCurrentUser(user);
-      if (user.role === 'admin' || cleanEmail.endsWith('@duatrends.com')) {
-        setIsAdminLoggedIn(true);
-        sessionStorage.setItem('stylewing_admin_session', 'active');
-        setActiveView('admin');
-      }
       return { success: true, message: 'Login successful!' };
     }
 
@@ -381,15 +373,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       id: `usr-${Date.now()}`,
       name: email.split('@')[0],
       email: email,
-      role: cleanEmail.endsWith('@duatrends.com') ? 'admin' : 'customer',
+      role: 'customer',
       createdAt: new Date().toISOString()
     };
     setCurrentUser(demoUser);
-    if (demoUser.role === 'admin') {
-      setIsAdminLoggedIn(true);
-      sessionStorage.setItem('stylewing_admin_session', 'active');
-      setActiveView('admin');
-    }
     return { success: true, message: 'Logged in successfully.' };
   };
 
@@ -446,7 +433,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [activeView, setActiveView] = useState<string>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedProductForModal, setSelectedProductForModal] = useState<Product | null>(null);
+  const [selectedProductForModalState, setSelectedProductForModalState] = useState<Product | null>(null);
+  
+  const setSelectedProductForModal = (p: Product | null) => {
+    setSelectedProductForModalState(p);
+    if (p) {
+      setActiveView('product-detail');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [activeAdminTab, setActiveAdminTab] = useState<string>('dashboard');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -848,7 +843,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       activeView,
       selectedCategory,
       searchQuery,
-      selectedProductForModal,
+      selectedProductForModal: selectedProductForModalState,
       appliedCoupon,
       activeAdminTab,
       toastMessage,

@@ -136,13 +136,13 @@ export const HomePage: React.FC = () => {
       {/* Why Choose Us */}
       <WhyChooseUs />
 
-      {/* Customer Reviews */}
-      <CustomerReviewsSection />
-
-      {/* BOTTOM SECTION: Featured Categories Grid (Moved to Bottom) */}
+      {/* Featured Categories Grid */}
       <section className="pt-4">
         <CategoriesSection />
       </section>
+
+      {/* Customer Reviews (Placed directly ABOVE Instagram Feed at bottom of page) */}
+      <CustomerReviewsSection />
 
       {/* Instagram Wall */}
       <InstagramFeed />
