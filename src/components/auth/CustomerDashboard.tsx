@@ -62,7 +62,7 @@ export const CustomerDashboard: React.FC = () => {
             <div>
               <div className="inline-flex items-center gap-1.5 bg-amber-400/20 text-amber-300 px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest mb-1 border border-amber-300/30">
                 <Sparkles className="w-3 h-3" />
-                <span>StyleWing Privilege Member</span>
+                <span>DUA TRENDS PRIVILEGE MEMBER</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-serif font-bold">{currentUser.name}</h1>
               <p className="text-xs text-gray-300 flex items-center gap-2 mt-1">
@@ -71,13 +71,25 @@ export const CustomerDashboard: React.FC = () => {
             </div>
           </div>
 
-          <button
-            onClick={() => { logoutCustomer(); showToast('Logged out'); setActiveView('home'); }}
-            className="bg-white/10 hover:bg-rose-600/80 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign Out
-          </button>
+          <div className="flex items-center gap-3">
+            {(currentUser.role === 'admin' || currentUser.email.endsWith('@duatrends.com')) && (
+              <button
+                onClick={() => setActiveView('admin')}
+                className="bg-brand-pink hover:bg-brand-pink-hover text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all shadow-md"
+              >
+                <Sparkles className="w-4 h-4 text-amber-300" />
+                Open Admin Dashboard
+              </button>
+            )}
+
+            <button
+              onClick={() => { logoutCustomer(); showToast('Logged out'); setActiveView('home'); }}
+              className="bg-white/10 hover:bg-rose-600/80 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </button>
+          </div>
         </div>
       </div>
 

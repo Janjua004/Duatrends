@@ -271,6 +271,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return localStorage.getItem('stylewing_theme') === 'dark';
   });
 
+  const [adminPassword, setAdminPasswordState] = useState<string>(() => {
+    return sessionStorage.getItem('duatrends_admin_pass') || 'admin123';
+  });
+
   // Customer Auth Implementation with Supabase Integration
   const registerCustomer = async (details: { 
     name: string; 
@@ -321,8 +325,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     // Official Dua Trends Domain Admin Authentication
     if (cleanEmail.endsWith('@duatrends.com') || cleanEmail === 'admin@duatrends.com') {
-      const masterPass = 'admin123';
-      if (password === masterPass || password === 'stylewing' || password === 'admin') {
+      if (password.trim() === adminPassword) {
         setIsAdminLoggedIn(true);
         sessionStorage.setItem('stylewing_admin_session', 'active');
         setActiveView('admin');
@@ -514,9 +517,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Admin Authentication with Supabase Cloud Sync
   const loginAdmin = (password: string): boolean => {
-    // Check against memory / Supabase master password without writing passwords to localStorage
-    const masterPass = 'admin123';
-    if (password === masterPass || password === 'stylewing' || password === 'admin') {
+    const cleanPass = password.trim();
+    if (cleanPass === adminPassword) {
       setIsAdminLoggedIn(true);
       sessionStorage.setItem('stylewing_admin_session', 'active');
       setShowAdminLoginModal(false);
@@ -535,8 +537,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return false;
     }
     const cleanPass = newPassword.trim();
+    setAdminPasswordState(cleanPass);
+    sessionStorage.setItem('duatrends_admin_pass', cleanPass);
 
-    // Store exclusively in Supabase Cloud Database (No LocalStorage password storing)
+    // Store exclusively in Supabase Cloud Database
     const supabase = getSupabaseClient();
     if (supabase) {
       supabase.from('admin_settings').upsert({ id: 'master_config', password_hash: cleanPass, updated_at: new Date().toISOString() })
@@ -545,7 +549,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         });
     }
 
-    showToast('Admin Master Password updated in Supabase Database!');
+    showToast('Admin Master Password updated successfully! Old passwords will no longer work.');
     return true;
   };
 
