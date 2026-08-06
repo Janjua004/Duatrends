@@ -35,10 +35,10 @@ export const WhyChooseUs: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
           <span className="text-xs uppercase font-bold tracking-widest text-brand-pink">
-            THE STYLEWING ADVANTAGE
+            THE DUA TRENDS ADVANTAGE
           </span>
           <h2 className="font-serif text-3xl sm:text-4xl font-bold">
-            Why Choose StyleWing?
+            Why Choose Dua Trends?
           </h2>
           <p className="text-sm text-gray-400">
             We deliver pure luxury and unparalleled elegance straight to your doorstep.

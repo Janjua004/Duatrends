@@ -11,7 +11,8 @@ import {
   Lock,
   Unlock,
   PhoneCall,
-  Sparkles
+  Sparkles,
+  User as UserIcon
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -28,7 +29,11 @@ export const Navbar: React.FC = () => {
     whatsappNumber,
     isAdminLoggedIn,
     setShowAdminLoginModal,
-    setSelectedCategory
+    setSelectedCategory,
+    currentUser,
+    isCustomerLoggedIn,
+    setShowAuthModal,
+    setAuthModalMode
   } = useStore();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,7 +61,7 @@ export const Navbar: React.FC = () => {
       <div className="bg-red-600 text-white text-[11px] font-bold py-2 px-4 text-center tracking-wider uppercase flex items-center justify-between overflow-hidden">
         <div className="hidden md:flex items-center gap-2 flex-shrink-0">
           <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-          <span>STYLEWING LUXURY EDITION</span>
+          <span>DUA TRENDS LUXURY EDITION</span>
         </div>
 
         <p className="flex-1 min-w-0 truncate mx-2 text-center">
@@ -64,15 +69,15 @@ export const Navbar: React.FC = () => {
         </p>
 
         <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-          <span className="font-mono text-[10px] text-amber-200 uppercase tracking-widest">STYLEWING OFFICIAL</span>
+          <span className="font-mono text-[10px] text-amber-200 uppercase tracking-widest">DUA TRENDS OFFICIAL</span>
         </div>
       </div>
 
-      {/* Main Clean Navbar Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      {/* Main Clean Navbar Header (COCO / Zara Shahjahan Inspired Layout) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-22 flex items-center justify-between gap-6">
         
-        {/* Left: Navigation Links */}
-        <div className="flex items-center gap-6">
+        {/* Left: Brand Logo */}
+        <div className="flex items-center gap-3">
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden p-2 text-gray-800 dark:text-gray-200"
@@ -81,56 +86,69 @@ export const Navbar: React.FC = () => {
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
 
-          <nav className="hidden lg:flex items-center gap-6 text-xs uppercase tracking-widest font-semibold text-gray-800 dark:text-gray-200">
-            <button 
-              onClick={() => setActiveView('home')} 
-              className={`hover:text-brand-pink transition-colors py-1 ${
-                activeView === 'home' ? 'text-brand-pink font-bold border-b-2 border-brand-pink' : ''
-              }`}
-            >
-              Home
-            </button>
-            <button 
-              onClick={() => { setSelectedCategory('Casual Wear'); setActiveView('shop'); }} 
-              className={`hover:text-brand-pink transition-colors py-1 ${
-                activeView === 'shop' ? 'text-brand-pink font-bold border-b-2 border-brand-pink' : ''
-              }`}
-            >
-              Unstitched
-            </button>
-            <button 
-              onClick={() => { setSelectedCategory('Party Wear'); setActiveView('shop'); }} 
-              className="hover:text-brand-pink transition-colors py-1"
-            >
-              Formals
-            </button>
-            <button 
-              onClick={() => setActiveView('offers')} 
-              className="text-red-600 font-bold hover:underline py-1"
-            >
-              Sale -25%
-            </button>
-          </nav>
+          <button 
+            onClick={() => setActiveView('home')} 
+            className="flex items-center group focus:outline-none"
+          >
+            <div className="h-14 sm:h-16 md:h-18 w-auto flex items-center justify-center py-1">
+              <img 
+                src="/logo.png" 
+                alt="Dua Trends Logo" 
+                className="h-full w-auto object-contain transition-transform group-hover:scale-105"
+                onError={(e) => {
+                  const parent = (e.target as HTMLElement).parentElement;
+                  if (parent) {
+                    parent.innerHTML = `<span class="font-serif text-2xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
+                  }
+                }}
+              />
+            </div>
+          </button>
         </div>
 
-        {/* Center: Brand Title (StyleWing style) */}
-        <button 
-          onClick={() => setActiveView('home')} 
-          className="text-center group focus:outline-none"
-        >
-          <span className="font-serif text-3xl md:text-4xl font-bold tracking-wider text-gray-950 dark:text-white uppercase block leading-none">
-            Style<span className="text-brand-pink">Wing</span>
-          </span>
-          <span className="text-[9px] tracking-[0.3em] font-semibold text-gray-400 dark:text-gray-500 uppercase block mt-1">
-            HAUTE COUTURE FASHION HOUSE
-          </span>
-        </button>
+        {/* Center: Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-6 text-xs uppercase tracking-widest font-bold text-gray-800 dark:text-gray-200">
+          <button 
+            onClick={() => setActiveView('home')} 
+            className={`hover:text-brand-pink transition-colors py-1 ${
+              activeView === 'home' ? 'text-brand-pink border-b-2 border-brand-pink' : ''
+            }`}
+          >
+            Home
+          </button>
+          <button 
+            onClick={() => { setSelectedCategory('Casual Wear'); setActiveView('shop'); }} 
+            className={`hover:text-brand-pink transition-colors py-1 ${
+              activeView === 'shop' ? 'text-brand-pink border-b-2 border-brand-pink' : ''
+            }`}
+          >
+            Unstitched
+          </button>
+          <button 
+            onClick={() => { setSelectedCategory('Party Wear'); setActiveView('shop'); }} 
+            className="hover:text-brand-pink transition-colors py-1"
+          >
+            Formals
+          </button>
+          <button 
+            onClick={() => setActiveView('offers')} 
+            className="text-red-600 font-bold hover:underline py-1"
+          >
+            Sale -25%
+          </button>
+          <button 
+            onClick={() => setActiveView('track')} 
+            className="hover:text-brand-pink transition-colors py-1"
+          >
+            Track Order
+          </button>
+        </nav>
 
-        {/* Right: Search, Admin Login, Wishlist, Cart & Theme */}
+        {/* Right: Search, Customer Account, Wishlist, Cart & Theme */}
         <div className="flex items-center gap-3">
           
           {/* Fixed Search Bar with Clean Border */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center relative w-48">
+          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center relative w-44">
             <div className="w-full flex items-center bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-full px-3 py-1.5 focus-within:border-brand-pink focus-within:ring-1 focus-within:ring-brand-pink transition-all">
               <Search className="w-3.5 h-3.5 text-gray-400 mr-2 flex-shrink-0" />
               <input 
@@ -143,23 +161,30 @@ export const Navbar: React.FC = () => {
             </div>
           </form>
 
-          {/* Login Button */}
-          <button
-            onClick={handleAdminAccess}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
-              activeView === 'admin'
-                ? 'bg-emerald-600 text-white'
-                : isAdminLoggedIn
-                ? 'bg-brand-pink text-white hover:bg-brand-pink-hover'
-                : 'bg-gray-950 dark:bg-gray-900 text-white hover:bg-brand-pink border border-gray-800'
-            }`}
-            title="Login to Store Dashboard"
-          >
-            {isAdminLoggedIn ? <Unlock className="w-3.5 h-3.5 text-emerald-300" /> : <Lock className="w-3.5 h-3.5 text-rose-300" />}
-            <span className="hidden sm:inline">
-              {activeView === 'admin' ? 'Storefront' : isAdminLoggedIn ? 'Dashboard' : 'Login'}
-            </span>
-          </button>
+          {/* Customer Account Button */}
+          {isCustomerLoggedIn ? (
+            <button
+              onClick={() => setActiveView('account')}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
+                activeView === 'account'
+                  ? 'bg-brand-pink text-white'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200'
+              }`}
+              title="My Account"
+            >
+              <UserIcon className="w-3.5 h-3.5 text-brand-pink" />
+              <span className="hidden sm:inline truncate max-w-[80px]">{currentUser?.name.split(' ')[0]}</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => setActiveView('login')}
+              className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-brand-pink hover:text-white transition-all shadow-sm"
+              title="Sign In / Register"
+            >
+              <UserIcon className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign In</span>
+            </button>
+          )}
 
           {/* Dark / Light Mode Switcher */}
           <button 

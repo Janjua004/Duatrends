@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useStore } from '../context/StoreContext';
 import { ProductCard } from '../components/shop/ProductCard';
 import { ProductFilters } from '../components/shop/ProductFilters';
+import { ProductCardSkeleton } from '../components/common/Skeletons';
 import { Search, SlidersHorizontal } from 'lucide-react';
 
 export const ShopPage: React.FC = () => {

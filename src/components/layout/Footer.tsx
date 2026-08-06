@@ -61,26 +61,29 @@ export const Footer: React.FC = () => {
           
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="w-7 h-7">
-                  <path d="M 22 30 L 32 70 L 44 42 L 50 56 L 56 42 L 68 70 L 78 30" stroke="#E91E63" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                  <path d="M 68 30 C 74 22, 85 24, 88 32 C 80 34, 72 36, 68 30 Z" fill="#E91E63" />
-                  <path d="M 62 26 C 68 18, 79 20, 82 28 C 74 30, 66 32, 62 26 Z" fill="#D4AF37" opacity="0.9" />
-                </svg>
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-auto flex-shrink-0">
+                <img 
+                  src="/logo.png" 
+                  alt="Dua Trends Logo" 
+                  className="h-full w-auto object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
+                />
               </div>
               <div>
                 <span className="font-serif text-2xl font-bold tracking-tight text-white block leading-none">
-                  Style<span className="text-brand-pink">Wing</span>
+                  Dua <span className="text-brand-pink">Trends</span>
                 </span>
-                <span className="text-[10px] tracking-widest uppercase font-semibold text-gray-500 block mt-0.5">
-                  LUXURY LADIES FASHION
+                <span className="text-[10px] tracking-widest uppercase font-semibold text-gray-500 block mt-1">
+                  HAUTE COUTURE FASHION HOUSE
                 </span>
               </div>
             </div>
 
             <p className="text-sm text-gray-400 max-w-sm">
-              StyleWing defines luxury women’s apparel with unstitched lawn, silk chiffon formal wear, prêt collection, and haute couture fashion designed to empower your inner radiance.
+              Dua Trends defines luxury women’s apparel with unstitched lawn, silk chiffon formal wear, prêt collection, and haute couture fashion designed to empower your inner radiance.
             </p>
 
             {/* Contact Details */}
@@ -91,7 +94,7 @@ export const Footer: React.FC = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-brand-pink" />
-                <span>support@stylewing.store</span>
+                <span>support@duatrends.store</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-brand-pink" />

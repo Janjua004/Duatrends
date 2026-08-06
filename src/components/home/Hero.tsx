@@ -19,7 +19,7 @@ export const Hero: React.FC = () => {
     {
       id: 1,
       title: "Dil-e-Raqsum",
-      subtitle: "BY STYLEWING",
+      subtitle: "BY DUA TRENDS",
       tagline: "Unstitched Luxury Lawn '26 Vol-01",
       image: "/images/hero_slide_1.jpg",
       category: "Casual Wear"

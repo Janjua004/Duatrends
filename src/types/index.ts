@@ -57,7 +57,22 @@ export type PaymentOption =
   | '25% Advance Downpayment'
   | '100% Full Payment'
   | 'Bank Transfer'
+  | 'Safepay Credit/Debit Card & Mobile Wallet'
   | 'Boutique Pickup';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  city?: string;
+  province?: string;
+  address?: string;
+  role: 'customer' | 'admin';
+  createdAt: string;
+}
+
+export type AuthModalMode = 'login' | 'signup' | 'forgot';
 
 export interface Order {
   id: string;

@@ -21,10 +21,7 @@ export const HomePage: React.FC = () => {
       {/* Hero Banner */}
       <Hero />
 
-      {/* Categories Bar */}
-      <CategoriesSection />
-
-      {/* Main Section 1: Unstitched Luxury Lawn Collection (StyleWing 4-Column Grid) */}
+      {/* TOP SECTION 1: Unstitched Luxury Lawn Collection (Moved to Top Place) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center space-y-2">
           <span className="text-xs uppercase font-bold tracking-[0.2em] text-brand-pink block">
@@ -36,7 +33,7 @@ export const HomePage: React.FC = () => {
           <div className="w-16 h-0.5 bg-brand-pink mx-auto" />
         </div>
 
-        {/* StyleWing 4-Column Card Grid */}
+        {/* 4-Column Card Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {unstitchedProducts.slice(0, 4).map(product => (
             <ProductCard key={product.id} product={product} />
@@ -60,14 +57,33 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* StyleWing Editorial Spotlight Section - Full Width Corner to Corner */}
+      {/* SECTION 2: Party Wear & Formal Suits (4-Column Grid) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="text-center space-y-2">
+          <span className="text-xs uppercase font-bold tracking-[0.2em] text-brand-pink block">
+            ELEGANT COUTURE
+          </span>
+          <h2 className="font-serif text-3xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white tracking-wide">
+            Party Wear & Formals
+          </h2>
+          <div className="w-16 h-0.5 bg-brand-pink mx-auto" />
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          {partyWearProducts.map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      {/* Editorial Spotlight Section - Full Width Corner to Corner */}
       <section className="w-full bg-gray-950 text-white overflow-hidden shadow-2xl">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 items-center">
           
           <div className="lg:col-span-7 p-8 md:p-14 lg:p-20 space-y-6 max-w-3xl justify-self-center">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-600/30 border border-red-500 text-red-400 text-xs font-bold uppercase tracking-widest">
               <Flame className="w-4 h-4 text-red-500 fill-red-500 animate-pulse" />
-              <span>STYLEWING FEATURED SPOTLIGHT</span>
+              <span>DUA TRENDS FEATURED SPOTLIGHT</span>
             </div>
 
             <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight uppercase tracking-wide">
@@ -90,7 +106,7 @@ export const HomePage: React.FC = () => {
           <div className="lg:col-span-5 h-full min-h-[420px]">
             <img 
               src="/images/collection_banner.jpg" 
-              alt="StyleWing Festive Collection" 
+              alt="Dua Trends Festive Collection" 
               className="w-full h-full object-cover"
             />
           </div>
@@ -98,26 +114,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Main Section 2: Party Wear & Formal Suits (4-Column Grid) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-center space-y-2">
-          <span className="text-xs uppercase font-bold tracking-[0.2em] text-brand-pink block">
-            ELEGANT COUTURE
-          </span>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white tracking-wide">
-            Party Wear & Formals
-          </h2>
-          <div className="w-16 h-0.5 bg-brand-pink mx-auto" />
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          {partyWearProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
-
-      {/* Main Section 3: Summer & Winter prêt (4-Column Grid) */}
+      {/* SECTION 3: Summer & Winter prêt (4-Column Grid) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center space-y-2">
           <span className="text-xs uppercase font-bold tracking-[0.2em] text-brand-pink block">
@@ -139,8 +136,13 @@ export const HomePage: React.FC = () => {
       {/* Why Choose Us */}
       <WhyChooseUs />
 
-      {/* Reviews */}
+      {/* Customer Reviews */}
       <CustomerReviewsSection />
+
+      {/* BOTTOM SECTION: Featured Categories Grid (Moved to Bottom) */}
+      <section className="pt-4">
+        <CategoriesSection />
+      </section>
 
       {/* Instagram Wall */}
       <InstagramFeed />

@@ -6,6 +6,7 @@ import { AnalyticsManager } from './AnalyticsManager';
 import { CouponManager } from './CouponManager';
 import { ReviewManager } from './ReviewManager';
 import { CMSSettings } from './CMSSettings';
+import { CategoryManager } from './CategoryManager';
 import { 
   TrendingUp, 
   ShoppingBag, 
@@ -21,7 +22,8 @@ import {
   Moon, 
   ArrowUpRight,
   MousePointerClick,
-  Lock
+  Lock,
+  Layers
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -101,6 +103,18 @@ export const AdminDashboard: React.FC = () => {
           >
             <TrendingUp className="w-4 h-4" />
             <span>Dashboard Overview</span>
+          </button>
+
+          <button
+            onClick={() => setActiveAdminTab('categories')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${
+              activeAdminTab === 'categories'
+                ? 'bg-brand-pink text-white shadow-lg'
+                : 'text-gray-400 hover:bg-gray-900 hover:text-white'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Category Manager</span>
           </button>
 
           <button
@@ -298,6 +312,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
           )}
 
+          {activeAdminTab === 'categories' && <CategoryManager />}
           {activeAdminTab === 'products' && <ProductManager />}
           {activeAdminTab === 'orders' && <OrderManager />}
           {activeAdminTab === 'analytics' && <AnalyticsManager />}

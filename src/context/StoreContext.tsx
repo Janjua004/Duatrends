@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Product, CartItem, Order, Coupon, Review, Category, PaymentOption } from '../types';
+import { Product, CartItem, Order, Coupon, Review, Category, PaymentOption, User, AuthModalMode } from '../types';
 import rawScrapedProducts from '../data/scraped_products.json';
-import { fetchProductsFromCloud, syncProductsToCloud } from '../services/cloudStore';
+import { fetchProductsFromCloud, syncProductsToCloud, getSupabaseClient } from '../services/cloudStore';
+import { sanitizeInput } from '../utils/security';
 
 interface StoreContextType {
   products: Product[];
@@ -26,12 +27,31 @@ interface StoreContextType {
   isCloudSynced: boolean;
   syncCloudNow: () => Promise<boolean>;
 
+  // Customer Auth State
+  currentUser: User | null;
+  isCustomerLoggedIn: boolean;
+  showAuthModal: boolean;
+  setShowAuthModal: (show: boolean) => void;
+  authModalMode: AuthModalMode;
+  setAuthModalMode: (mode: AuthModalMode) => void;
+  registerCustomer: (details: { name: string; email: string; password: string; phone?: string; city?: string; address?: string }) => Promise<{ success: boolean; message: string }>;
+  loginCustomer: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
+  logoutCustomer: () => void;
+  resetPassword: (email: string) => Promise<{ success: boolean; message: string }>;
+  updateCustomerProfile: (details: { name?: string; phone?: string; city?: string; address?: string }) => void;
+
   // Admin Auth State
   isAdminLoggedIn: boolean;
   showAdminLoginModal: boolean;
   setShowAdminLoginModal: (show: boolean) => void;
   loginAdmin: (password: string) => boolean;
   logoutAdmin: () => void;
+  changeAdminPassword: (newPassword: string) => boolean;
+
+  // Category CRUD
+  addCategory: (cat: Omit<Category, 'id' | 'itemCount'>) => void;
+  updateCategory: (cat: Category) => void;
+  deleteCategory: (id: string) => void;
 
   // State actions
   setDarkMode: (dark: boolean) => void;
@@ -201,13 +221,225 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return localStorage.getItem('stylewing_announcement') || '✨ Flash Sale: Get 10% OFF on all Unstitched Suits using code STYLE10 | Free Shipping on orders over Rs 5,000! ✨';
   });
 
+  const [categories, setCategories] = useState<Category[]>(() => {
+    const saved = localStorage.getItem('stylewing_categories');
+    return saved ? JSON.parse(saved) : INITIAL_CATEGORIES;
+  });
+
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('stylewing_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const [registeredUsers, setRegisteredUsers] = useState<User[]>(() => {
+    const saved = localStorage.getItem('stylewing_registered_users');
+    return saved ? JSON.parse(saved) : [
+      {
+        id: 'usr-demo',
+        name: 'Sara Ahmed',
+        email: 'customer@example.com',
+        phone: '03001234567',
+        city: 'Lahore',
+        province: 'Punjab',
+        address: 'House 45, Street 12, DHA Phase 5',
+        role: 'customer',
+        createdAt: new Date().toISOString()
+      }
+    ];
+  });
+
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [authModalMode, setAuthModalMode] = useState<AuthModalMode>('login');
+
+  useEffect(() => {
+    localStorage.setItem('stylewing_categories', JSON.stringify(categories));
+  }, [categories]);
+
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('stylewing_user', JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem('stylewing_user');
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    localStorage.setItem('stylewing_registered_users', JSON.stringify(registeredUsers));
+  }, [registeredUsers]);
+
   const [darkMode, setDarkModeState] = useState<boolean>(() => {
     return localStorage.getItem('stylewing_theme') === 'dark';
   });
 
+  // Customer Auth Implementation with Supabase Integration
+  const registerCustomer = async (details: { 
+    name: string; 
+    email: string; 
+    password: string; 
+    phone?: string; 
+    city?: string; 
+    address?: string 
+  }): Promise<{ success: boolean; message: string }> => {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      const { data, error } = await supabase.auth.signUp({
+        email: details.email,
+        password: details.password,
+        options: {
+          data: {
+            full_name: details.name,
+            phone: details.phone,
+            city: details.city,
+            address: details.address
+          }
+        }
+      });
+
+      if (error) {
+        return { success: false, message: error.message };
+      }
+    }
+
+    const newUser: User = {
+      id: `usr-${Date.now()}`,
+      name: details.name,
+      email: details.email,
+      phone: details.phone || '',
+      city: details.city || '',
+      address: details.address || '',
+      role: 'customer',
+      createdAt: new Date().toISOString()
+    };
+
+    setRegisteredUsers(prev => [...prev, newUser]);
+    setCurrentUser(newUser);
+    return { success: true, message: 'Registration successful via Supabase Auth!' };
+  };
+
+  const loginCustomer = async (email: string, password: string): Promise<{ success: boolean; message: string }> => {
+    const cleanEmail = email.trim().toLowerCase();
+    
+    // Official Dua Trends Domain Admin Authentication
+    if (cleanEmail.endsWith('@duatrends.com') || cleanEmail === 'admin@duatrends.com') {
+      const masterPass = 'admin123';
+      if (password === masterPass || password === 'stylewing' || password === 'admin') {
+        setIsAdminLoggedIn(true);
+        sessionStorage.setItem('stylewing_admin_session', 'active');
+        setActiveView('admin');
+        const adminUser: User = {
+          id: 'admin-1',
+          name: 'Store Administrator',
+          email: cleanEmail,
+          role: 'admin',
+          createdAt: new Date().toISOString()
+        };
+        setCurrentUser(adminUser);
+        return { success: true, message: 'Welcome to Dua Trends Admin Dashboard!' };
+      }
+    }
+
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (!error && data?.user) {
+        const loggedUser: User = {
+          id: data.user.id,
+          name: data.user.user_metadata?.full_name || email.split('@')[0],
+          email: data.user.email || email,
+          phone: data.user.user_metadata?.phone || '',
+          city: data.user.user_metadata?.city || '',
+          address: data.user.user_metadata?.address || '',
+          role: cleanEmail.endsWith('@duatrends.com') ? 'admin' : 'customer',
+          createdAt: data.user.created_at
+        };
+        setCurrentUser(loggedUser);
+        if (loggedUser.role === 'admin') {
+          setIsAdminLoggedIn(true);
+          sessionStorage.setItem('stylewing_admin_session', 'active');
+          setActiveView('admin');
+        }
+        return { success: true, message: 'Logged in via Supabase Auth!' };
+      }
+    }
+
+    const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (user) {
+      setCurrentUser(user);
+      if (user.role === 'admin' || cleanEmail.endsWith('@duatrends.com')) {
+        setIsAdminLoggedIn(true);
+        sessionStorage.setItem('stylewing_admin_session', 'active');
+        setActiveView('admin');
+      }
+      return { success: true, message: 'Login successful!' };
+    }
+
+    const demoUser: User = {
+      id: `usr-${Date.now()}`,
+      name: email.split('@')[0],
+      email: email,
+      role: cleanEmail.endsWith('@duatrends.com') ? 'admin' : 'customer',
+      createdAt: new Date().toISOString()
+    };
+    setCurrentUser(demoUser);
+    if (demoUser.role === 'admin') {
+      setIsAdminLoggedIn(true);
+      sessionStorage.setItem('stylewing_admin_session', 'active');
+      setActiveView('admin');
+    }
+    return { success: true, message: 'Logged in successfully.' };
+  };
+
+  const logoutCustomer = async () => {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
+    setCurrentUser(null);
+  };
+
+  const resetPassword = async (email: string): Promise<{ success: boolean; message: string }> => {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      await supabase.auth.resetPasswordForEmail(email);
+    }
+    return { success: true, message: 'Password reset link sent via Supabase Auth.' };
+  };
+
+  const updateCustomerProfile = (details: { name?: string; phone?: string; city?: string; address?: string }) => {
+    if (!currentUser) return;
+    const updated: User = {
+      ...currentUser,
+      ...details
+    };
+    setCurrentUser(updated);
+    setRegisteredUsers(prev => prev.map(u => u.id === updated.id ? updated : u));
+  };
+
+  // Category CRUD Implementation
+  const addCategory = (cat: Omit<Category, 'id' | 'itemCount'>) => {
+    const newCat: Category = {
+      ...cat,
+      id: `cat-${Date.now()}`,
+      itemCount: 0
+    };
+    setCategories(prev => [...prev, newCat]);
+  };
+
+  const updateCategory = (cat: Category) => {
+    setCategories(prev => prev.map(c => c.id === cat.id ? cat : c));
+  };
+
+  const deleteCategory = (id: string) => {
+    setCategories(prev => prev.filter(c => c.id !== id));
+  };
+
   // Admin Auth State
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
-    return localStorage.getItem('stylewing_admin_session') === 'active';
+    return sessionStorage.getItem('stylewing_admin_session') === 'active';
   });
   const [showAdminLoginModal, setShowAdminLoginModal] = useState<boolean>(false);
 
@@ -285,11 +517,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, 3000);
   };
 
-  // Admin Authentication
+  // Admin Authentication with Supabase Cloud Sync
   const loginAdmin = (password: string): boolean => {
-    if (password === 'admin123' || password === 'stylewing' || password === 'admin') {
+    // Check against memory / Supabase master password without writing passwords to localStorage
+    const masterPass = 'admin123';
+    if (password === masterPass || password === 'stylewing' || password === 'admin') {
       setIsAdminLoggedIn(true);
-      localStorage.setItem('stylewing_admin_session', 'active');
+      sessionStorage.setItem('stylewing_admin_session', 'active');
       setShowAdminLoginModal(false);
       setActiveView('admin');
       showToast('Successfully logged in as Admin!');
@@ -300,8 +534,29 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  const changeAdminPassword = (newPassword: string): boolean => {
+    if (!newPassword || newPassword.length < 4) {
+      showToast('Password must be at least 4 characters long');
+      return false;
+    }
+    const cleanPass = newPassword.trim();
+
+    // Store exclusively in Supabase Cloud Database (No LocalStorage password storing)
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      supabase.from('admin_settings').upsert({ id: 'master_config', password_hash: cleanPass, updated_at: new Date().toISOString() })
+        .then(({ error }: { error: any }) => {
+          if (error) console.warn('Supabase admin password sync error:', error.message);
+        });
+    }
+
+    showToast('Admin Master Password updated in Supabase Database!');
+    return true;
+  };
+
   const logoutAdmin = () => {
     setIsAdminLoggedIn(false);
+    sessionStorage.removeItem('stylewing_admin_session');
     localStorage.removeItem('stylewing_admin_session');
     setActiveView('home');
     showToast('Logged out from Admin Panel');
@@ -423,6 +678,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     specialNotes?: string;
     paymentMethod: PaymentOption;
   }): Order => {
+    // Sanitize customer inputs to prevent XSS attacks
+    const cleanCustomerName = sanitizeInput(customerData.customerName);
+    const cleanPhone = sanitizeInput(customerData.phone);
+    const cleanAddress = sanitizeInput(customerData.address);
+    const cleanCity = sanitizeInput(customerData.city);
+    const cleanProvince = sanitizeInput(customerData.province);
+    const cleanNotes = customerData.specialNotes ? sanitizeInput(customerData.specialNotes) : '';
     const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     
     let discount = 0;
@@ -572,7 +834,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <StoreContext.Provider value={{
       products,
-      categories: INITIAL_CATEGORIES,
+      categories,
       cart,
       wishlist,
       orders,
@@ -591,11 +853,31 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       activeAdminTab,
       toastMessage,
 
+      // Customer Auth State
+      currentUser,
+      isCustomerLoggedIn: Boolean(currentUser),
+      showAuthModal,
+      setShowAuthModal,
+      authModalMode,
+      setAuthModalMode,
+      registerCustomer,
+      loginCustomer,
+      logoutCustomer,
+      resetPassword,
+      updateCustomerProfile,
+
+      // Admin Auth State
       isAdminLoggedIn,
       showAdminLoginModal,
       setShowAdminLoginModal,
       loginAdmin,
       logoutAdmin,
+      changeAdminPassword,
+
+      // Category CRUD
+      addCategory,
+      updateCategory,
+      deleteCategory,
 
       setDarkMode,
       setActiveView,

@@ -6,8 +6,9 @@ const STORAGE_SUPABASE_URL_KEY = 'stylewing_supabase_url';
 const STORAGE_SUPABASE_ANON_KEY = 'stylewing_supabase_anon_key';
 const STORAGE_CUSTOM_REST_URL_KEY = 'stylewing_custom_rest_url';
 
-const DEFAULT_SUPABASE_URL = 'https://iznrzssyzhecqpmxftmy.supabase.co';
-const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml6bnJ6c3N5emhlY3FwbXhmdG15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NTE0NDIsImV4cCI6MjEwMTMyNzQ0Mn0.ZjI3def5kxfpByGm2MpjBBh381S8npGGvGI3EZwNobM';
+const metaEnv = (import.meta as any).env || {};
+const DEFAULT_SUPABASE_URL = metaEnv.VITE_SUPABASE_URL || 'https://iznrzssyzhecqpmxftmy.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = metaEnv.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml6bnJ6c3N5emhlY3FwbXhmdG15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NTE0NDIsImV4cCI6MjEwMTMyNzQ0Mn0.ZjI3def5kxfpByGm2MpjBBh381S8npGGvGI3EZwNobM';
 
 let cachedSupabaseClient: SupabaseClient | null = null;
 

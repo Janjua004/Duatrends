@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StoreProvider, useStore } from './context/StoreContext';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
@@ -6,6 +6,10 @@ import { MobileNav } from './components/layout/MobileNav';
 import { FloatingWhatsApp } from './components/layout/FloatingWhatsApp';
 import { QuickViewModal } from './components/layout/QuickViewModal';
 import { AdminLoginModal } from './components/admin/AdminLoginModal';
+import { AuthModal } from './components/auth/AuthModal';
+import { CustomerDashboard } from './components/auth/CustomerDashboard';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { LogoLoader } from './components/common/LogoLoader';
 
 import { HomePage } from './pages/HomePage';
 import { ShopPage } from './pages/ShopPage';
@@ -18,11 +22,24 @@ import { ContactPage } from './pages/ContactPage';
 import { PolicyPage } from './pages/PolicyPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { AuthPage } from './pages/AuthPage';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { CheckCircle2 } from 'lucide-react';
 
 const MainContent: React.FC = () => {
   const { activeView, toastMessage, isAdminLoggedIn } = useStore();
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 900);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (initialLoading) {
+    return <LogoLoader fullScreen message="Loading Dua Trends Luxury Collection..." />;
+  }
 
   const renderPage = () => {
     if (activeView === 'admin' && isAdminLoggedIn) {
@@ -41,8 +58,12 @@ const MainContent: React.FC = () => {
         return <CartPage />;
       case 'checkout':
         return <CheckoutModal />;
+      case 'login':
+        return <AuthPage />;
       case 'wishlist':
         return <WishlistPage />;
+      case 'account':
+        return <CustomerDashboard />;
       case 'track':
         return <TrackOrderPage />;
       case 'about':
@@ -74,6 +95,12 @@ const MainContent: React.FC = () => {
       {/* Admin Login Password Modal */}
       <AdminLoginModal />
 
+      {/* Customer Auth Modal (Login / Signup / Forgot Password) */}
+      <AuthModal />
+
+      {/* Quick View Product Modal */}
+      <QuickViewModal />
+
       {/* Floating WhatsApp CTA */}
       <FloatingWhatsApp />
 
@@ -98,9 +125,11 @@ const MainContent: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <StoreProvider>
-      <MainContent />
-    </StoreProvider>
+    <ErrorBoundary>
+      <StoreProvider>
+        <MainContent />
+      </StoreProvider>
+    </ErrorBoundary>
   );
 };
 

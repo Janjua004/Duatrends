@@ -87,18 +87,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-brand-pink text-brand-pink' : ''}`} />
         </button>
 
-        {/* Quick View overlay */}
+        {/* Direct Product Detail Page Navigation */}
         <div className="absolute inset-x-2 bottom-2 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 hidden sm:flex gap-1.5">
           <button 
             onClick={(e) => { e.stopPropagation(); handleCardClick(); }}
-            className="flex-1 bg-gray-900/90 dark:bg-white/90 hover:bg-black text-white dark:text-gray-900 py-2 px-2 rounded text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 shadow-md"
+            className="flex-1 bg-gray-900/90 dark:bg-white/90 hover:bg-black text-white dark:text-gray-900 py-2.5 px-3 rounded text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 shadow-md"
           >
             <Eye className="w-3.5 h-3.5" />
-            Quick View
+            <span>View Article Details</span>
           </button>
           <button 
             onClick={handleQuickAdd}
-            className="bg-brand-pink hover:bg-brand-pink-hover text-white p-2 rounded shadow-md flex items-center justify-center"
+            className="bg-brand-pink hover:bg-brand-pink-hover text-white p-2.5 rounded shadow-md flex items-center justify-center"
             title="Add to Shopping Cart"
           >
             <ShoppingBag className="w-4 h-4" />

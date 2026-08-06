@@ -1,27 +1,47 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
-import { Lock, Key, X, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Lock, Key, X, ShieldAlert, ArrowRight, Clock } from 'lucide-react';
+import { checkRateLimit, recordFailedAttempt, clearRateLimit, sanitizeInput } from '../../utils/security';
 
 export const AdminLoginModal: React.FC = () => {
   const { showAdminLoginModal, setShowAdminLoginModal, loginAdmin } = useStore();
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [lockoutRemaining, setLockoutRemaining] = useState<number>(0);
 
   if (!showAdminLoginModal) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!password) {
+    const sanitizedPass = sanitizeInput(password);
+
+    // Rate Limit Check (5 attempts max, 15 min lock)
+    const rateCheck = checkRateLimit('admin_login_attempts', 5, 15 * 60 * 1000);
+    if (!rateCheck.allowed) {
+      setLockoutRemaining(rateCheck.remainingSeconds);
+      setErrorMsg(`Too many failed attempts. Security lockout active for ${Math.ceil(rateCheck.remainingSeconds / 60)} minutes.`);
+      return;
+    }
+
+    if (!sanitizedPass) {
       setErrorMsg('Please enter admin password');
       return;
     }
 
-    const success = loginAdmin(password);
+    const success = loginAdmin(sanitizedPass);
     if (success) {
+      clearRateLimit('admin_login_attempts');
       setPassword('');
       setErrorMsg('');
+      setLockoutRemaining(0);
     } else {
-      setErrorMsg('Invalid Admin Password. Try: admin123');
+      const attemptRecord = recordFailedAttempt('admin_login_attempts', 5, 15 * 60 * 1000);
+      if (attemptRecord.locked) {
+        setLockoutRemaining(attemptRecord.remainingSeconds);
+        setErrorMsg('Maximum failed login attempts reached. Security lockout activated.');
+      } else {
+        setErrorMsg('Invalid Master Password. Access denied.');
+      }
     }
   };
 

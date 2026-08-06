@@ -1,33 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/StoreContext';
-import { PaymentOption } from '../../types';
-import { ShoppingBag, ArrowLeft, MessageCircle, Tag, ShieldCheck, Percent, Banknote, Building2 } from 'lucide-react';
+import { PaymentOption, Order } from '../../types';
+import { initiateSafepayPayment } from '../../services/safepay';
+import { ShoppingBag, ArrowLeft, MessageCircle, Tag, ShieldCheck, Percent, Banknote, Building2, CreditCard, Sparkles } from 'lucide-react';
+import { OrderSuccessModal } from './OrderSuccessModal';
 
 export const CheckoutModal: React.FC = () => {
   const { 
     cart, 
     appliedCoupon, 
-    applyCoupon, 
+    applyCoupon,
     removeCoupon, 
     flatShippingFee, 
     freeShippingLimit, 
     placeOrder, 
+    setActiveView,
     whatsappNumber,
-    setActiveView 
+    showToast,
+    currentUser
   } = useStore();
 
-  const [customerName, setCustomerName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [whatsapp, setWhatsapp] = useState('');
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [province, setProvince] = useState('Punjab');
+  const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
+
+  const [customerName, setCustomerName] = useState(currentUser?.name || '');
+  const [phone, setPhone] = useState(currentUser?.phone || '');
+  const [whatsapp, setWhatsapp] = useState(currentUser?.phone || '');
+  const [email, setEmail] = useState(currentUser?.email || '');
+  const [address, setAddress] = useState(currentUser?.address || '');
+  const [city, setCity] = useState(currentUser?.city || '');
+  const [province, setProvince] = useState(currentUser?.province || 'Punjab');
   const [postalCode, setPostalCode] = useState('');
   const [country] = useState('Pakistan');
   const [specialNotes, setSpecialNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentOption>('25% Advance Downpayment');
   const [couponCodeInput, setCouponCodeInput] = useState('');
+
+  useEffect(() => {
+    if (currentUser) {
+      if (currentUser.name && !customerName) setCustomerName(currentUser.name);
+      if (currentUser.email && !email) setEmail(currentUser.email);
+      if (currentUser.phone && !phone) {
+        setPhone(currentUser.phone);
+        setWhatsapp(currentUser.phone);
+      }
+      if (currentUser.city && !city) setCity(currentUser.city);
+      if (currentUser.address && !address) setAddress(currentUser.address);
+    }
+  }, [currentUser]);
 
   const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
@@ -54,7 +73,7 @@ export const CheckoutModal: React.FC = () => {
     }
   };
 
-  const handlePlaceOrderSubmit = (e: React.FormEvent) => {
+  const handlePlaceOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!customerName || !phone || !address || !city) {
@@ -76,12 +95,25 @@ export const CheckoutModal: React.FC = () => {
       paymentMethod
     });
 
-    // Auto open WhatsApp with preformatted order
-    const targetNum = whatsappNumber.replace(/[^0-9]/g, '');
-    const encodedMsg = encodeURIComponent(orderObj.formattedWhatsAppMsg);
-    window.open(`https://wa.me/${targetNum}?text=${encodedMsg}`, '_blank');
+    setConfirmedOrder(orderObj);
 
-    setActiveView('track');
+    if (paymentMethod === 'Safepay Credit/Debit Card & Mobile Wallet') {
+      const res = await initiateSafepayPayment({
+        orderNumber: orderObj.orderNumber,
+        amount: grandTotal,
+        customerName: customerName,
+        customerEmail: email,
+        customerPhone: phone
+      });
+      if (res.url) {
+        window.open(res.url, '_blank');
+      }
+    } else {
+      // Auto open WhatsApp with preformatted order
+      const targetNum = whatsappNumber.replace(/[^0-9]/g, '');
+      const encodedMsg = encodeURIComponent(orderObj.formattedWhatsAppMsg);
+      window.open(`https://wa.me/${targetNum}?text=${encodedMsg}`, '_blank');
+    }
   };
 
   if (cart.length === 0) {
@@ -334,6 +366,31 @@ export const CheckoutModal: React.FC = () => {
                   </div>
                 </button>
 
+                {/* Safepay Credit / Debit Card & Mobile Wallet */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('Safepay Credit/Debit Card & Mobile Wallet')}
+                  className={`p-4 rounded-2xl border text-left flex flex-col justify-between transition-all ${
+                    paymentMethod === 'Safepay Credit/Debit Card & Mobile Wallet'
+                      ? 'border-brand-pink bg-rose-50 dark:bg-rose-950/40 text-brand-pink font-bold shadow-md'
+                      : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs uppercase font-extrabold flex items-center gap-1.5">
+                      <CreditCard className="w-4 h-4 text-indigo-500" />
+                      Safepay Gateway
+                    </span>
+                    <span className="text-[10px] uppercase font-bold bg-indigo-600 text-white px-2 py-0.5 rounded-full">
+                      ONLINE PAYMENT
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-2 space-y-0.5">
+                    <p className="font-semibold text-gray-900 dark:text-white">Pay via Safepay Checkout</p>
+                    <p>Visa, MasterCard, & Mobile Wallets</p>
+                  </div>
+                </button>
+
                 {/* Cash on Delivery */}
                 <button
                   type="button"
@@ -372,14 +429,26 @@ export const CheckoutModal: React.FC = () => {
               </div>
             </div>
 
-            {/* Submit Order */}
-            <button
-              type="submit"
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-2xl text-base flex items-center justify-center gap-3 shadow-xl transition-transform hover:scale-[1.01]"
-            >
-              <MessageCircle className="w-6 h-6 animate-pulse" />
-              <span>Place Order via WhatsApp</span>
-            </button>
+            {/* Dual Order Action Buttons (Card vs WhatsApp vs COD) */}
+            <div className="space-y-3">
+              {paymentMethod === 'Safepay Credit/Debit Card & Mobile Wallet' ? (
+                <button
+                  type="submit"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl text-base flex items-center justify-center gap-3 shadow-xl transition-transform hover:scale-[1.01]"
+                >
+                  <CreditCard className="w-6 h-6" />
+                  <span>Pay Rs {grandTotal.toLocaleString()} Online via Card / Wallet</span>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-2xl text-base flex items-center justify-center gap-3 shadow-xl transition-transform hover:scale-[1.01]"
+                >
+                  <MessageCircle className="w-6 h-6 animate-pulse" />
+                  <span>Place Order via WhatsApp</span>
+                </button>
+              )}
+            </div>
           </form>
         </div>
 
@@ -510,8 +579,21 @@ export const CheckoutModal: React.FC = () => {
             </div>
           </div>
         </div>
-
       </div>
+
+      {/* 100% Verified Payment & Order Success Modal */}
+      <OrderSuccessModal 
+        order={confirmedOrder}
+        onClose={() => {
+          setConfirmedOrder(null);
+          setActiveView('home');
+        }}
+        onTrackOrder={() => {
+          setConfirmedOrder(null);
+          setActiveView('track');
+        }}
+      />
+
     </div>
   );
 };
