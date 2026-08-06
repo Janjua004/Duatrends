@@ -61,15 +61,15 @@ export const Footer: React.FC = () => {
           
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="h-20 sm:h-24 w-auto flex items-center justify-start py-1">
+            <div className="h-28 sm:h-36 md:h-40 w-full max-w-[460px] sm:max-w-[540px] flex items-center justify-start py-2 overflow-hidden">
               <img 
                 src="/logo.png" 
                 alt="Dua Trends Logo" 
-                className="h-full w-auto max-w-[280px] sm:max-w-[340px] object-contain"
+                className="h-full w-full object-contain object-left scale-150 sm:scale-175 origin-left transition-transform hover:scale-180"
                 onError={(e) => {
                   const parent = (e.target as HTMLElement).parentElement;
                   if (parent) {
-                    parent.innerHTML = `<span class="font-serif text-3xl font-bold tracking-wider text-white uppercase">Dua <span class="text-brand-pink">Trends</span></span>`;
+                    parent.innerHTML = `<span class="font-serif text-4xl font-bold tracking-wider text-white uppercase">Dua <span class="text-brand-pink">Trends</span></span>`;
                   }
                 }}
               />
@@ -186,7 +186,7 @@ export const Footer: React.FC = () => {
 
           {/* Newsletter */}
           <div className="space-y-4">
-            <h4 className="text-white font-serif font-semibold text-lg">Join StyleWing Circle</h4>
+            <h4 className="text-white font-serif font-semibold text-lg">Join Dua Trends Circle</h4>
             <p className="text-xs text-gray-400">
               Subscribe to get exclusive early access to upcoming luxury lawn & festive collections.
             </p>
