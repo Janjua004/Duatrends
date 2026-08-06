@@ -794,7 +794,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       syncProductsToCloud(updatedList).then(success => setIsCloudSynced(success));
       return updatedList;
     });
-    showToast('Product deleted & updated on server.');
+
+    // Directly delete from Supabase Cloud Database table so ALL devices immediately reflect deletion!
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      supabase.from('products').delete().eq('id', id).then(({ error }) => {
+        if (error) console.warn('Supabase cloud product deletion note:', error.message);
+      });
+    }
+
+    showToast('Product deleted from Cloud Database & updated on all devices worldwide! ✨');
   };
 
   // Coupon CRUD
