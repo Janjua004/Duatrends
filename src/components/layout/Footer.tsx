@@ -61,25 +61,18 @@ export const Footer: React.FC = () => {
           
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-auto flex-shrink-0">
-                <img 
-                  src="/logo.png" 
-                  alt="Dua Trends Logo" 
-                  className="h-full w-auto object-contain"
-                  onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
-                  }}
-                />
-              </div>
-              <div>
-                <span className="font-serif text-2xl font-bold tracking-tight text-white block leading-none">
-                  Dua <span className="text-brand-pink">Trends</span>
-                </span>
-                <span className="text-[10px] tracking-widest uppercase font-semibold text-gray-500 block mt-1">
-                  HAUTE COUTURE FASHION HOUSE
-                </span>
-              </div>
+            <div className="h-20 sm:h-24 w-auto flex items-center justify-start py-1">
+              <img 
+                src="/logo.png" 
+                alt="Dua Trends Logo" 
+                className="h-full w-auto max-w-[280px] sm:max-w-[340px] object-contain"
+                onError={(e) => {
+                  const parent = (e.target as HTMLElement).parentElement;
+                  if (parent) {
+                    parent.innerHTML = `<span class="font-serif text-3xl font-bold tracking-wider text-white uppercase">Dua <span class="text-brand-pink">Trends</span></span>`;
+                  }
+                }}
+              />
             </div>
 
             <p className="text-sm text-gray-400 max-w-sm">
