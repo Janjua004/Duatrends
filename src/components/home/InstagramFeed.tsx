@@ -2,7 +2,7 @@ import React from 'react';
 import { Instagram, Heart, ArrowUpRight } from 'lucide-react';
 
 export const InstagramFeed: React.FC = () => {
-  const INSTAGRAM_URL = "https://www.instagram.com/stylewing299?igsh=MW1oZm5pYWk4ZmViYg==";
+  const INSTAGRAM_URL = "https://www.instagram.com/duatrends.official";
 
   const instaImages = [
     "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80",
@@ -18,13 +18,13 @@ export const InstagramFeed: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 mb-10">
         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-pink">
           <Instagram className="w-4 h-4" />
-          <span>#StyleWingStyle</span>
+          <span>#DuaTrendsStyle</span>
         </div>
         <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
           Follow Us on Instagram
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-          Tag <span className="font-bold text-brand-pink">@stylewing299</span> on Instagram to be featured on our official fashion wall!
+          Tag <span className="font-bold text-brand-pink">@duatrends.official</span> on Instagram to be featured on our official fashion wall!
         </p>
 
         <a 
@@ -34,7 +34,7 @@ export const InstagramFeed: React.FC = () => {
           className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:opacity-90 transition-opacity"
         >
           <Instagram className="w-4 h-4" />
-          <span>Follow @stylewing299</span>
+          <span>Follow @duatrends.official</span>
           <ArrowUpRight className="w-4 h-4" />
         </a>
       </div>
@@ -48,7 +48,7 @@ export const InstagramFeed: React.FC = () => {
             rel="noopener noreferrer"
             className="group relative aspect-square rounded-2xl overflow-hidden shadow-md bg-gray-200 dark:bg-gray-800"
           >
-            <img src={img} alt="StyleWing Instagram Post" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <img src={img} alt="Dua Trends Instagram Post" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white gap-2">
               <Instagram className="w-6 h-6" />
               <Heart className="w-5 h-5 text-brand-pink fill-brand-pink" />

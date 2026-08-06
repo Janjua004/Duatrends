@@ -214,11 +214,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   });
 
   const [whatsappNumber, setWhatsappNumberState] = useState<string>(() => {
-    return localStorage.getItem('stylewing_whatsapp') || '+923259964045';
+    return localStorage.getItem('stylewing_whatsapp') || '+923000000000';
   });
 
   const [announcementText, setAnnouncementTextState] = useState<string>(() => {
-    return localStorage.getItem('stylewing_announcement') || '✨ Flash Sale: Get 10% OFF on all Unstitched Suits using code STYLE10 | Free Shipping on orders over Rs 5,000! ✨';
+    return localStorage.getItem('stylewing_announcement') || '✨ Flash Sale: Get 10% OFF on all Unstitched Suits using code DUA10 | Free Shipping on orders over Rs 5,000! ✨';
   });
 
   const [categories, setCategories] = useState<Category[]>(() => {

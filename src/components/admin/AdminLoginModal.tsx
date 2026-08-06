@@ -61,7 +61,7 @@ export const AdminLoginModal: React.FC = () => {
             <Lock className="w-7 h-7" />
           </div>
           <h2 className="font-serif text-2xl font-bold text-white">Admin Panel Access</h2>
-          <p className="text-xs text-gray-400">Restricted area for StyleWing store administration</p>
+          <p className="text-xs text-gray-400">Restricted area for Dua Trends store administration</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -99,7 +99,7 @@ export const AdminLoginModal: React.FC = () => {
         </form>
 
         <div className="text-center text-[11px] text-gray-500 bg-gray-950 p-3 rounded-xl border border-gray-800">
-          🔑 Default Passwords: <code className="text-brand-pink font-bold">admin123</code> or <code className="text-brand-pink font-bold">stylewing</code>
+          🔑 Master Admin Password: <code className="text-brand-pink font-bold">admin123</code> (or login with <code className="text-brand-pink font-bold">admin@duatrends.com</code>)
         </div>
 
       </div>

@@ -75,6 +75,9 @@ export const Hero: React.FC = () => {
             src={slide.image} 
             alt={slide.title} 
             className="w-full h-full object-cover object-[center_top] sm:object-[center_15%] transition-transform duration-10000 ease-out"
+            loading={idx === 0 ? "eager" : "lazy"}
+            fetchPriority={idx === 0 ? "high" : "low"}
+            decoding="async"
           />
           {/* Soft Gradient Overlay for clean contrast */}
           <div className="absolute inset-0 bg-gradient-to-r from-gray-950/70 via-gray-950/20 to-transparent" />

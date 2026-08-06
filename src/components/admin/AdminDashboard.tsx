@@ -52,13 +52,13 @@ export const AdminDashboard: React.FC = () => {
       <header className="bg-gray-950 border-b border-gray-800 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-brand-pink flex items-center justify-center font-bold text-white shadow-lg">
-            SW
+            DT
           </div>
           <div>
             <h1 className="font-serif font-bold text-lg text-white leading-tight">
-              StyleWing Admin Control Panel
+              Dua Trends Admin Control Panel
             </h1>
-            <p className="text-xs text-gray-400">Manage products, track clicks, & process WhatsApp orders</p>
+            <p className="text-xs text-gray-400">Advanced Real-Time E-Commerce Management & Cloud Synchronization</p>
           </div>
         </div>
 
@@ -234,7 +234,7 @@ export const AdminDashboard: React.FC = () => {
                     <Package className="w-4 h-4 text-brand-pink" />
                   </div>
                   <h3 className="text-2xl font-bold text-white">{products.length}</h3>
-                  <span className="text-[11px] text-gray-400 font-semibold">100 items from stylewing.pk</span>
+                  <span className="text-[11px] text-gray-400 font-semibold">100 items from duatrends.com</span>
                 </div>
 
                 <div className="bg-gray-950 p-6 rounded-3xl border border-gray-800 space-y-2">
