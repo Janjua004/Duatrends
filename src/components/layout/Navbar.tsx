@@ -90,15 +90,15 @@ export const Navbar: React.FC = () => {
             onClick={() => setActiveView('home')} 
             className="flex items-center group focus:outline-none"
           >
-            <div className="h-16 sm:h-18 md:h-20 w-44 sm:w-56 md:w-64 flex items-center justify-start py-0.5 overflow-hidden">
+            <div className="h-18 sm:h-20 md:h-22 w-52 sm:w-64 md:w-72 flex items-center justify-start py-1 overflow-hidden">
               <img 
                 src="/logo.png" 
                 alt="Dua Trends Logo" 
-                className="h-full w-full object-contain object-left scale-125 origin-left transition-transform group-hover:scale-130"
+                className="h-full w-full object-contain object-left scale-140 sm:scale-150 origin-left transition-transform group-hover:scale-155"
                 onError={(e) => {
                   const parent = (e.target as HTMLElement).parentElement;
                   if (parent) {
-                    parent.innerHTML = `<span class="font-serif text-2xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
+                    parent.innerHTML = `<span class="font-serif text-3xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
                   }
                 }}
               />
