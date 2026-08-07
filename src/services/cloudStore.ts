@@ -106,7 +106,7 @@ export async function fetchProductsFromCloud(): Promise<Product[] | null> {
         .select('*')
         .order('id', { ascending: false });
 
-      if (!error && Array.isArray(data) && data.length > 0) {
+      if (!error && Array.isArray(data)) {
         const formatted = data.map(item => typeof item.data === 'object' ? item.data : item);
         localStorage.setItem('stylewing_products', JSON.stringify(formatted));
         return formatted as Product[];

@@ -185,7 +185,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return sanitizeData(parsed);
       } catch (e) { console.error(e); }
     }
-    return sanitizeData(rawScrapedProducts as Product[]);
+    return [];
   });
 
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -478,7 +478,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     async function initCloudSync() {
       const remoteProducts = await fetchProductsFromCloud();
-      if (remoteProducts && remoteProducts.length > 0) {
+      if (remoteProducts) {
         setProducts(sanitizeData(remoteProducts));
         setIsCloudSynced(true);
       }
