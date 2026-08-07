@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { Product, CartItem, Order, Coupon, Review, Category, PaymentOption, User, AuthModalMode } from '../types';
 import rawScrapedProducts from '../data/scraped_products.json';
 import { 
@@ -229,6 +229,50 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('stylewing_registered_users', JSON.stringify(registeredUsers));
   }, [registeredUsers]);
 
+  // Restore & synchronize active user session directly from Supabase Auth tokens on launch
+  useEffect(() => {
+    const supabase = getSupabaseClient();
+    if (!supabase) return;
+
+    const syncSessionUser = (user: any) => {
+      if (!user) return;
+      const userEmail = user.email || '';
+      const isAdmin = userEmail.endsWith('@duatrends.com') || userEmail === 'admin@duatrends.com' || user.user_metadata?.role === 'admin';
+      
+      const activeUser: User = {
+        id: user.id,
+        name: user.user_metadata?.full_name || userEmail.split('@')[0],
+        email: userEmail,
+        phone: user.user_metadata?.phone || '',
+        city: user.user_metadata?.city || '',
+        address: user.user_metadata?.address || '',
+        role: isAdmin ? 'admin' : 'customer',
+        createdAt: user.created_at || new Date().toISOString()
+      };
+      setCurrentUser(activeUser);
+      if (isAdmin) {
+        setIsAdminLoggedIn(true);
+        sessionStorage.setItem('stylewing_admin_session', 'active');
+      }
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        syncSessionUser(session.user);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        syncSessionUser(session.user);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   // Purge legacy demo cached items from localStorage to ensure 100% fresh state
   useEffect(() => {
     const ordersRaw = localStorage.getItem('stylewing_orders');
@@ -329,10 +373,43 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const loginCustomer = async (email: string, password: string): Promise<{ success: boolean; message: string }> => {
     const cleanEmail = email.trim().toLowerCase();
-    
-    // Official Dua Trends Domain Admin Authentication
+    const cleanPass = password.trim();
+
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: cleanPass
+      });
+
+      if (!error && data?.user) {
+        const isAdmin = cleanEmail.endsWith('@duatrends.com') || cleanEmail === 'admin@duatrends.com' || data.user.user_metadata?.role === 'admin';
+        const loggedUser: User = {
+          id: data.user.id,
+          name: data.user.user_metadata?.full_name || cleanEmail.split('@')[0],
+          email: data.user.email || cleanEmail,
+          phone: data.user.user_metadata?.phone || '',
+          city: data.user.user_metadata?.city || '',
+          address: data.user.user_metadata?.address || '',
+          role: isAdmin ? 'admin' : 'customer',
+          createdAt: data.user.created_at
+        };
+        setCurrentUser(loggedUser);
+        if (isAdmin) {
+          setIsAdminLoggedIn(true);
+          sessionStorage.setItem('stylewing_admin_session', 'active');
+          setActiveView('admin');
+          return { success: true, message: 'Welcome to Dua Trends Admin Dashboard!' };
+        }
+        return { success: true, message: 'Logged in successfully via Supabase Auth!' };
+      } else if (error && error.message !== 'Invalid login credentials') {
+        return { success: false, message: error.message };
+      }
+    }
+
+    // Fallback Admin Local Pass Check
     if (cleanEmail.endsWith('@duatrends.com') || cleanEmail === 'admin@duatrends.com') {
-      if (password.trim() === adminPassword) {
+      if (cleanPass === adminPassword) {
         setIsAdminLoggedIn(true);
         sessionStorage.setItem('stylewing_admin_session', 'active');
         setActiveView('admin');
@@ -350,32 +427,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     }
 
-    const supabase = getSupabaseClient();
-    if (supabase) {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
-
-      if (!error && data?.user) {
-        const loggedUser: User = {
-          id: data.user.id,
-          name: data.user.user_metadata?.full_name || email.split('@')[0],
-          email: data.user.email || email,
-          phone: data.user.user_metadata?.phone || '',
-          city: data.user.user_metadata?.city || '',
-          address: data.user.user_metadata?.address || '',
-          role: 'customer',
-          createdAt: data.user.created_at
-        };
-        setCurrentUser(loggedUser);
-        return { success: true, message: 'Logged in successfully!' };
-      } else if (error) {
-        return { success: false, message: error.message || 'Invalid email or password. Access denied.' };
-      }
-    }
-
-    const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const user = registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
     if (user) {
       setCurrentUser(user);
       return { success: true, message: 'Login successful!' };
@@ -593,9 +645,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('stylewing_products', JSON.stringify(products));
   }, [products]);
 
-  // Load Cloud-Saved Cart & Wishlist when logged in & subscribe to live Realtime updates across all devices
+  // Load Cloud-Saved Cart & Wishlist when logged in for CUSTOMER accounts ONLY (Excludes Admin)
   useEffect(() => {
-    if (!currentUser?.id) return;
+    if (!currentUser?.id || currentUser.role !== 'customer' || currentUser.id === 'admin-1') return;
     const userId = currentUser.id;
 
     async function loadUserCloudState() {
@@ -609,34 +661,33 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     }
     loadUserCloudState();
+  }, [currentUser?.id, currentUser?.role]);
 
-    const unsubscribeCart = subscribeToUserCartRealtime(userId, (latestCart) => {
-      if (latestCart) setCart(latestCart);
-    });
-
-    const unsubscribeWishlist = subscribeToUserWishlistRealtime(userId, (latestWishlist) => {
-      if (latestWishlist) setWishlist(latestWishlist);
-    });
-
-    return () => {
-      unsubscribeCart();
-      unsubscribeWishlist();
-    };
-  }, [currentUser?.id]);
-
+  // Sync Cart changes to Cloud ONLY when logged-in customer modifies their cart
+  const isInitialCartMount = useRef(true);
   useEffect(() => {
     localStorage.setItem('stylewing_cart', JSON.stringify(cart));
-    if (currentUser?.id) {
+    if (isInitialCartMount.current) {
+      isInitialCartMount.current = false;
+      return;
+    }
+    if (currentUser?.id && currentUser.role === 'customer' && currentUser.id !== 'admin-1') {
       syncUserCartToCloud(currentUser.id, cart);
     }
-  }, [cart, currentUser?.id]);
+  }, [cart, currentUser?.id, currentUser?.role]);
 
+  // Sync Wishlist changes to Cloud ONLY when logged-in customer modifies wishlist
+  const isInitialWishlistMount = useRef(true);
   useEffect(() => {
     localStorage.setItem('stylewing_wishlist', JSON.stringify(wishlist));
-    if (currentUser?.id) {
+    if (isInitialWishlistMount.current) {
+      isInitialWishlistMount.current = false;
+      return;
+    }
+    if (currentUser?.id && currentUser.role === 'customer' && currentUser.id !== 'admin-1') {
       syncUserWishlistToCloud(currentUser.id, wishlist);
     }
-  }, [wishlist, currentUser?.id]);
+  }, [wishlist, currentUser?.id, currentUser?.role]);
 
   useEffect(() => {
     localStorage.setItem('stylewing_orders', JSON.stringify(orders));
