@@ -1,7 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, CartItem, Order, Coupon, Review, Category, PaymentOption, User, AuthModalMode } from '../types';
 import rawScrapedProducts from '../data/scraped_products.json';
-import { fetchProductsFromCloud, syncProductsToCloud, getSupabaseClient, subscribeToProductsRealtime } from '../services/cloudStore';
+import { 
+  fetchProductsFromCloud, 
+  syncProductsToCloud, 
+  getSupabaseClient, 
+  subscribeToProductsRealtime,
+  fetchCategoriesFromCloud,
+  syncCategoryToCloud,
+  deleteCategoryFromCloud,
+  subscribeToCategoriesRealtime
+} from '../services/cloudStore';
 import { sanitizeInput, checkDeviceRegistrationLimit, recordDeviceRegistration, checkBotRequestThrottling } from '../utils/security';
 
 interface StoreContextType {
@@ -354,7 +363,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           createdAt: data.user.created_at
         };
         setCurrentUser(loggedUser);
-        return { success: true, message: 'Logged in via Supabase Auth!' };
+        return { success: true, message: 'Logged in successfully!' };
+      } else if (error) {
+        return { success: false, message: error.message || 'Invalid email or password. Access denied.' };
       }
     }
 
@@ -364,15 +375,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return { success: true, message: 'Login successful!' };
     }
 
-    const demoUser: User = {
-      id: `usr-${Date.now()}`,
-      name: email.split('@')[0],
-      email: email,
-      role: 'customer',
-      createdAt: new Date().toISOString()
-    };
-    setCurrentUser(demoUser);
-    return { success: true, message: 'Logged in successfully.' };
+    return { success: false, message: 'Invalid email or password. Access denied.' };
   };
 
   const logoutCustomer = async () => {
@@ -401,22 +404,37 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setRegisteredUsers(prev => prev.map(u => u.id === updated.id ? updated : u));
   };
 
-  // Category CRUD Implementation
+  // Category CRUD Implementation with Live Supabase Realtime Database Syncing
   const addCategory = (cat: Omit<Category, 'id' | 'itemCount'>) => {
     const newCat: Category = {
       ...cat,
       id: `cat-${Date.now()}`,
       itemCount: 0
     };
-    setCategories(prev => [...prev, newCat]);
+    setCategories(prev => {
+      const updated = [...prev, newCat];
+      syncCategoryToCloud(newCat);
+      return updated;
+    });
+    showToast(`Category "${newCat.name}" created & synced to Cloud Server! ✨`);
   };
 
   const updateCategory = (cat: Category) => {
-    setCategories(prev => prev.map(c => c.id === cat.id ? cat : c));
+    setCategories(prev => {
+      const updated = prev.map(c => c.id === cat.id ? cat : c);
+      syncCategoryToCloud(cat);
+      return updated;
+    });
+    showToast(`Category "${cat.name}" updated on all devices! ✨`);
   };
 
   const deleteCategory = (id: string) => {
-    setCategories(prev => prev.filter(c => c.id !== id));
+    setCategories(prev => {
+      const updated = prev.filter(c => c.id !== id);
+      deleteCategoryFromCloud(id);
+      return updated;
+    });
+    showToast('Category deleted from Cloud Database & updated live across all devices! ✨');
   };
 
   // Admin Auth State
@@ -454,7 +472,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const flatShippingFee = 250;
   const freeShippingLimit = 5000;
 
-  // Fetch latest products from cloud server database automatically on load & subscribe to realtime updates
+  // Fetch latest products & categories from cloud database on load & subscribe to realtime updates
   useEffect(() => {
     async function initCloudSync() {
       const remoteProducts = await fetchProductsFromCloud();
@@ -462,17 +480,28 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setProducts(sanitizeData(remoteProducts));
         setIsCloudSynced(true);
       }
+      const remoteCategories = await fetchCategoriesFromCloud();
+      if (remoteCategories && remoteCategories.length > 0) {
+        setCategories(remoteCategories);
+      }
     }
     initCloudSync();
 
-    // Enable realtime websocket subscription so minor to minor database changes propagate everywhere live
-    const unsubscribe = subscribeToProductsRealtime((latestProducts) => {
+    // Enable realtime websocket subscriptions for products & categories
+    const unsubscribeProducts = subscribeToProductsRealtime((latestProducts) => {
       setProducts(sanitizeData(latestProducts));
       setIsCloudSynced(true);
     });
 
+    const unsubscribeCategories = subscribeToCategoriesRealtime((latestCategories) => {
+      if (latestCategories) {
+        setCategories(latestCategories);
+      }
+    });
+
     return () => {
-      unsubscribe();
+      unsubscribeProducts();
+      unsubscribeCategories();
     };
   }, []);
 

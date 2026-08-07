@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Product } from '../types';
+import { Product, Category } from '../types';
 
 // Default Supabase / Cloud REST storage keys
 const STORAGE_SUPABASE_URL_KEY = 'stylewing_supabase_url';
@@ -220,4 +220,114 @@ export function subscribeToProductsRealtime(onProductsChange: (products: Product
     return () => {};
   }
 }
+
+/**
+ * Fetch categories from Supabase Cloud Database
+ */
+export async function fetchCategoriesFromCloud(): Promise<Category[] | null> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name', { ascending: true });
+
+      if (!error && Array.isArray(data)) {
+        const formatted = data.map(item => ({
+          id: item.id,
+          name: item.name,
+          slug: item.slug,
+          image: item.image || '',
+          description: item.description || '',
+          itemCount: item.item_count || 0
+        }));
+        localStorage.setItem('stylewing_categories', JSON.stringify(formatted));
+        return formatted as Category[];
+      }
+    } catch (err) {
+      console.warn('Supabase categories fetch error:', err);
+    }
+  }
+  const cached = localStorage.getItem('stylewing_categories');
+  return cached ? JSON.parse(cached) : null;
+}
+
+/**
+ * Sync Category changes to Supabase Cloud Database
+ */
+export async function syncCategoryToCloud(category: Category): Promise<boolean> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .upsert({
+          id: category.id,
+          name: category.name,
+          slug: category.slug,
+          image: category.image,
+          item_count: category.itemCount,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
+
+      if (!error) return true;
+    } catch (err) {
+      console.warn('Supabase category upsert error:', err);
+    }
+  }
+  return false;
+}
+
+/**
+ * Delete Category from Supabase Cloud Database so all devices reflect deletion
+ */
+export async function deleteCategoryFromCloud(id: string): Promise<boolean> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', id);
+
+      if (!error) return true;
+    } catch (err) {
+      console.warn('Supabase category delete error:', err);
+    }
+  }
+  return false;
+}
+
+/**
+ * Subscribe to Realtime Category table changes across all devices
+ */
+export function subscribeToCategoriesRealtime(onCategoriesChange: (categories: Category[]) => void): () => void {
+  const supabase = getSupabaseClient();
+  if (!supabase) return () => {};
+
+  try {
+    const channel = supabase
+      .channel('realtime-categories-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'categories' },
+        async () => {
+          const updatedCategories = await fetchCategoriesFromCloud();
+          if (updatedCategories) {
+            onCategoriesChange(updatedCategories);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  } catch (err) {
+    console.warn('Categories realtime subscription error:', err);
+    return () => {};
+  }
+}
+
 
