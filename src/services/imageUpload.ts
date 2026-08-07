@@ -7,9 +7,12 @@ const metaEnv = (import.meta as any).env || {};
  */
 export async function uploadImageFile(file: File): Promise<{ success: boolean; url: string; message: string }> {
   try {
-    // 1. Try Cloudinary REST API if credentials are provided in .env
-    const cloudName = metaEnv.VITE_CLOUDINARY_CLOUD_NAME || 'dwdnfn1ab';
+    // 1. Try Cloudinary REST API if credentials are provided or configured in CMS
+    const cloudName = localStorage.getItem('stylewing_cloudinary_cloud_name') || metaEnv.VITE_CLOUDINARY_CLOUD_NAME || 'dwdnfn1ab';
+    const customPreset = localStorage.getItem('stylewing_cloudinary_preset');
+    
     const uploadPresets = [
+      customPreset,
       metaEnv.VITE_CLOUDINARY_UPLOAD_PRESET,
       'ml_default',
       'stylewing_preset',
@@ -22,7 +25,7 @@ export async function uploadImageFile(file: File): Promise<{ success: boolean; u
         try {
           const formData = new FormData();
           formData.append('file', file);
-          formData.append('upload_preset', preset);
+          formData.append('upload_preset', preset as string);
 
           const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
             method: 'POST',
@@ -35,7 +38,7 @@ export async function uploadImageFile(file: File): Promise<{ success: boolean; u
               return {
                 success: true,
                 url: data.secure_url,
-                message: 'Image uploaded & optimized via Cloudinary!'
+                message: 'Image uploaded & CDN-optimized via Cloudinary!'
               };
             }
           }
@@ -95,3 +98,32 @@ export async function uploadImageFile(file: File): Promise<{ success: boolean; u
     };
   }
 }
+
+/**
+ * Test Cloudinary Credentials & Preset Connectivity
+ */
+export async function testCloudinaryConnection(cloudName: string, preset: string): Promise<{ success: boolean; message: string }> {
+  try {
+    const pixelBase64 = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    const formData = new FormData();
+    formData.append('file', pixelBase64);
+    formData.append('upload_preset', preset.trim());
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName.trim()}/image/upload`, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.secure_url) {
+        return { success: true, message: 'Cloudinary credentials verified & working perfectly!' };
+      }
+    }
+    const errData = await res.json();
+    return { success: false, message: errData.error?.message || `Cloudinary status ${res.status}` };
+  } catch (err: any) {
+    return { success: false, message: `Cloudinary connection error: ${err.message || err}` };
+  }
+}
+
