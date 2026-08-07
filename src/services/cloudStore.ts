@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Product, Category } from '../types';
+import { Product, Category, CartItem } from '../types';
 
 // Default Supabase / Cloud REST storage keys
 const STORAGE_SUPABASE_URL_KEY = 'stylewing_supabase_url';
@@ -329,5 +329,166 @@ export function subscribeToCategoriesRealtime(onCategoriesChange: (categories: C
     return () => {};
   }
 }
+
+/**
+ * Fetch Cloud-Saved User Cart from Supabase
+ */
+export async function fetchUserCartFromCloud(userId: string): Promise<CartItem[] | null> {
+  if (!userId) return null;
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('user_carts')
+        .select('cart_items')
+        .eq('user_id', userId)
+        .single();
+
+      if (!error && data?.cart_items) {
+        return data.cart_items as CartItem[];
+      }
+    } catch (err) {
+      console.warn('User cart fetch error:', err);
+    }
+  }
+  return null;
+}
+
+/**
+ * Sync User Cart to Supabase Cloud Database (Cross-Device Cart)
+ */
+export async function syncUserCartToCloud(userId: string, cart: CartItem[]): Promise<boolean> {
+  if (!userId) return false;
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('user_carts')
+        .upsert({
+          user_id: userId,
+          cart_items: cart,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' });
+
+      if (!error) return true;
+    } catch (err) {
+      console.warn('User cart sync error:', err);
+    }
+  }
+  return false;
+}
+
+/**
+ * Fetch Cloud-Saved User Wishlist from Supabase
+ */
+export async function fetchUserWishlistFromCloud(userId: string): Promise<string[] | null> {
+  if (!userId) return null;
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('user_wishlists')
+        .select('wishlist_items')
+        .eq('user_id', userId)
+        .single();
+
+      if (!error && data?.wishlist_items) {
+        return data.wishlist_items as string[];
+      }
+    } catch (err) {
+      console.warn('User wishlist fetch error:', err);
+    }
+  }
+  return null;
+}
+
+/**
+ * Sync User Wishlist to Supabase Cloud Database (Cross-Device Wishlist)
+ */
+export async function syncUserWishlistToCloud(userId: string, wishlist: string[]): Promise<boolean> {
+  if (!userId) return false;
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('user_wishlists')
+        .upsert({
+          user_id: userId,
+          wishlist_items: wishlist,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' });
+
+      if (!error) return true;
+    } catch (err) {
+      console.warn('User wishlist sync error:', err);
+    }
+  }
+  return false;
+}
+
+/**
+ * Subscribe to User Cart Realtime changes
+ */
+export function subscribeToUserCartRealtime(userId: string, onCartChange: (cart: CartItem[]) => void): () => void {
+  if (!userId) return () => {};
+  const supabase = getSupabaseClient();
+  if (!supabase) return () => {};
+
+  try {
+    const channel = supabase
+      .channel(`realtime-user-cart-${userId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'user_carts', filter: `user_id=eq.${userId}` },
+        async () => {
+          const updatedCart = await fetchUserCartFromCloud(userId);
+          if (updatedCart) {
+            onCartChange(updatedCart);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  } catch (err) {
+    console.warn('User cart realtime error:', err);
+    return () => {};
+  }
+}
+
+/**
+ * Subscribe to User Wishlist Realtime changes
+ */
+export function subscribeToUserWishlistRealtime(userId: string, onWishlistChange: (wishlist: string[]) => void): () => void {
+  if (!userId) return () => {};
+  const supabase = getSupabaseClient();
+  if (!supabase) return () => {};
+
+  try {
+    const channel = supabase
+      .channel(`realtime-user-wishlist-${userId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'user_wishlists', filter: `user_id=eq.${userId}` },
+        async () => {
+          const updatedWishlist = await fetchUserWishlistFromCloud(userId);
+          if (updatedWishlist) {
+            onWishlistChange(updatedWishlist);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  } catch (err) {
+    console.warn('User wishlist realtime error:', err);
+    return () => {};
+  }
+}
+
 
 

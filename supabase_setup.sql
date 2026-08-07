@@ -154,10 +154,33 @@ ALTER TABLE public.safepay_transactions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read/Insert Safepay Txs" ON public.safepay_transactions FOR ALL USING (true);
 ALTER PUBLICATION supabase_realtime ADD TABLE public.safepay_transactions;
 
+-- 9. Create User Carts Table (For Cross-Device Cart Sync)
+CREATE TABLE IF NOT EXISTS public.user_carts (
+  user_id TEXT PRIMARY KEY,
+  cart_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.user_carts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Read/Insert User Carts" ON public.user_carts FOR ALL USING (true);
+ALTER PUBLICATION supabase_realtime ADD TABLE public.user_carts;
+
+-- 10. Create User Wishlists Table (For Cross-Device Wishlist Sync)
+CREATE TABLE IF NOT EXISTS public.user_wishlists (
+  user_id TEXT PRIMARY KEY,
+  wishlist_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.user_wishlists ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Read/Insert User Wishlists" ON public.user_wishlists FOR ALL USING (true);
+ALTER PUBLICATION supabase_realtime ADD TABLE public.user_wishlists;
+
 -- ============================================================================
 -- RECOMMENDED SUPABASE DASHBOARD SECURITY SETTINGS:
 -- 1. Go to Authentication -> Rate Limits in Supabase Dashboard
 -- 2. Set 'Email Signups per Hour' to 2 (to match strict 24h per-device policies)
 -- 3. Enable Captcha / Bot Detection under Auth -> Security if automated spam occurs.
 -- ============================================================================
+
 

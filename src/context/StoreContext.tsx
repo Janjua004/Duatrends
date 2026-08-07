@@ -9,7 +9,13 @@ import {
   fetchCategoriesFromCloud,
   syncCategoryToCloud,
   deleteCategoryFromCloud,
-  subscribeToCategoriesRealtime
+  subscribeToCategoriesRealtime,
+  fetchUserCartFromCloud,
+  syncUserCartToCloud,
+  fetchUserWishlistFromCloud,
+  syncUserWishlistToCloud,
+  subscribeToUserCartRealtime,
+  subscribeToUserWishlistRealtime
 } from '../services/cloudStore';
 import { sanitizeInput, checkDeviceRegistrationLimit, recordDeviceRegistration, checkBotRequestThrottling } from '../utils/security';
 
@@ -537,18 +543,55 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return success;
   };
 
-  // LocalStorage syncing
+  // LocalStorage syncing & Cross-Device Cloud Syncing
   useEffect(() => {
     localStorage.setItem('stylewing_products', JSON.stringify(products));
   }, [products]);
 
+  // Load Cloud-Saved Cart & Wishlist when logged in & subscribe to live Realtime updates across all devices
+  useEffect(() => {
+    if (!currentUser?.id) return;
+    const userId = currentUser.id;
+
+    async function loadUserCloudState() {
+      const cloudCart = await fetchUserCartFromCloud(userId);
+      if (cloudCart && Array.isArray(cloudCart) && cloudCart.length > 0) {
+        setCart(cloudCart);
+      }
+      const cloudWishlist = await fetchUserWishlistFromCloud(userId);
+      if (cloudWishlist && Array.isArray(cloudWishlist) && cloudWishlist.length > 0) {
+        setWishlist(cloudWishlist);
+      }
+    }
+    loadUserCloudState();
+
+    const unsubscribeCart = subscribeToUserCartRealtime(userId, (latestCart) => {
+      if (latestCart) setCart(latestCart);
+    });
+
+    const unsubscribeWishlist = subscribeToUserWishlistRealtime(userId, (latestWishlist) => {
+      if (latestWishlist) setWishlist(latestWishlist);
+    });
+
+    return () => {
+      unsubscribeCart();
+      unsubscribeWishlist();
+    };
+  }, [currentUser?.id]);
+
   useEffect(() => {
     localStorage.setItem('stylewing_cart', JSON.stringify(cart));
-  }, [cart]);
+    if (currentUser?.id) {
+      syncUserCartToCloud(currentUser.id, cart);
+    }
+  }, [cart, currentUser?.id]);
 
   useEffect(() => {
     localStorage.setItem('stylewing_wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
+    if (currentUser?.id) {
+      syncUserWishlistToCloud(currentUser.id, wishlist);
+    }
+  }, [wishlist, currentUser?.id]);
 
   useEffect(() => {
     localStorage.setItem('stylewing_orders', JSON.stringify(orders));

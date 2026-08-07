@@ -90,7 +90,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Mobile Center: Logo centered with exact crown-top border alignment */}
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center py-1">
             <button 
               onClick={() => setActiveView('home')} 
               className="flex items-center justify-center focus:outline-none py-0.5 group"
@@ -98,11 +98,11 @@ export const Navbar: React.FC = () => {
               <img 
                 src="/logo.png" 
                 alt="Dua Trends Logo" 
-                className="h-12 sm:h-14 w-auto object-contain dark:brightness-110 transition-transform group-hover:scale-105"
+                className="h-14 sm:h-16 md:h-18 w-auto object-contain dark:brightness-110 scale-110 sm:scale-115 transition-transform group-hover:scale-120 drop-shadow-sm"
                 onError={(e) => {
                   const parent = (e.target as HTMLElement).parentElement;
                   if (parent) {
-                    parent.innerHTML = `<span class="font-serif text-xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
+                    parent.innerHTML = `<span class="font-serif text-2xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
                   }
                 }}
               />
@@ -130,23 +130,23 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Desktop Header Layout (>= lg) */}
-        <div className="hidden lg:flex items-center justify-between gap-6 h-22">
+        <div className="hidden lg:flex items-center justify-between gap-6 h-24">
           
           {/* Left: Brand Logo */}
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setActiveView('home')} 
-              className="flex items-center group focus:outline-none"
+              className="flex items-center group focus:outline-none py-1"
             >
-              <div className="h-16 w-auto max-w-[280px] flex items-center justify-start">
+              <div className="h-20 w-auto max-w-[340px] flex items-center justify-start">
                 <img 
                   src="/logo.png" 
                   alt="Dua Trends Logo" 
-                  className="h-full w-auto object-contain dark:brightness-110 transition-transform group-hover:scale-105"
+                  className="h-full w-auto object-contain dark:brightness-110 scale-105 transition-transform group-hover:scale-110 drop-shadow-sm"
                   onError={(e) => {
                     const parent = (e.target as HTMLElement).parentElement;
                     if (parent) {
-                      parent.innerHTML = `<span class="font-serif text-2xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
+                      parent.innerHTML = `<span class="font-serif text-3xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
                     }
                   }}
                 />
