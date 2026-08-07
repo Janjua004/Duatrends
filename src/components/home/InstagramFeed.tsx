@@ -14,7 +14,7 @@ export const InstagramFeed: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50 dark:bg-gray-900/30">
+    <section className="py-16 bg-gray-50 dark:bg-gray-900/30 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 mb-10">
         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-pink">
           <Instagram className="w-4 h-4" />
@@ -39,22 +39,25 @@ export const InstagramFeed: React.FC = () => {
         </a>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 max-w-7xl mx-auto px-4">
-        {instaImages.map((img, idx) => (
-          <a
-            key={idx}
-            href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative aspect-square rounded-2xl overflow-hidden shadow-md bg-gray-200 dark:bg-gray-800"
-          >
-            <img src={img} alt="Dua Trends Instagram Post" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white gap-2">
-              <Instagram className="w-6 h-6" />
-              <Heart className="w-5 h-5 text-brand-pink fill-brand-pink" />
-            </div>
-          </a>
-        ))}
+      {/* Infinite Horizontal Sliding Marquee (Pauses on Hover) */}
+      <div className="group relative w-full overflow-hidden flex">
+        <div className="flex gap-4 animate-marquee group-hover:[animation-play-state:paused] whitespace-nowrap py-2">
+          {[...instaImages, ...instaImages].map((img, idx) => (
+            <a
+              key={idx}
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block relative w-48 sm:w-56 aspect-square flex-shrink-0 rounded-2xl overflow-hidden shadow-md bg-gray-200 dark:bg-gray-800 transition-transform hover:scale-105"
+            >
+              <img src={img} alt="Dua Trends Instagram Post" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white gap-2">
+                <Instagram className="w-6 h-6" />
+                <Heart className="w-5 h-5 text-brand-pink fill-brand-pink" />
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   );

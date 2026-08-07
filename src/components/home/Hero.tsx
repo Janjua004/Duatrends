@@ -61,13 +61,13 @@ export const Hero: React.FC = () => {
   const activeSlideData = slides[currentSlide];
 
   return (
-    <div className="relative overflow-hidden bg-gray-950 text-white min-h-[500px] sm:min-h-[580px] lg:min-h-[640px] flex items-center group">
+    <div className="relative overflow-hidden bg-gradient-to-r from-rose-950 via-purple-950 to-gray-950 text-white min-h-[500px] sm:min-h-[580px] lg:min-h-[640px] flex items-center group">
       
       {/* Background Image Slider with Face Framing */}
       {slides.map((slide, idx) => (
         <div 
           key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out bg-gradient-to-r from-rose-950/80 via-purple-950/60 to-gray-950 ${
             idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
           }`}
         >
@@ -78,10 +78,14 @@ export const Hero: React.FC = () => {
             loading={idx === 0 ? "eager" : "lazy"}
             fetchPriority={idx === 0 ? "high" : "low"}
             decoding="async"
+            onError={(e) => {
+              // Gracefully handle missing local image with a luxury fashion image fallback
+              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1600&q=80";
+            }}
           />
           {/* Soft Gradient Overlay for clean contrast */}
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-950/70 via-gray-950/20 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-gray-950 via-gray-950/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-950/80 via-gray-950/30 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent" />
         </div>
       ))}
 
