@@ -234,7 +234,7 @@ export const AdminDashboard: React.FC = () => {
                     <Package className="w-4 h-4 text-brand-pink" />
                   </div>
                   <h3 className="text-2xl font-bold text-white">{products.length}</h3>
-                  <span className="text-[11px] text-gray-400 font-semibold">100 items from duatrends.com</span>
+                  <span className="text-[11px] text-gray-400 font-semibold">Active catalog items</span>
                 </div>
 
                 <div className="bg-gray-950 p-6 rounded-3xl border border-gray-800 space-y-2">
