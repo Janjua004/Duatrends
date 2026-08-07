@@ -449,7 +449,42 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   });
   const [showAdminLoginModal, setShowAdminLoginModal] = useState<boolean>(false);
 
-  const [activeView, setActiveView] = useState<string>('home');
+  const [activeViewState, setActiveViewState] = useState<string>('home');
+
+  const getPageTitle = (viewName: string): string => {
+    switch (viewName) {
+      case 'login': return 'Sign In & Register - Dua Trends';
+      case 'track-order': return 'Track Order & Shipping Status - Dua Trends';
+      case 'cart': return 'Shopping Cart - Dua Trends';
+      case 'checkout': return 'Secure Checkout - Dua Trends';
+      case 'account': return 'My Account & Orders - Dua Trends';
+      case 'wishlist': return 'My Wishlist - Dua Trends';
+      case 'about': return 'About Us - Dua Trends';
+      case 'contact': return 'Contact Us & Support - Dua Trends';
+      case 'admin': return 'Admin Control Panel - Dua Trends';
+      case 'privacy': return 'Privacy Policy - Dua Trends';
+      case 'terms': return 'Terms & Conditions - Dua Trends';
+      default: return 'Dua Trends - Luxury Clothing Collection';
+    }
+  };
+
+  const setActiveView = (viewName: string) => {
+    setActiveViewState(viewName);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (viewName === 'home') {
+      if (window.location.search) {
+        window.history.pushState({ view: 'home' }, '', window.location.pathname);
+      }
+      document.title = 'Dua Trends - Luxury Clothing Collection';
+    } else if (viewName !== 'product-detail') {
+      const newUrl = `${window.location.pathname}?page=${encodeURIComponent(viewName)}`;
+      window.history.pushState({ view: viewName }, '', newUrl);
+      document.title = getPageTitle(viewName);
+    }
+  };
+
+  const activeView = activeViewState;
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedProductForModalState, setSelectedProductForModalState] = useState<Product | null>(null);
@@ -457,7 +492,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const setSelectedProductForModal = (p: Product | null) => {
     setSelectedProductForModalState(p);
     if (p) {
-      setActiveView('product-detail');
+      setActiveViewState('product-detail');
       const slug = p.slug || p.id;
       const newUrl = `${window.location.pathname}?product=${encodeURIComponent(slug)}`;
       window.history.pushState({ productId: p.id, slug }, '', newUrl);
@@ -511,19 +546,29 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, []);
 
-  // Synchronize URL query/hash params for dedicated product pages (?product=slug)
+  // Synchronize URL query/hash params for dedicated page URLs (?page=login, ?page=track-order, ?product=slug)
   useEffect(() => {
     function handleUrlRoute() {
       const params = new URLSearchParams(window.location.search);
+      const pageParam = params.get('page') || window.location.hash.replace('#page/', '').replace('#', '');
       const productSlug = params.get('product') || window.location.hash.replace('#product/', '');
 
       if (productSlug && products.length > 0) {
         const match = products.find(p => p.slug === productSlug || p.id === productSlug || p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === productSlug);
         if (match) {
           setSelectedProductForModalState(match);
-          setActiveView('product-detail');
+          setActiveViewState('product-detail');
           document.title = `${match.title} - Dua Trends Luxury Collection`;
+          return;
         }
+      }
+
+      if (pageParam && pageParam !== 'product-detail') {
+        setActiveViewState(pageParam);
+        document.title = getPageTitle(pageParam);
+      } else if (!productSlug && !pageParam) {
+        setActiveViewState('home');
+        document.title = 'Dua Trends - Luxury Clothing Collection';
       }
     }
 
