@@ -73,155 +73,205 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Clean Navbar Header (COCO / Zara Shahjahan Inspired Layout) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-22 flex items-center justify-between gap-6">
+      {/* Main Navbar Header */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         
-        {/* Left: Brand Logo */}
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-gray-800 dark:text-gray-200"
-            aria-label="Toggle Navigation Menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+        {/* Mobile Header Layout (< lg) */}
+        <div className="lg:hidden grid grid-cols-3 items-center h-16 sm:h-20">
+          {/* Mobile Left: Hamburger Menu */}
+          <div className="flex items-center justify-start">
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-1.5 text-gray-800 dark:text-gray-200 hover:text-brand-pink transition-colors focus:outline-none"
+              aria-label="Toggle Navigation Menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
 
-          <button 
-            onClick={() => setActiveView('home')} 
-            className="flex items-center group focus:outline-none"
-          >
-            <div className="h-12 sm:h-14 md:h-16 w-auto max-w-[220px] sm:max-w-[280px] flex items-center justify-start">
+          {/* Mobile Center: Logo centered with exact crown-top border alignment */}
+          <div className="flex items-center justify-center">
+            <button 
+              onClick={() => setActiveView('home')} 
+              className="flex items-center justify-center focus:outline-none py-0.5 group"
+            >
               <img 
                 src="/logo.png" 
                 alt="Dua Trends Logo" 
-                className="h-full w-auto object-contain dark:brightness-110 transition-transform group-hover:scale-105"
+                className="h-12 sm:h-14 w-auto object-contain dark:brightness-110 transition-transform group-hover:scale-105"
                 onError={(e) => {
                   const parent = (e.target as HTMLElement).parentElement;
                   if (parent) {
-                    parent.innerHTML = `<span class="font-serif text-2xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
+                    parent.innerHTML = `<span class="font-serif text-xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
                   }
                 }}
               />
-            </div>
-          </button>
+            </button>
+          </div>
+
+          {/* Mobile Right: Customer Account & Dark Mode Switcher */}
+          <div className="flex items-center justify-end gap-1.5">
+            <button 
+              onClick={() => setActiveView(isCustomerLoggedIn ? 'account' : 'login')}
+              className="p-1.5 rounded-full text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Account"
+            >
+              <UserIcon className="w-5 h-5" />
+            </button>
+
+            <button 
+              onClick={() => setDarkMode(!darkMode)}
+              className="p-1.5 rounded-full text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Toggle Theme"
+            >
+              {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
 
-        {/* Center: Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-6 text-xs uppercase tracking-widest font-bold text-gray-800 dark:text-gray-200">
-          <button 
-            onClick={() => setActiveView('home')} 
-            className={`hover:text-brand-pink transition-colors py-1 ${
-              activeView === 'home' ? 'text-brand-pink border-b-2 border-brand-pink' : ''
-            }`}
-          >
-            Home
-          </button>
-          <button 
-            onClick={() => { setSelectedCategory('Casual Wear'); setActiveView('shop'); }} 
-            className={`hover:text-brand-pink transition-colors py-1 ${
-              activeView === 'shop' ? 'text-brand-pink border-b-2 border-brand-pink' : ''
-            }`}
-          >
-            Unstitched
-          </button>
-          <button 
-            onClick={() => { setSelectedCategory('Party Wear'); setActiveView('shop'); }} 
-            className="hover:text-brand-pink transition-colors py-1"
-          >
-            Formals
-          </button>
-          <button 
-            onClick={() => setActiveView('offers')} 
-            className="text-red-600 font-bold hover:underline py-1"
-          >
-            Sale -25%
-          </button>
-          <button 
-            onClick={() => setActiveView('track')} 
-            className="hover:text-brand-pink transition-colors py-1"
-          >
-            Track Order
-          </button>
-        </nav>
-
-        {/* Right: Search, Customer Account, Wishlist, Cart & Theme */}
-        <div className="flex items-center gap-3">
+        {/* Desktop Header Layout (>= lg) */}
+        <div className="hidden lg:flex items-center justify-between gap-6 h-22">
           
-          {/* Fixed Search Bar with Clean Border */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center relative w-44">
-            <div className="w-full flex items-center bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-full px-3 py-1.5 focus-within:border-brand-pink focus-within:ring-1 focus-within:ring-brand-pink transition-all">
-              <Search className="w-3.5 h-3.5 text-gray-400 mr-2 flex-shrink-0" />
-              <input 
-                type="text"
-                placeholder="SEARCH..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent text-xs text-gray-900 dark:text-white uppercase tracking-wider focus:outline-none placeholder-gray-400"
-              />
-            </div>
-          </form>
+          {/* Left: Brand Logo */}
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setActiveView('home')} 
+              className="flex items-center group focus:outline-none"
+            >
+              <div className="h-16 w-auto max-w-[280px] flex items-center justify-start">
+                <img 
+                  src="/logo.png" 
+                  alt="Dua Trends Logo" 
+                  className="h-full w-auto object-contain dark:brightness-110 transition-transform group-hover:scale-105"
+                  onError={(e) => {
+                    const parent = (e.target as HTMLElement).parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<span class="font-serif text-2xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
+                    }
+                  }}
+                />
+              </div>
+            </button>
+          </div>
 
-          {/* Customer Account Button */}
-          {isCustomerLoggedIn ? (
-            <button
-              onClick={() => setActiveView('account')}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
-                activeView === 'account'
-                  ? 'bg-brand-pink text-white'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200'
+          {/* Center: Navigation Links */}
+          <nav className="flex items-center gap-6 text-xs uppercase tracking-widest font-bold text-gray-800 dark:text-gray-200">
+            <button 
+              onClick={() => setActiveView('home')} 
+              className={`hover:text-brand-pink transition-colors py-1 ${
+                activeView === 'home' ? 'text-brand-pink border-b-2 border-brand-pink' : ''
               }`}
-              title="My Account"
             >
-              <UserIcon className="w-3.5 h-3.5 text-brand-pink" />
-              <span className="hidden sm:inline truncate max-w-[80px]">{currentUser?.name.split(' ')[0]}</span>
+              Home
             </button>
-          ) : (
-            <button
-              onClick={() => setActiveView('login')}
-              className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-brand-pink hover:text-white transition-all shadow-sm"
-              title="Sign In / Register"
+            <button 
+              onClick={() => { setSelectedCategory('Casual Wear'); setActiveView('shop'); }} 
+              className={`hover:text-brand-pink transition-colors py-1 ${
+                activeView === 'shop' ? 'text-brand-pink border-b-2 border-brand-pink' : ''
+              }`}
             >
-              <UserIcon className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Sign In</span>
+              Unstitched
             </button>
-          )}
+            <button 
+              onClick={() => { setSelectedCategory('Party Wear'); setActiveView('shop'); }} 
+              className="hover:text-brand-pink transition-colors py-1"
+            >
+              Formals
+            </button>
+            <button 
+              onClick={() => setActiveView('offers')} 
+              className="text-red-600 font-bold hover:underline py-1"
+            >
+              Sale -25%
+            </button>
+            <button 
+              onClick={() => setActiveView('track')} 
+              className="hover:text-brand-pink transition-colors py-1"
+            >
+              Track Order
+            </button>
+          </nav>
 
-          {/* Dark / Light Mode Switcher */}
-          <button 
-            onClick={() => setDarkMode(!darkMode)}
-            className="p-2 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            aria-label="Toggle Theme"
-          >
-            {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-          </button>
+          {/* Right: Search, Customer Account, Wishlist, Cart & Theme */}
+          <div className="flex items-center gap-3">
+            
+            {/* Fixed Search Bar with Clean Border */}
+            <form onSubmit={handleSearchSubmit} className="flex items-center relative w-44">
+              <div className="w-full flex items-center bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-full px-3 py-1.5 focus-within:border-brand-pink focus-within:ring-1 focus-within:ring-brand-pink transition-all">
+                <Search className="w-3.5 h-3.5 text-gray-400 mr-2 flex-shrink-0" />
+                <input 
+                  type="text"
+                  placeholder="SEARCH..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-transparent text-xs text-gray-900 dark:text-white uppercase tracking-wider focus:outline-none placeholder-gray-400"
+                />
+              </div>
+            </form>
 
-          {/* Wishlist Icon */}
-          <button 
-            onClick={() => setActiveView('wishlist')}
-            className="p-2 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative"
-            aria-label="Wishlist"
-          >
-            <Heart className="w-4 h-4 hover:text-brand-pink" />
-            {wishlist.length > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-brand-pink text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
-                {wishlist.length}
-              </span>
+            {/* Customer Account Button */}
+            {isCustomerLoggedIn ? (
+              <button
+                onClick={() => setActiveView('account')}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
+                  activeView === 'account'
+                    ? 'bg-brand-pink text-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200'
+                }`}
+                title="My Account"
+              >
+                <UserIcon className="w-3.5 h-3.5 text-brand-pink" />
+                <span className="truncate max-w-[80px]">{currentUser?.name.split(' ')[0]}</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => setActiveView('login')}
+                className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-brand-pink hover:text-white transition-all shadow-sm"
+                title="Sign In / Register"
+              >
+                <UserIcon className="w-3.5 h-3.5" />
+                <span>Sign In</span>
+              </button>
             )}
-          </button>
 
-          {/* Cart Icon */}
-          <button 
-            onClick={() => setActiveView('cart')}
-            className="p-2 rounded-full text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative flex items-center gap-1"
-            aria-label="Cart"
-          >
-            <ShoppingBag className="w-5 h-5" />
-            {totalCartItems > 0 && (
-              <span className="bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                {totalCartItems}
-              </span>
-            )}
-          </button>
+            {/* Dark / Light Mode Switcher */}
+            <button 
+              onClick={() => setDarkMode(!darkMode)}
+              className="p-2 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Toggle Theme"
+            >
+              {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+            </button>
+
+            {/* Wishlist Icon */}
+            <button 
+              onClick={() => setActiveView('wishlist')}
+              className="p-2 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative"
+              aria-label="Wishlist"
+            >
+              <Heart className="w-4 h-4 hover:text-brand-pink" />
+              {wishlist.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-brand-pink text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                  {wishlist.length}
+                </span>
+              )}
+            </button>
+
+            {/* Cart Icon */}
+            <button 
+              onClick={() => setActiveView('cart')}
+              className="p-2 rounded-full text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative flex items-center gap-1"
+              aria-label="Cart"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {totalCartItems > 0 && (
+                <span className="bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {totalCartItems}
+                </span>
+              )}
+            </button>
+
+          </div>
 
         </div>
 

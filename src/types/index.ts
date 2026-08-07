@@ -88,6 +88,10 @@ export interface Order {
   country: string;
   specialNotes?: string;
   paymentMethod: PaymentOption;
+  paymentStatus?: 'Paid (Safepay)' | 'Paid (Advance 25%)' | 'Paid (Full 100%)' | 'Pending COD' | 'Unpaid';
+  paymentReference?: string;
+  safepayTracker?: string;
+  paidAt?: string;
   downpaymentAmount?: number;
   remainingCodAmount?: number;
   items: OrderItem[];
@@ -98,6 +102,21 @@ export interface Order {
   status: 'Pending' | 'Confirmed' | 'Packed' | 'Shipped' | 'Delivered' | 'Cancelled';
   createdAt: string;
   formattedWhatsAppMsg: string;
+}
+
+export interface SafepayTransaction {
+  id: string;
+  orderNumber: string;
+  tracker: string;
+  reference: string;
+  amount: number;
+  currency: string;
+  status: 'COMPLETED' | 'PENDING' | 'FAILED';
+  customerName: string;
+  customerEmail: string;
+  address: string;
+  city: string;
+  createdAt: string;
 }
 
 export interface Category {

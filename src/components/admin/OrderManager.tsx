@@ -26,26 +26,53 @@ export const OrderManager: React.FC = () => {
           <table className="w-full text-left text-xs text-gray-300">
             <thead className="bg-gray-900 text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-800">
               <tr>
-                <th className="px-6 py-4">Order #</th>
-                <th className="px-4 py-4">Customer</th>
-                <th className="px-4 py-4">City</th>
-                <th className="px-4 py-4">Items</th>
+                <th className="px-5 py-4">Order #</th>
+                <th className="px-4 py-4">Customer Details</th>
+                <th className="px-4 py-4">Delivery Address</th>
+                <th className="px-4 py-4">Payment & Reference</th>
                 <th className="px-4 py-4">Grand Total</th>
-                <th className="px-4 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-4 py-4">Order Status</th>
+                <th className="px-5 py-4 text-right">Actions</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-800">
               {orders.map(order => (
                 <tr key={order.id} className="hover:bg-gray-900/50 transition-colors">
-                  <td className="px-6 py-4 font-mono font-bold text-brand-pink">{order.orderNumber}</td>
+                  <td className="px-5 py-4 font-mono font-bold text-brand-pink">
+                    {order.orderNumber}
+                    <span className="block text-[10px] text-gray-500 font-sans font-normal mt-0.5">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </span>
+                  </td>
                   <td className="px-4 py-4">
                     <span className="font-semibold text-white block">{order.customerName}</span>
-                    <span className="text-gray-400">{order.phone}</span>
+                    <span className="text-gray-400 block">{order.phone}</span>
+                    {order.email && <span className="text-[11px] text-gray-500 block truncate max-w-[150px]">{order.email}</span>}
                   </td>
-                  <td className="px-4 py-4">{order.city}, {order.province}</td>
-                  <td className="px-4 py-4">{order.items.length} items</td>
+                  <td className="px-4 py-4 max-w-[200px]">
+                    <span className="text-white block font-medium truncate" title={order.address}>{order.address}</span>
+                    <span className="text-gray-400 text-[11px] block">{order.city}, {order.province}</span>
+                  </td>
+                  <td className="px-4 py-4">
+                    <div className="space-y-1">
+                      <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                        order.paymentStatus === 'Paid (Safepay)' || order.paymentMethod.includes('Safepay')
+                          ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                          : order.paymentMethod.includes('25%')
+                          ? 'bg-blue-950 text-blue-400 border border-blue-800'
+                          : 'bg-amber-950 text-amber-400 border border-amber-800'
+                      }`}>
+                        {order.paymentStatus || (order.paymentMethod.includes('Safepay') ? 'Paid (Safepay)' : order.paymentMethod)}
+                      </span>
+
+                      {(order.paymentReference || order.safepayTracker) && (
+                        <span className="block font-mono text-[10px] text-gray-400">
+                          Ref: {order.paymentReference || order.safepayTracker}
+                        </span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-4 font-bold text-emerald-400">Rs {order.grandTotal.toLocaleString()}</td>
                   <td className="px-4 py-4">
                     <select
@@ -65,7 +92,7 @@ export const OrderManager: React.FC = () => {
                       <option value="Cancelled">Cancelled</option>
                     </select>
                   </td>
-                  <td className="px-6 py-4 text-right space-x-2">
+                  <td className="px-5 py-4 text-right space-x-2">
                     <button
                       onClick={() => setSelectedOrderForInvoice(order)}
                       className="p-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 inline-flex items-center gap-1 text-xs font-semibold"
@@ -76,7 +103,7 @@ export const OrderManager: React.FC = () => {
                     </button>
 
                     <a
-                      href={`https://wa.me/${order.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hello ${order.customerName}! Update regarding your order ${order.orderNumber} at StyleWing...`)}`}
+                      href={`https://wa.me/${order.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hello ${order.customerName}! Update regarding your order ${order.orderNumber} at Dua Trends...`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 rounded-xl bg-emerald-950 text-emerald-400 hover:bg-emerald-900 inline-flex items-center gap-1 text-xs font-semibold"

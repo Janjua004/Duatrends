@@ -87,3 +87,153 @@ export function recordFailedAttempt(key: string, maxAttempts = 5, lockDurationMs
 export function clearRateLimit(key: string) {
   delete attemptStore[key];
 }
+
+/**
+ * Generate or retrieve a persistent device fingerprint
+ */
+export function getDeviceFingerprint(): string {
+  const STORAGE_KEY = 'stylewing_device_fp';
+  let fp = localStorage.getItem(STORAGE_KEY);
+  
+  if (!fp) {
+    // Generate unique device signature based on browser specs & random entropy
+    const raw = [
+      navigator.userAgent,
+      navigator.language,
+      screen.width,
+      screen.height,
+      screen.colorDepth,
+      new Date().getTimezoneOffset(),
+      Math.random().toString(36).substring(2)
+    ].join('|');
+
+    // Simple hash algorithm
+    let hash = 0;
+    for (let i = 0; i < raw.length; i++) {
+      const char = raw.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash |= 0;
+    }
+    fp = `dev_${Math.abs(hash)}_${Date.now().toString(36)}`;
+    localStorage.setItem(STORAGE_KEY, fp);
+
+    // Also store in cookie as backup against simple localStorage clear
+    document.cookie = `${STORAGE_KEY}=${fp}; max-age=${365 * 24 * 60 * 60}; path=/`;
+  }
+  return fp;
+}
+
+/**
+ * Check if the current device has reached the limit of 2 account registrations in 24 hours
+ */
+export function checkDeviceRegistrationLimit(): { allowed: boolean; remainingHours: number; message?: string } {
+  const fp = getDeviceFingerprint();
+  const STORAGE_KEY = `stylewing_reg_log_${fp}`;
+  const now = Date.now();
+  const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
+  let rawLogs: number[] = [];
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      rawLogs = JSON.parse(saved);
+    }
+  } catch (e) {
+    rawLogs = [];
+  }
+
+  // Filter logs within the last 24 hours
+  const recentRegs = rawLogs.filter(timestamp => now - timestamp < TWENTY_FOUR_HOURS);
+
+  if (recentRegs.length >= 2) {
+    const oldestTimestamp = Math.min(...recentRegs);
+    const nextAvailableTime = oldestTimestamp + TWENTY_FOUR_HOURS;
+    const remainingMs = Math.max(0, nextAvailableTime - now);
+    const remainingHours = Math.ceil(remainingMs / (60 * 60 * 1000));
+
+    return {
+      allowed: false,
+      remainingHours,
+      message: `Security Limit: Maximum 2 accounts per device every 24 hours allowed. Please try again in ~${remainingHours} hour(s).`
+    };
+  }
+
+  return { allowed: true, remainingHours: 0 };
+}
+
+/**
+ * Record a new account registration timestamp for the device
+ */
+export function recordDeviceRegistration() {
+  const fp = getDeviceFingerprint();
+  const STORAGE_KEY = `stylewing_reg_log_${fp}`;
+  const now = Date.now();
+  const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
+  let rawLogs: number[] = [];
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      rawLogs = JSON.parse(saved);
+    }
+  } catch (e) {
+    rawLogs = [];
+  }
+
+  const recentRegs = rawLogs.filter(timestamp => now - timestamp < TWENTY_FOUR_HOURS);
+  recentRegs.push(now);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(recentRegs));
+}
+
+/**
+ * Anti-Bot Throttling: Protects database actions from script loops or automated rapid requests
+ */
+const botTracker: Record<string, { lastRequestTime: number; burstCount: number; cooldownUntil: number }> = {};
+
+export function checkBotRequestThrottling(actionKey: string, minIntervalMs = 1500, maxBurst = 5): { allowed: boolean; message?: string } {
+  const now = Date.now();
+  const fp = getDeviceFingerprint();
+  const fullKey = `${fp}_${actionKey}`;
+  const record = botTracker[fullKey];
+
+  if (!record) {
+    botTracker[fullKey] = { lastRequestTime: now, burstCount: 1, cooldownUntil: 0 };
+    return { allowed: true };
+  }
+
+  // Check if currently under cooldown lock
+  if (record.cooldownUntil > now) {
+    const waitSec = Math.ceil((record.cooldownUntil - now) / 1000);
+    return {
+      allowed: false,
+      message: `Automated/rapid activity detected! System lock active for ${waitSec}s to protect server security.`
+    };
+  }
+
+  const timeSinceLast = now - record.lastRequestTime;
+
+  if (timeSinceLast < minIntervalMs) {
+    record.burstCount += 1;
+    record.lastRequestTime = now;
+
+    if (record.burstCount >= maxBurst) {
+      // Trigger 60-second cooldown lock on suspicious bot loop behavior
+      record.cooldownUntil = now + 60 * 1000;
+      return {
+        allowed: false,
+        message: 'Security Alert: Rapid automated loop detected! Action blocked for 60 seconds.'
+      };
+    }
+
+    return {
+      allowed: false,
+      message: 'Please slow down! Requests submitted too quickly.'
+    };
+  } else {
+    // Normal interval, reset burst counter
+    record.burstCount = 1;
+    record.lastRequestTime = now;
+    return { allowed: true };
+  }
+}
+

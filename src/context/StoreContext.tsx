@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, CartItem, Order, Coupon, Review, Category, PaymentOption, User, AuthModalMode } from '../types';
 import rawScrapedProducts from '../data/scraped_products.json';
-import { fetchProductsFromCloud, syncProductsToCloud, getSupabaseClient } from '../services/cloudStore';
-import { sanitizeInput } from '../utils/security';
+import { fetchProductsFromCloud, syncProductsToCloud, getSupabaseClient, subscribeToProductsRealtime } from '../services/cloudStore';
+import { sanitizeInput, checkDeviceRegistrationLimit, recordDeviceRegistration, checkBotRequestThrottling } from '../utils/security';
 
 interface StoreContextType {
   products: Product[];
@@ -275,7 +275,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return sessionStorage.getItem('duatrends_admin_pass') || 'admin123';
   });
 
-  // Customer Auth Implementation with Supabase Integration
+  // Customer Auth Implementation with Device Rate Limiting & Bot Protection
   const registerCustomer = async (details: { 
     name: string; 
     email: string; 
@@ -284,6 +284,24 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     city?: string; 
     address?: string 
   }): Promise<{ success: boolean; message: string }> => {
+    // 1. Device Registration Security Check (Max 2 accounts per device in 24 hours)
+    const deviceLimitCheck = checkDeviceRegistrationLimit();
+    if (!deviceLimitCheck.allowed) {
+      return { 
+        success: false, 
+        message: deviceLimitCheck.message || 'Security limit reached: Maximum 2 account registrations per device every 24 hours.' 
+      };
+    }
+
+    // 2. Anti-Bot Loop Protection Check
+    const botCheck = checkBotRequestThrottling('register_customer', 2000, 3);
+    if (!botCheck.allowed) {
+      return { 
+        success: false, 
+        message: botCheck.message || 'Security Alert: Rapid automated registrations detected.' 
+      };
+    }
+
     const supabase = getSupabaseClient();
     if (supabase) {
       const { data, error } = await supabase.auth.signUp({
@@ -315,9 +333,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       createdAt: new Date().toISOString()
     };
 
+    // Record registration timestamp for this device
+    recordDeviceRegistration();
+
     setRegisteredUsers(prev => [...prev, newUser]);
     setCurrentUser(newUser);
-    return { success: true, message: 'Registration successful via Supabase Auth!' };
+    return { success: true, message: 'Registration successful! (Device security verified)' };
   };
 
   const loginCustomer = async (email: string, password: string): Promise<{ success: boolean; message: string }> => {
@@ -453,7 +474,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const flatShippingFee = 250;
   const freeShippingLimit = 5000;
 
-  // Fetch latest products from cloud server database automatically on load
+  // Fetch latest products from cloud server database automatically on load & subscribe to realtime updates
   useEffect(() => {
     async function initCloudSync() {
       const remoteProducts = await fetchProductsFromCloud();
@@ -463,6 +484,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     }
     initCloudSync();
+
+    // Enable realtime websocket subscription so minor to minor database changes propagate everywhere live
+    const unsubscribe = subscribeToProductsRealtime((latestProducts) => {
+      setProducts(sanitizeData(latestProducts));
+      setIsCloudSynced(true);
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const syncCloudNow = async (): Promise<boolean> => {
@@ -677,6 +708,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     specialNotes?: string;
     paymentMethod: PaymentOption;
   }): Order => {
+    // Anti-Bot Protection Check against automated order script loops
+    const botCheck = checkBotRequestThrottling('place_order', 3000, 3);
+    if (!botCheck.allowed) {
+      showToast(botCheck.message || 'Security Limit: Too many rapid order attempts. Please wait a moment.');
+    }
+
     // Sanitize customer inputs to prevent XSS attacks
     const cleanCustomerName = sanitizeInput(customerData.customerName);
     const cleanPhone = sanitizeInput(customerData.phone);

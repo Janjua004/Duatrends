@@ -188,3 +188,36 @@ export async function syncProductsToCloud(products: Product[]): Promise<boolean>
 
   return false;
 }
+
+/**
+ * Subscribe to realtime PostgreSQL table changes via Supabase WebSockets
+ * Minor to minor updates in database will instantly propagate to all connected clients worldwide!
+ */
+export function subscribeToProductsRealtime(onProductsChange: (products: Product[]) => void): () => void {
+  const supabase = getSupabaseClient();
+  if (!supabase) return () => {};
+
+  try {
+    const channel = supabase
+      .channel('realtime-products-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'products' },
+        async () => {
+          const updatedProducts = await fetchProductsFromCloud();
+          if (updatedProducts && updatedProducts.length > 0) {
+            onProductsChange(updatedProducts);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  } catch (err) {
+    console.warn('Realtime subscription error:', err);
+    return () => {};
+  }
+}
+
