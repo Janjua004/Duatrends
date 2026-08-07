@@ -463,7 +463,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setSelectedProductForModalState(p);
     if (p) {
       setActiveView('product-detail');
+      const slug = p.slug || p.id;
+      const newUrl = `${window.location.pathname}?product=${encodeURIComponent(slug)}`;
+      window.history.pushState({ productId: p.id, slug }, '', newUrl);
+      document.title = `${p.title} - Dua Trends Luxury Collection`;
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      if (window.location.search.includes('product=')) {
+        window.history.pushState({}, '', window.location.pathname);
+      }
+      document.title = 'Dua Trends - Luxury Clothing Collection';
     }
   };
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
@@ -495,6 +504,32 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       unsubscribe();
     };
   }, []);
+
+  // Synchronize URL query/hash params for dedicated product pages (?product=slug)
+  useEffect(() => {
+    function handleUrlRoute() {
+      const params = new URLSearchParams(window.location.search);
+      const productSlug = params.get('product') || window.location.hash.replace('#product/', '');
+
+      if (productSlug && products.length > 0) {
+        const match = products.find(p => p.slug === productSlug || p.id === productSlug || p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === productSlug);
+        if (match) {
+          setSelectedProductForModalState(match);
+          setActiveView('product-detail');
+          document.title = `${match.title} - Dua Trends Luxury Collection`;
+        }
+      }
+    }
+
+    handleUrlRoute();
+    window.addEventListener('popstate', handleUrlRoute);
+    window.addEventListener('hashchange', handleUrlRoute);
+
+    return () => {
+      window.removeEventListener('popstate', handleUrlRoute);
+      window.removeEventListener('hashchange', handleUrlRoute);
+    };
+  }, [products]);
 
   const syncCloudNow = async (): Promise<boolean> => {
     const success = await syncProductsToCloud(products);
