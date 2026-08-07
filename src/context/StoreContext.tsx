@@ -112,57 +112,16 @@ interface StoreContextType {
 }
 
 const INITIAL_CATEGORIES: Category[] = [
-  { id: 'cat-1', name: 'Casual Wear', slug: 'casual-wear', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80', itemCount: 28 },
-  { id: 'cat-2', name: 'Party Wear', slug: 'party-wear', image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80', itemCount: 24 },
-  { id: 'cat-3', name: 'Formal', slug: 'formal', image: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=600&q=80', itemCount: 18 },
-  { id: 'cat-4', name: 'Winter Collection', slug: 'winter-collection', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80', itemCount: 16 },
-  { id: 'cat-5', name: 'Summer Collection', slug: 'summer-collection', image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=600&q=80', itemCount: 32 },
-  { id: 'cat-6', name: 'Abaya', slug: 'abaya', image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=600&q=80', itemCount: 12 },
-  { id: 'cat-7', name: 'Accessories', slug: 'accessories', image: 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=600&q=80', itemCount: 20 },
+  { id: 'cat-1', name: 'Unstitched Wear', slug: 'unstitched', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80', itemCount: 0 },
+  { id: 'cat-2', name: 'Formals & Party Wear', slug: 'formals', image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80', itemCount: 0 },
+  { id: 'cat-3', name: 'Casual Wear', slug: 'casual-wear', image: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=600&q=80', itemCount: 0 },
+  { id: 'cat-4', name: 'Winter Collection', slug: 'winter-collection', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80', itemCount: 0 },
+  { id: 'cat-5', name: 'Summer Collection', slug: 'summer-collection', image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=600&q=80', itemCount: 0 },
 ];
 
-const INITIAL_COUPONS: Coupon[] = [
-  { id: 'c-1', code: 'STYLE10', discountType: 'percentage', discountValue: 10, minPurchase: 3000, expiryDate: '2026-12-31', usageLimit: 500, timesUsed: 42, isActive: true },
-  { id: 'c-2', code: 'ELEGANCE500', discountType: 'fixed', discountValue: 500, minPurchase: 5000, expiryDate: '2026-12-31', usageLimit: 200, timesUsed: 19, isActive: true },
-  { id: 'c-3', code: 'WELCOME15', discountType: 'percentage', discountValue: 15, minPurchase: 2500, expiryDate: '2026-10-30', usageLimit: 1000, timesUsed: 156, isActive: true },
-];
-
-const INITIAL_REVIEWS: Review[] = [
-  { id: 'r-1', productId: 'product-1', productTitle: 'Luxury Lawn Collection 3PC', userName: 'Sara Ahmed', userCity: 'Lahore', rating: 5, comment: 'Absolutely mesmerizing fabric and vibrant color! The embroidery detail is top tier.', date: '2026-07-28', status: 'Approved' },
-  { id: 'r-2', productId: 'product-2', productTitle: 'Chiffon Embroidered Formal', userName: 'Ayesha Khan', userCity: 'Karachi', rating: 5, comment: 'Received my parcel via COD in just 2 days. Fits perfectly and looks so elegant!', date: '2026-07-30', status: 'Approved' },
-  { id: 'r-3', productId: 'product-3', productTitle: 'Printed Cotton Summer Suit', userName: 'Fatima Zafar', userCity: 'Islamabad', rating: 4, comment: 'Soft breathable fabric for hot summer days. Very happy with StyleWing service.', date: '2026-08-01', status: 'Approved' },
-];
-
-const INITIAL_ORDERS: Order[] = [
-  {
-    id: 'ord-1001',
-    orderNumber: 'SW-9821',
-    customerName: 'Zainab Bibi',
-    phone: '03001234567',
-    whatsapp: '03001234567',
-    email: 'zainab@example.com',
-    address: 'House 45, Street 12, DHA Phase 5',
-    city: 'Lahore',
-    province: 'Punjab',
-    postalCode: '54000',
-    country: 'Pakistan',
-    specialNotes: 'Deliver after 5 PM please',
-    paymentMethod: '25% Advance Downpayment',
-    downpaymentAmount: 2562,
-    remainingCodAmount: 7688,
-    items: [
-      { id: 'product-1', title: 'Luxury Lawn Collection 3PC', color: 'Pastel Pink', size: 'Medium', quantity: 2, price: 4500, image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80' },
-      { id: 'product-3', title: 'Silk Scarf Dupatta', color: 'Ivory Gold', size: 'Unstitched', quantity: 1, price: 1500, image: 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=400&q=80' }
-    ],
-    subtotal: 10500,
-    discount: 500,
-    shipping: 250,
-    grandTotal: 10250,
-    status: 'Delivered',
-    createdAt: '2026-08-01T14:30:00Z',
-    formattedWhatsAppMsg: '🛍️ New Order\nCustomer Name: Zainab Bibi...'
-  }
-];
+const INITIAL_COUPONS: Coupon[] = [];
+const INITIAL_REVIEWS: Review[] = [];
+const INITIAL_ORDERS: Order[] = [];
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
@@ -233,19 +192,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [registeredUsers, setRegisteredUsers] = useState<User[]>(() => {
     const saved = localStorage.getItem('stylewing_registered_users');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 'usr-demo',
-        name: 'Sara Ahmed',
-        email: 'customer@example.com',
-        phone: '03001234567',
-        city: 'Lahore',
-        province: 'Punjab',
-        address: 'House 45, Street 12, DHA Phase 5',
-        role: 'customer',
-        createdAt: new Date().toISOString()
-      }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
@@ -266,6 +213,30 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     localStorage.setItem('stylewing_registered_users', JSON.stringify(registeredUsers));
   }, [registeredUsers]);
+
+  // Purge legacy demo cached items from localStorage to ensure 100% fresh state
+  useEffect(() => {
+    const ordersRaw = localStorage.getItem('stylewing_orders');
+    if (ordersRaw && ordersRaw.includes('ord-1001')) {
+      localStorage.removeItem('stylewing_orders');
+      setOrders([]);
+    }
+    const reviewsRaw = localStorage.getItem('stylewing_reviews');
+    if (reviewsRaw && reviewsRaw.includes('r-1')) {
+      localStorage.removeItem('stylewing_reviews');
+      setReviews([]);
+    }
+    const couponsRaw = localStorage.getItem('stylewing_coupons');
+    if (couponsRaw && couponsRaw.includes('STYLE10')) {
+      localStorage.removeItem('stylewing_coupons');
+      setCoupons([]);
+    }
+    const usersRaw = localStorage.getItem('stylewing_registered_users');
+    if (usersRaw && usersRaw.includes('usr-demo')) {
+      localStorage.removeItem('stylewing_registered_users');
+      setRegisteredUsers([]);
+    }
+  }, []);
 
   const [darkMode, setDarkModeState] = useState<boolean>(() => {
     return localStorage.getItem('stylewing_theme') === 'dark';
