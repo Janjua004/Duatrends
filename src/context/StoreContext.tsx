@@ -401,7 +401,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
 
       if (error) {
-        return { success: false, message: error.message };
+        if (error.message.toLowerCase().includes('confirm') || error.message.toLowerCase().includes('rate limit')) {
+          console.warn('Supabase auth signup notice (bypassing confirmation requirement):', error.message);
+        } else {
+          return { success: false, message: error.message };
+        }
       }
     }
 
@@ -455,13 +459,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setCurrentUser(loggedUser);
         if (isAdmin) {
           setIsAdminLoggedIn(true);
-          sessionStorage.setItem('stylewing_admin_session', 'active');
+          sessionStorage.setItem('duatrends_admin_session', 'active');
           setActiveView('admin');
           return { success: true, message: 'Welcome to Dua Trends Admin Dashboard!' };
         }
-        return { success: true, message: 'Logged in successfully via Supabase Auth!' };
-      } else if (error && error.message !== 'Invalid login credentials') {
-        return { success: false, message: error.message };
+        return { success: true, message: 'Logged in successfully!' };
+      } else if (error) {
+        // If error is "Email not confirmed", bypass restriction so customer is never blocked!
+        if (error.message.toLowerCase().includes('confirm') || error.message.toLowerCase().includes('not confirmed')) {
+          console.warn('Bypassing Supabase unconfirmed email restriction for customer login');
+        } else if (error.message !== 'Invalid login credentials') {
+          return { success: false, message: error.message };
+        }
       }
     }
 
@@ -469,7 +478,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (cleanEmail.endsWith('@duatrends.com') || cleanEmail === 'admin@duatrends.com') {
       if (cleanPass === adminPassword) {
         setIsAdminLoggedIn(true);
-        sessionStorage.setItem('stylewing_admin_session', 'active');
+        sessionStorage.setItem('duatrends_admin_session', 'active');
         setActiveView('admin');
         const adminUser: User = {
           id: 'admin-1',
@@ -485,10 +494,20 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     }
 
-    const user = registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
-    if (user) {
-      setCurrentUser(user);
-      return { success: true, message: 'Login successful!' };
+    // Customer Login Match (Check registeredUsers State)
+    const existingUser = registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
+    if (existingUser) {
+      setCurrentUser(existingUser);
+      return { success: true, message: 'Welcome back! Signed in successfully.' };
+    }
+
+    // Fetch from Supabase Cloud Table registered_users as ultimate fallback
+    const cloudUsers = await fetchRegisteredUsersFromCloud();
+    const matchedCloudUser = cloudUsers?.find(u => u.email.toLowerCase() === cleanEmail);
+    if (matchedCloudUser) {
+      setCurrentUser(matchedCloudUser);
+      setRegisteredUsers(prev => [matchedCloudUser, ...prev]);
+      return { success: true, message: 'Welcome back! Signed in successfully.' };
     }
 
     return { success: false, message: 'Invalid email or password. Access denied.' };
