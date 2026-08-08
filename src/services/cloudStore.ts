@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Product, Category, CartItem } from '../types';
+import { Product, Category, CartItem, User } from '../types';
 
 // Default Supabase / Cloud REST storage keys
 const STORAGE_SUPABASE_URL_KEY = 'stylewing_supabase_url';
@@ -489,6 +489,92 @@ export function subscribeToUserWishlistRealtime(userId: string, onWishlistChange
     return () => {};
   }
 }
+
+/**
+ * Fetch Registered Users directly from Supabase Database
+ */
+export async function fetchRegisteredUsersFromCloud(): Promise<User[] | null> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('registered_users')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && Array.isArray(data)) {
+        const formatted: User[] = data.map((item: any) => ({
+          id: item.id,
+          name: item.name || item.full_name || 'Customer',
+          email: item.email,
+          phone: item.phone || '',
+          city: item.city || '',
+          province: item.province || '',
+          address: item.address || '',
+          role: item.role || 'customer',
+          createdAt: item.created_at || new Date().toISOString()
+        }));
+        return formatted;
+      }
+    } catch (err) {
+      console.warn('Supabase registered users fetch error:', err);
+    }
+  }
+  return null;
+}
+
+/**
+ * Delete User Account directly from Supabase Database
+ */
+export async function deleteUserFromCloud(userId: string): Promise<boolean> {
+  if (!userId) return false;
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('registered_users')
+        .delete()
+        .eq('id', userId);
+
+      if (!error) return true;
+    } catch (err) {
+      console.warn('Supabase user delete error:', err);
+    }
+  }
+  return false;
+}
+
+/**
+ * Subscribe to Realtime Registered Users table changes
+ */
+export function subscribeToUsersRealtime(onUsersChange: (users: User[]) => void): () => void {
+  const supabase = getSupabaseClient();
+  if (!supabase) return () => {};
+
+  try {
+    const channel = supabase
+      .channel('realtime-registered-users-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'registered_users' },
+        async () => {
+          const updatedUsers = await fetchRegisteredUsersFromCloud();
+          if (updatedUsers) {
+            onUsersChange(updatedUsers);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  } catch (err) {
+    console.warn('Users realtime subscription error:', err);
+    return () => {};
+  }
+}
+
 
 
 

@@ -26,6 +26,7 @@ export const CategoryManager: React.FC = () => {
   const [slug, setSlug] = useState('');
   const [image, setImage] = useState('');
   const [description, setDescription] = useState('');
+  const [isComingSoon, setIsComingSoon] = useState(false);
 
   const openAddModal = () => {
     setEditingCategory(null);
@@ -33,6 +34,7 @@ export const CategoryManager: React.FC = () => {
     setSlug('');
     setImage('https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=600&q=80');
     setDescription('');
+    setIsComingSoon(false);
     setIsModalOpen(true);
   };
 
@@ -42,6 +44,7 @@ export const CategoryManager: React.FC = () => {
     setSlug(cat.slug);
     setImage(cat.image);
     setDescription(cat.description || '');
+    setIsComingSoon(!!cat.isComingSoon);
     setIsModalOpen(true);
   };
 
@@ -65,7 +68,8 @@ export const CategoryManager: React.FC = () => {
         name: name.trim(),
         slug: slug.trim() || name.toLowerCase().replace(/\s+/g, '-'),
         image: image.trim() || 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=600&q=80',
-        description: description.trim()
+        description: description.trim(),
+        isComingSoon
       });
       showToast(`Category "${name}" updated successfully!`);
     } else {
@@ -73,7 +77,8 @@ export const CategoryManager: React.FC = () => {
         name: name.trim(),
         slug: slug.trim() || name.toLowerCase().replace(/\s+/g, '-'),
         image: image.trim() || 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=600&q=80',
-        description: description.trim()
+        description: description.trim(),
+        isComingSoon
       });
       showToast(`Category "${name}" added successfully!`);
     }
@@ -299,6 +304,19 @@ export const CategoryManager: React.FC = () => {
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand-pink"
                 />
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/40 rounded-xl">
+                <input 
+                  type="checkbox"
+                  id="isComingSoon"
+                  checked={isComingSoon}
+                  onChange={(e) => setIsComingSoon(e.target.checked)}
+                  className="w-4 h-4 text-brand-pink rounded border-gray-300 focus:ring-brand-pink"
+                />
+                <label htmlFor="isComingSoon" className="text-xs font-bold text-gray-800 dark:text-gray-200 cursor-pointer">
+                  Mark Collection as "Coming Soon" (Displays Coming Soon Badge on Category Card)
+                </label>
               </div>
 
               <div className="pt-3 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-800">

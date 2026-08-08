@@ -51,7 +51,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <img 
           src={product.images[0]} 
           alt={product.title} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out ${product.stock <= 0 ? 'grayscale-[25%] opacity-85' : ''}`}
           loading="lazy"
         />
 
@@ -65,10 +65,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           />
         )}
 
-        {/* Red Sale Tag or OUT OF STOCK Badge */}
+        {/* Red Sale Tag or OUT OF STOCK Badge Overlay */}
         <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
           {product.stock <= 0 ? (
-            <div className="bg-gray-900 text-white font-bold text-[10px] px-2 py-1 shadow-md flex items-center justify-center uppercase tracking-wider">
+            <div className="bg-gray-950/90 text-white font-bold text-[10px] px-2.5 py-1 shadow-md flex items-center justify-center uppercase tracking-widest border border-white/20 backdrop-blur-md">
               OUT OF STOCK
             </div>
           ) : (

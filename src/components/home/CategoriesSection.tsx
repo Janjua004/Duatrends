@@ -3,10 +3,14 @@ import { useStore } from '../../context/StoreContext';
 import { ArrowRight } from 'lucide-react';
 
 export const CategoriesSection: React.FC = () => {
-  const { categories, setSelectedCategory, setActiveView } = useStore();
+  const { categories, setSelectedCategory, setActiveView, showToast } = useStore();
 
-  const handleCategorySelect = (categoryName: string) => {
-    setSelectedCategory(categoryName);
+  const handleCategorySelect = (cat: typeof categories[0]) => {
+    if (cat.isComingSoon) {
+      showToast(`The ${cat.name} collection is coming soon! Stay tuned.`);
+      return;
+    }
+    setSelectedCategory(cat.name);
     setActiveView('shop');
   };
 
@@ -38,7 +42,7 @@ export const CategoriesSection: React.FC = () => {
           {categories.map((cat, idx) => (
             <div
               key={cat.id}
-              onClick={() => handleCategorySelect(cat.name)}
+              onClick={() => handleCategorySelect(cat)}
               className={`group relative rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 ${
                 idx === 0 ? 'col-span-2 sm:col-span-1 lg:col-span-2 aspect-[16/9] sm:aspect-[4/5] lg:aspect-[16/9]' : 'aspect-[4/5]'
               }`}
@@ -50,9 +54,16 @@ export const CategoriesSection: React.FC = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/30 to-transparent" />
 
+              {/* Coming Soon Badge Overlay */}
+              {cat.isComingSoon && (
+                <div className="absolute top-3 left-3 z-10 bg-amber-500 text-gray-950 font-bold text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-md shadow-lg border border-amber-300 flex items-center gap-1">
+                  <span>COMING SOON</span>
+                </div>
+              )}
+
               <div className="absolute bottom-4 left-4 right-4 text-white">
                 <span className="text-[11px] uppercase tracking-wider text-rose-300 font-semibold block mb-0.5">
-                  {cat.itemCount} Products
+                  {cat.isComingSoon ? 'Launching Soon' : `${cat.itemCount} Products`}
                 </span>
                 <h3 className="font-serif text-lg sm:text-xl font-bold group-hover:text-brand-pink transition-colors">
                   {cat.name}

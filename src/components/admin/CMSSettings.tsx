@@ -44,56 +44,56 @@ export const CMSSettings: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 max-w-3xl">
+    <div className="space-y-8 max-w-3xl animate-fadeIn">
       
       <div>
-        <h2 className="font-serif text-2xl font-bold text-white">Store CMS & Security Settings</h2>
-        <p className="text-xs text-gray-400">Configure instant order routing details, store announcements, and master admin security</p>
+        <h2 className="font-serif text-2xl font-bold text-gray-900 dark:text-white">Store CMS & Security Settings</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400">Configure instant order routing details, store announcements, and master admin security</p>
       </div>
 
       {/* SECTION 1: ADMIN MASTER PASSWORD CHANGE */}
-      <form onSubmit={handleChangePassword} className="bg-gray-950 p-6 rounded-3xl border border-gray-800 space-y-5">
+      <form onSubmit={handleChangePassword} className="bg-white dark:bg-gray-950 p-6 rounded-3xl border border-gray-200 dark:border-gray-800 space-y-5 shadow-sm">
         <div>
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
+          <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <Lock className="w-5 h-5 text-brand-pink" />
             Change Admin Master Password
           </h3>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Update your master admin password used to log into this Store Administration Dashboard.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1">
               New Master Password *
             </label>
             <div className="relative">
-              <Key className="w-4 h-4 text-gray-500 absolute left-3.5 top-3" />
+              <Key className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
               <input 
                 type="password"
                 required
                 placeholder="••••••••"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1">
               Confirm New Password *
             </label>
             <div className="relative">
-              <Key className="w-4 h-4 text-gray-500 absolute left-3.5 top-3" />
+              <Key className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
               <input 
                 type="password"
                 required
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
               />
             </div>
           </div>
@@ -109,15 +109,15 @@ export const CMSSettings: React.FC = () => {
       </form>
 
       {/* SECTION 2: CMS & WHATSAPP CONFIG */}
-      <form onSubmit={handleSaveCMS} className="bg-gray-950 p-6 rounded-3xl border border-gray-800 space-y-6">
+      <form onSubmit={handleSaveCMS} className="bg-white dark:bg-gray-950 p-6 rounded-3xl border border-gray-200 dark:border-gray-800 space-y-6 shadow-sm">
         
         {/* WhatsApp Phone Config */}
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
-            <PhoneCall className="w-4 h-4 text-emerald-400" />
+          <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-2">
+            <PhoneCall className="w-4 h-4 text-emerald-500" />
             Store WhatsApp Checkout Number
           </label>
-          <p className="text-[11px] text-gray-500">
+          <p className="text-[11px] text-gray-500 dark:text-gray-400">
             This is the phone number where all customer checkout orders will automatically be sent via WhatsApp message.
           </p>
           <input 
@@ -126,13 +126,13 @@ export const CMSSettings: React.FC = () => {
             value={inputNumber}
             onChange={(e) => setInputNumber(e.target.value)}
             placeholder="+923001234567"
-            className="w-full px-4 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
+            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
           />
         </div>
 
         {/* Announcement Ticker Text */}
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
+          <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-2">
             <Megaphone className="w-4 h-4 text-brand-pink" />
             Homepage Top Announcement Bar Text
           </label>
@@ -141,7 +141,7 @@ export const CMSSettings: React.FC = () => {
             required
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            className="w-full px-4 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-white text-sm focus:border-brand-pink focus:outline-none"
+            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white text-sm focus:border-brand-pink focus:outline-none"
           />
         </div>
 
@@ -154,20 +154,20 @@ export const CMSSettings: React.FC = () => {
       </form>
 
       {/* SECTION 3: CLOUDINARY CDN IMAGE HOSTING CONFIG */}
-      <div className="bg-gray-950 p-6 rounded-3xl border border-gray-800 space-y-5">
+      <div className="bg-white dark:bg-gray-950 p-6 rounded-3xl border border-gray-200 dark:border-gray-800 space-y-5 shadow-sm">
         <div>
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
-            <Save className="w-5 h-5 text-blue-400" />
+          <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <Save className="w-5 h-5 text-blue-500" />
             Cloudinary Image CDN Hosting Settings
           </h3>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Configure your Cloudinary Cloud Name and Unsigned Upload Preset for fast product image CDN hosting.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1">
               Cloudinary Cloud Name
             </label>
             <input 
@@ -175,12 +175,12 @@ export const CMSSettings: React.FC = () => {
               placeholder="e.g. dwdnfn1ab"
               defaultValue={localStorage.getItem('stylewing_cloudinary_cloud_name') || 'dwdnfn1ab'}
               onChange={(e) => localStorage.setItem('stylewing_cloudinary_cloud_name', e.target.value.trim())}
-              className="w-full px-4 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1">
               Unsigned Upload Preset
             </label>
             <input 
@@ -188,21 +188,21 @@ export const CMSSettings: React.FC = () => {
               placeholder="e.g. stylewing_preset"
               defaultValue={localStorage.getItem('stylewing_cloudinary_preset') || 'ml_default'}
               onChange={(e) => localStorage.setItem('stylewing_cloudinary_preset', e.target.value.trim())}
-              className="w-full px-4 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
             />
           </div>
         </div>
 
-        <div className="p-3 bg-gray-900/60 rounded-xl border border-gray-800/80 text-[11px] text-gray-400 space-y-1">
-          <p className="text-emerald-400 font-semibold">✨ Multi-Tier Backup System Active:</p>
+        <div className="p-3 bg-gray-50 dark:bg-gray-900/60 rounded-xl border border-gray-200 dark:border-gray-800/80 text-[11px] text-gray-600 dark:text-gray-400 space-y-1">
+          <p className="text-emerald-600 dark:text-emerald-400 font-semibold">✨ Multi-Tier Backup System Active:</p>
           <p>If Cloudinary is not configured or offline, images automatically upload to <strong>Supabase Storage</strong> or convert to <strong>Base64 Data URLs</strong> so product creation never fails!</p>
         </div>
       </div>
 
       {/* Info Box */}
-      <div className="p-4 bg-gray-950 rounded-2xl border border-gray-800 text-xs text-gray-400 space-y-1">
-        <h4 className="font-bold text-white flex items-center gap-1.5">
-          <ShieldAlert className="w-4 h-4 text-amber-400" />
+      <div className="p-4 bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800 text-xs text-gray-600 dark:text-gray-400 space-y-1 shadow-sm">
+        <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
+          <ShieldAlert className="w-4 h-4 text-amber-500" />
           WhatsApp Checkout Engine Note
         </h4>
         <p>

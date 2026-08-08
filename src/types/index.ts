@@ -126,6 +126,8 @@ export interface Category {
   image: string;
   description?: string;
   itemCount: number;
+  isComingSoon?: boolean;
+  isAvailable?: boolean;
 }
 
 export interface Coupon {
