@@ -98,10 +98,6 @@ export const AdminLoginModal: React.FC = () => {
           </button>
         </form>
 
-        <div className="text-center text-[11px] text-gray-500 bg-gray-950 p-3 rounded-xl border border-gray-800">
-          🔑 Master Admin Password: <code className="text-brand-pink font-bold">admin123</code> (or login with <code className="text-brand-pink font-bold">admin@duatrends.com</code>)
-        </div>
-
       </div>
     </div>
   );

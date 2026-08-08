@@ -313,9 +313,9 @@ export const Navbar: React.FC = () => {
             <button onClick={() => { setActiveView('track'); setMobileMenuOpen(false); }} className="text-left py-2 border-b dark:border-gray-800">
               Track Order
             </button>
-            <button onClick={() => { handleAdminAccess(); setMobileMenuOpen(false); }} className="text-left py-2 text-emerald-600 font-bold flex justify-between">
-              <span>Login</span>
-              <Lock className="w-4 h-4" />
+            <button onClick={() => { setActiveView(isCustomerLoggedIn ? 'account' : 'login'); setMobileMenuOpen(false); }} className="text-left py-2 text-brand-pink font-bold flex justify-between items-center border-b dark:border-gray-800">
+              <span>{isCustomerLoggedIn ? 'My Account & Orders' : 'Customer Sign In / Register'}</span>
+              <UserIcon className="w-4 h-4" />
             </button>
           </div>
         </div>
