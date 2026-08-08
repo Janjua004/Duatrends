@@ -195,7 +195,8 @@ ALTER TABLE public.registered_users ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read/Insert Registered Users" ON public.registered_users FOR ALL USING (true);
 ALTER PUBLICATION supabase_realtime ADD TABLE public.registered_users;
 
--- 12. Performance Indexes for Ultra-Fast Database Queries
+-- 12. Ensure Product Category Column Exists & Add Performance Indexes
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS category TEXT;
 CREATE INDEX IF NOT EXISTS idx_registered_users_email ON public.registered_users(email);
 CREATE INDEX IF NOT EXISTS idx_registered_users_created_at ON public.registered_users(created_at);
 CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
