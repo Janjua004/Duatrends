@@ -176,6 +176,27 @@ ALTER TABLE public.user_wishlists ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read/Insert User Wishlists" ON public.user_wishlists FOR ALL USING (true);
 ALTER PUBLICATION supabase_realtime ADD TABLE public.user_wishlists;
 
+-- 11. Create Registered Users Table (For Customer Accounts & Admin User Inspection)
+CREATE TABLE IF NOT EXISTS public.registered_users (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  phone TEXT,
+  city TEXT,
+  province TEXT,
+  address TEXT,
+  role TEXT DEFAULT 'customer',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.registered_users ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Read/Insert Registered Users" ON public.registered_users FOR ALL USING (true);
+ALTER PUBLICATION supabase_realtime ADD TABLE public.registered_users;
+
+-- 12. Add is_coming_soon Column to Categories Table (For Category Coming Soon Feature)
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS is_coming_soon BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS description TEXT;
+
 -- ============================================================================
 -- RECOMMENDED SUPABASE DASHBOARD SECURITY SETTINGS:
 -- 1. Go to Authentication -> Rate Limits in Supabase Dashboard

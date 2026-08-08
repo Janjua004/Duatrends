@@ -23,7 +23,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     trackProductClick(product.id);
     setSelectedProductForModal(product);
     setActiveView('product-detail');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   const handleQuickAdd = (e: React.MouseEvent) => {

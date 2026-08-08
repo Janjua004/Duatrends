@@ -240,13 +240,14 @@ export async function fetchCategoriesFromCloud(): Promise<Category[] | null> {
           slug: item.slug,
           image: item.image || '',
           description: item.description || '',
-          itemCount: item.item_count || 0
+          itemCount: item.item_count || 0,
+          isComingSoon: !!item.is_coming_soon
         }));
         localStorage.setItem('stylewing_categories', JSON.stringify(formatted));
         return formatted as Category[];
       }
     } catch (err) {
-      console.warn('Supabase categories fetch error:', err);
+      console.warn('Categories fetch error:', err);
     }
   }
   const cached = localStorage.getItem('stylewing_categories');
@@ -254,7 +255,7 @@ export async function fetchCategoriesFromCloud(): Promise<Category[] | null> {
 }
 
 /**
- * Sync Category changes to Supabase Cloud Database
+ * Sync Category changes to Cloud Database
  */
 export async function syncCategoryToCloud(category: Category): Promise<boolean> {
   const supabase = getSupabaseClient();
@@ -267,13 +268,15 @@ export async function syncCategoryToCloud(category: Category): Promise<boolean> 
           name: category.name,
           slug: category.slug,
           image: category.image,
+          description: category.description || '',
           item_count: category.itemCount,
+          is_coming_soon: !!category.isComingSoon,
           updated_at: new Date().toISOString()
         }, { onConflict: 'id' });
 
       if (!error) return true;
     } catch (err) {
-      console.warn('Supabase category upsert error:', err);
+      console.warn('Category upsert error:', err);
     }
   }
   return false;

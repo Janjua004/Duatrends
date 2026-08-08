@@ -145,8 +145,13 @@ export const Footer: React.FC = () => {
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveView('admin')} className="hover:text-brand-pink transition-colors text-emerald-400 font-medium">
-                  Admin Dashboard
+                <button onClick={() => setActiveView('about')} className="hover:text-brand-pink transition-colors">
+                  About Dua Trends
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveView('contact')} className="hover:text-brand-pink transition-colors">
+                  Contact Customer Care
                 </button>
               </li>
             </ul>

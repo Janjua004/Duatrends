@@ -36,7 +36,7 @@ export const UserManager: React.FC = () => {
   }, []);
 
   const handleDeleteUser = async (userId: string, userName: string) => {
-    if (!window.confirm(`Are you sure you want to delete customer account "${userName}" (${userId}) directly from Supabase?`)) {
+    if (!window.confirm(`Are you sure you want to delete customer account "${userName}" (${userId}) from the cloud database?`)) {
       return;
     }
 
@@ -44,9 +44,9 @@ export const UserManager: React.FC = () => {
     const success = await deleteUserFromCloud(userId);
     if (success) {
       setUsers(prev => prev.filter(u => u.id !== userId));
-      showToast(`User "${userName}" deleted from Supabase database!`);
+      showToast(`User "${userName}" deleted successfully!`);
     } else {
-      showToast('Failed to delete user from Supabase. Check RLS permissions.');
+      showToast('Failed to delete user account. Check cloud permissions.');
     }
     setDeletingId(null);
   };
@@ -66,11 +66,11 @@ export const UserManager: React.FC = () => {
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-brand-pink" />
             <h2 className="font-serif text-xl font-bold text-gray-900 dark:text-white">
-              Registered Users & Accounts (Supabase Live)
+              Registered Users & Customer Accounts
             </h2>
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Real-time customer registration database directly synced from Supabase Cloud.
+            Real-time customer registration database synced across all devices.
           </p>
         </div>
 

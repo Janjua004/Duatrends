@@ -63,7 +63,7 @@ export const AdminDashboard: React.FC = () => {
             <h1 className="font-serif font-bold text-lg text-gray-900 dark:text-white leading-tight">
               Dua Trends Admin Control Panel
             </h1>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Real-Time E-Commerce Management & Supabase Database Sync</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Real-Time E-Commerce Management & Cloud Synchronization</p>
           </div>
         </div>
 
@@ -168,7 +168,7 @@ export const AdminDashboard: React.FC = () => {
             }`}
           >
             <UserCheck className="w-4 h-4" />
-            <span>Registered Users (Supabase)</span>
+            <span>Registered Users & Accounts</span>
           </button>
 
           <button

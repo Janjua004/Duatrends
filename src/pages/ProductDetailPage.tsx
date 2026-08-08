@@ -40,6 +40,10 @@ export const ProductDetailPage: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [product?.id]);
+
   // Dynamic Cursor Zoom Lens
   const [zoomStyle, setZoomStyle] = useState<{ transformOrigin: string; transform: string }>({
     transformOrigin: 'center center',

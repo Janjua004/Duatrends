@@ -301,20 +301,20 @@ export const ProductManager: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       
       {/* Header controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-serif text-2xl font-bold text-white">Product Inventory Management</h2>
-          <p className="text-xs text-gray-400">Total {products.length} products active in store database</p>
+          <h2 className="font-serif text-2xl font-bold text-gray-900 dark:text-white">Product Inventory Management</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Total {products.length} products active in store database</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={handleExportJSON}
-            className="px-3.5 py-2.5 rounded-xl font-semibold text-xs bg-gray-800 hover:bg-gray-700 text-white flex items-center gap-2 border border-gray-700 shadow transition-colors"
+            className="px-3.5 py-2.5 rounded-xl font-semibold text-xs bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-white flex items-center gap-2 border border-gray-200 dark:border-gray-700 shadow-sm transition-colors"
             title="Download scraped_products.json to publish changes globally for all visitors"
           >
             <Download className="w-4 h-4 text-brand-pink" />
@@ -327,10 +327,10 @@ export const ProductManager: React.FC = () => {
               setSyncJsonText(JSON.stringify(products, null, 2));
               setIsSyncModalOpen(true);
             }}
-            className="px-3.5 py-2.5 rounded-xl font-semibold text-xs bg-gray-800 hover:bg-gray-700 text-white flex items-center gap-2 border border-gray-700 shadow transition-colors"
+            className="px-3.5 py-2.5 rounded-xl font-semibold text-xs bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-white flex items-center gap-2 border border-gray-200 dark:border-gray-700 shadow-sm transition-colors"
             title="Import or sync products JSON on any device"
           >
-            <FileJson className="w-4 h-4 text-emerald-400" />
+            <FileJson className="w-4 h-4 text-emerald-500" />
             <span>Import / Sync JSON</span>
           </button>
 
@@ -345,20 +345,20 @@ export const ProductManager: React.FC = () => {
       </div>
 
       {/* Automatic Multi-Device Live Cloud Database Sync Banner */}
-      <div className="bg-gradient-to-r from-emerald-950/40 via-gray-900 to-blue-950/40 border border-emerald-800/40 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg text-xs">
+      <div className="bg-gradient-to-r from-emerald-50 via-white to-blue-50 dark:from-emerald-950/40 dark:via-gray-900 dark:to-blue-950/40 border border-emerald-200 dark:border-emerald-800/40 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm text-xs">
         <div className="flex items-start gap-3">
-          <div className="p-2 bg-emerald-900/40 text-emerald-400 rounded-xl mt-0.5 relative">
+          <div className="p-2 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-xl mt-0.5 relative">
             <RefreshCw className={`w-5 h-5 flex-shrink-0 ${isSyncingNow ? 'animate-spin' : ''}`} />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
           </div>
           <div className="space-y-1">
-            <h4 className="font-bold text-white text-xs flex items-center gap-2">
-              <span className="text-emerald-400 font-mono">● LIVE CLOUD DATABASE ACTIVE</span>
-              <span className="bg-emerald-950 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded-full text-[10px]">
+            <h4 className="font-bold text-gray-900 dark:text-white text-xs flex items-center gap-2">
+              <span className="text-emerald-600 dark:text-emerald-400 font-mono">● LIVE CLOUD DATABASE ACTIVE</span>
+              <span className="bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 px-2 py-0.5 rounded-full text-[10px]">
                 Automatic Sync Enabled
               </span>
             </h4>
-            <p className="text-gray-300 leading-relaxed text-[11px]">
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-[11px]">
               Every product you add, edit, or delete automatically updates on our live cloud server database in real-time. When visitors open the store on any phone, laptop, or browser, all product changes appear everywhere automatically without manual steps!
             </p>
           </div>
@@ -368,10 +368,10 @@ export const ProductManager: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsCloudConfigOpen(true)}
-            className="px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-colors"
-            title="Configure Supabase or Custom Cloud Database"
+            className="px-3.5 py-2 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-xl font-bold text-xs shadow-sm flex items-center gap-1.5 transition-colors"
+            title="Configure Cloud Database Connection"
           >
-            <Database className="w-4 h-4 text-amber-400" />
+            <Database className="w-4 h-4 text-amber-500" />
             <span>Cloud DB Config</span>
           </button>
 
@@ -381,9 +381,9 @@ export const ProductManager: React.FC = () => {
               setIsSyncingNow(true);
               const ok = await syncCloudNow();
               setIsSyncingNow(false);
-              showToast(ok ? 'All product changes pushed to live server database!' : 'Synced to local device storage. Click Cloud DB Config to connect Supabase.');
+              showToast(ok ? 'All product changes pushed to live server database!' : 'Synced to local device storage. Click Cloud DB Config to connect.');
             }}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-lg whitespace-nowrap flex items-center gap-2 transition-all"
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-md whitespace-nowrap flex items-center gap-2 transition-all"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncingNow ? 'animate-spin' : ''}`} />
             <span>{isSyncingNow ? 'Syncing...' : 'Sync Cloud DB Now'}</span>
@@ -398,16 +398,16 @@ export const ProductManager: React.FC = () => {
           placeholder="Search by title or SKU..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-9 pr-4 py-2 text-xs bg-gray-950 border border-gray-800 rounded-xl focus:outline-none focus:border-brand-pink text-white"
+          className="w-full pl-9 pr-4 py-2 text-xs bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:border-brand-pink text-gray-900 dark:text-white"
         />
-        <Search className="w-4 h-4 text-gray-500 absolute left-3 top-2.5" />
+        <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
       </div>
 
       {/* Products Table */}
-      <div className="bg-gray-950 rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
+      <div className="bg-white dark:bg-gray-950 rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-gray-300">
-            <thead className="bg-gray-900 text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-800">
+          <table className="w-full text-left text-xs text-gray-700 dark:text-gray-300">
+            <thead className="bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-200 dark:border-gray-800">
               <tr>
                 <th className="px-6 py-4">Product</th>
                 <th className="px-4 py-4">SKU</th>
@@ -420,24 +420,24 @@ export const ProductManager: React.FC = () => {
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {filteredProducts.slice(0, 20).map(product => (
-                <tr key={product.id} className="hover:bg-gray-900/50 transition-colors">
+                <tr key={product.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-900/50 transition-colors">
                   <td className="px-6 py-3 flex items-center gap-3">
-                    <img src={product.images[0]} alt="" className="w-10 h-12 object-cover rounded-lg bg-gray-800" />
+                    <img src={product.images[0]} alt="" className="w-10 h-12 object-cover rounded-lg bg-gray-100 dark:bg-gray-800" />
                     <div>
-                      <span className="font-semibold text-white block line-clamp-1">{product.title}</span>
+                      <span className="font-semibold text-gray-900 dark:text-white block line-clamp-1">{product.title}</span>
                       <div className="flex gap-1 mt-0.5">
-                        {product.isFeatured && <span className="text-[9px] bg-rose-950 text-rose-300 px-1.5 py-0.2 rounded">Featured</span>}
-                        {product.isTrending && <span className="text-[9px] bg-amber-950 text-amber-300 px-1.5 py-0.2 rounded">Trending</span>}
+                        {product.isFeatured && <span className="text-[9px] bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 px-1.5 py-0.2 rounded font-bold">Featured</span>}
+                        {product.isTrending && <span className="text-[9px] bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 px-1.5 py-0.2 rounded font-bold">Trending</span>}
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-mono text-gray-400">{product.sku}</td>
+                  <td className="px-4 py-3 font-mono text-gray-500 dark:text-gray-400">{product.sku}</td>
                   <td className="px-4 py-3">{product.category}</td>
-                  <td className="px-4 py-3 font-bold text-emerald-400">Rs {product.price.toLocaleString()}</td>
+                  <td className="px-4 py-3 font-bold text-emerald-600 dark:text-emerald-400">Rs {product.price.toLocaleString()}</td>
                   <td className="px-4 py-3">
-                    <span className="text-gray-300 text-[11px]">
+                    <span className="text-gray-600 dark:text-gray-300 text-[11px]">
                       {product.sizes ? product.sizes.join(', ') : 'UNSTITCHED'}
                     </span>
                   </td>
@@ -449,19 +449,19 @@ export const ProductManager: React.FC = () => {
                         showToast(`Updated ${product.title} stock to ${newStock > 0 ? 'In Stock (25)' : 'Out of Stock (0)'}`);
                       }}
                       className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-transform hover:scale-105 ${
-                        product.stock > 0 ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-rose-950 text-rose-300 border border-rose-800'
+                        product.stock > 0 ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800'
                       }`}
                       title="Click to toggle Stock Status"
                     >
                       {product.stock > 0 ? `${product.stock} in stock` : 'Out of Stock (0)'}
                     </button>
                   </td>
-                  <td className="px-4 py-3 font-mono text-amber-400">{product.clicks || 0}</td>
+                  <td className="px-4 py-3 font-mono text-amber-500 font-bold">{product.clicks || 0}</td>
                   <td className="px-6 py-3 text-right space-x-2">
-                    <button onClick={() => handleOpenEditModal(product)} className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-blue-400" title="Edit Product">
+                    <button onClick={() => handleOpenEditModal(product)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400" title="Edit Product">
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button onClick={() => deleteProduct(product.id)} className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-rose-400" title="Delete Product">
+                    <button onClick={() => deleteProduct(product.id)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-rose-600 dark:text-rose-400" title="Delete Product">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </td>
@@ -472,19 +472,19 @@ export const ProductManager: React.FC = () => {
         </div>
       </div>
 
-      {/* Add / Edit Enhanced Product Modal with Multi-Images, Sizes & Color Mapping */}
+      {/* Add / Edit Enhanced Product Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-gray-900 border border-gray-800 rounded-3xl max-w-3xl w-full p-6 space-y-5 max-h-[92vh] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl max-w-3xl w-full p-6 space-y-5 max-h-[92vh] overflow-y-auto shadow-2xl">
             
-            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+            <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3">
               <div className="flex items-center gap-2">
                 <ImageIcon className="w-5 h-5 text-brand-pink" />
-                <h3 className="font-serif font-bold text-lg text-white">
+                <h3 className="font-serif font-bold text-lg text-gray-900 dark:text-white">
                   {editingProduct ? 'Edit Product, Sizes & Color Image Variants' : 'Add New Product with Sizes & Color Image Variants'}
                 </h3>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-white">
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
