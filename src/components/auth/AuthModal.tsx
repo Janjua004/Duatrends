@@ -144,9 +144,9 @@ export const AuthModal: React.FC = () => {
             </h2>
             <p className="text-xs text-gray-300 mt-1">
               {authModalMode === 'login' 
-                ? 'Sign in with your account email or admin email (@duatrends.com)' 
+                ? 'Sign in to access your saved orders & privilege benefits' 
                 : authModalMode === 'signup' 
-                ? 'Join Dua Trends for exclusive discounts & fast checkout' 
+                ? 'Join Dua Trends for 1-click checkout & secret VIP offers' 
                 : 'Enter your email to receive a password reset link'}
             </p>
           </div>
@@ -195,7 +195,7 @@ export const AuthModal: React.FC = () => {
                   <input
                     type="email"
                     required
-                    placeholder="name@example.com or admin@duatrends.com"
+                    placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand-pink"

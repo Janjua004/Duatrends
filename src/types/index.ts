@@ -65,11 +65,13 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
+  gender?: string;
+  dob?: string;
   city?: string;
   province?: string;
   address?: string;
-  role: 'customer' | 'admin';
-  createdAt: string;
+  role: 'admin' | 'customer';
+  createdAt?: string;
 }
 
 export type AuthModalMode = 'login' | 'signup' | 'forgot';

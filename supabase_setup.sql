@@ -176,12 +176,14 @@ ALTER TABLE public.user_wishlists ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read/Insert User Wishlists" ON public.user_wishlists FOR ALL USING (true);
 ALTER PUBLICATION supabase_realtime ADD TABLE public.user_wishlists;
 
--- 11. Create Registered Users Table (For Customer Accounts & Admin User Inspection)
+-- 11. Create Registered Users Table (For Customer Accounts & VIP Privilege Club)
 CREATE TABLE IF NOT EXISTS public.registered_users (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
   phone TEXT,
+  gender TEXT DEFAULT 'Female',
+  dob TEXT,
   city TEXT,
   province TEXT,
   address TEXT,
@@ -193,7 +195,13 @@ ALTER TABLE public.registered_users ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public Read/Insert Registered Users" ON public.registered_users FOR ALL USING (true);
 ALTER PUBLICATION supabase_realtime ADD TABLE public.registered_users;
 
--- 12. Add is_coming_soon Column to Categories Table (For Category Coming Soon Feature)
+-- 12. Performance Indexes for Ultra-Fast Database Queries
+CREATE INDEX IF NOT EXISTS idx_registered_users_email ON public.registered_users(email);
+CREATE INDEX IF NOT EXISTS idx_registered_users_created_at ON public.registered_users(created_at);
+CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
+CREATE INDEX IF NOT EXISTS idx_categories_slug ON public.categories(slug);
+
+-- 13. Add is_coming_soon Column to Categories Table (For Category Coming Soon Feature)
 ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS is_coming_soon BOOLEAN DEFAULT FALSE;
 ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS description TEXT;
 

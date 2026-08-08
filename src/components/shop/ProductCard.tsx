@@ -50,18 +50,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="relative aspect-[2/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
         <img 
           src={product.images[0]} 
-          alt={product.title} 
+          alt={`${product.title} - ${product.category || 'Unstitched Wear'} Dua Trends Luxury Collection Pakistan`} 
           className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out ${product.stock <= 0 ? 'grayscale-[25%] opacity-85' : ''}`}
           loading="lazy"
+          decoding="async"
         />
 
         {/* Hover secondary image */}
         {product.images[1] && (
           <img 
             src={product.images[1]} 
-            alt={product.title} 
+            alt={`${product.title} Fabric View - Dua Trends Designer Suit`} 
             className="w-full h-full object-cover absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"
             loading="lazy"
+            decoding="async"
           />
         )}
 

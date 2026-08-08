@@ -49,11 +49,11 @@ interface StoreContextType {
   setShowAuthModal: (show: boolean) => void;
   authModalMode: AuthModalMode;
   setAuthModalMode: (mode: AuthModalMode) => void;
-  registerCustomer: (details: { name: string; email: string; password: string; phone?: string; city?: string; address?: string }) => Promise<{ success: boolean; message: string }>;
+  registerCustomer: (details: { name: string; email: string; password: string; phone?: string; gender?: string; dob?: string; city?: string; address?: string }) => Promise<{ success: boolean; message: string }>;
   loginCustomer: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
   logoutCustomer: () => void;
   resetPassword: (email: string) => Promise<{ success: boolean; message: string }>;
-  updateCustomerProfile: (details: { name?: string; phone?: string; city?: string; address?: string }) => void;
+  updateCustomerProfile: (details: { name?: string; phone?: string; gender?: string; dob?: string; city?: string; address?: string }) => void;
 
   // Admin Auth State
   isAdminLoggedIn: boolean;
@@ -311,6 +311,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     email: string; 
     password: string; 
     phone?: string; 
+    gender?: string;
+    dob?: string;
     city?: string; 
     address?: string 
   }): Promise<{ success: boolean; message: string }> => {
@@ -341,6 +343,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           data: {
             full_name: details.name,
             phone: details.phone,
+            gender: details.gender,
+            dob: details.dob,
             city: details.city,
             address: details.address
           }
@@ -357,6 +361,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       name: details.name,
       email: details.email,
       phone: details.phone || '',
+      gender: details.gender || 'Female',
+      dob: details.dob || '',
       city: details.city || '',
       address: details.address || '',
       role: 'customer',
@@ -452,7 +458,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return { success: true, message: 'Password reset link sent via Supabase Auth.' };
   };
 
-  const updateCustomerProfile = (details: { name?: string; phone?: string; city?: string; address?: string }) => {
+  const updateCustomerProfile = (details: { name?: string; phone?: string; gender?: string; dob?: string; city?: string; address?: string }) => {
     if (!currentUser) return;
     const updated: User = {
       ...currentUser,
@@ -549,6 +555,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const newUrl = `${window.location.pathname}?product=${encodeURIComponent(slug)}`;
       window.history.pushState({ productId: p.id, slug }, '', newUrl);
       document.title = `${p.title} - Dua Trends Luxury Collection`;
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
       window.scrollTo(0, 0);
     } else {
       if (window.location.search.includes('product=')) {

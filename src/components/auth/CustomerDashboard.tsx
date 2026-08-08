@@ -26,6 +26,8 @@ export const CustomerDashboard: React.FC = () => {
   // Profile Edit State
   const [name, setName] = useState(currentUser?.name || '');
   const [phone, setPhone] = useState(currentUser?.phone || '');
+  const [gender, setGender] = useState(currentUser?.gender || 'Female');
+  const [dob, setDob] = useState(currentUser?.dob || '');
   const [city, setCity] = useState(currentUser?.city || '');
   const [address, setAddress] = useState(currentUser?.address || '');
 
@@ -42,6 +44,8 @@ export const CustomerDashboard: React.FC = () => {
     updateCustomerProfile({
       name: name.trim(),
       phone: phone.trim(),
+      gender,
+      dob,
       city: city.trim(),
       address: address.trim()
     });

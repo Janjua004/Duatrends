@@ -37,6 +37,12 @@ const MainContent: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }, [activeView]);
+
   if (initialLoading) {
     return <LogoLoader fullScreen message="Loading Dua Trends Luxury Collection..." />;
   }

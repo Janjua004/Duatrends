@@ -169,7 +169,7 @@ export const UserManager: React.FC = () => {
                     <td className="p-4">
                       <div className="flex items-center gap-1.5 text-gray-500">
                         <Calendar className="w-3.5 h-3.5" />
-                        <span>{new Date(user.createdAt).toLocaleDateString()}</span>
+                        <span>{new Date(user.createdAt || Date.now()).toLocaleDateString()}</span>
                       </div>
                     </td>
 

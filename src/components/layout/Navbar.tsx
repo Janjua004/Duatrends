@@ -141,7 +141,9 @@ export const Navbar: React.FC = () => {
               <div className="h-20 w-auto max-w-[340px] flex items-center justify-start">
                 <img 
                   src="/logo.png" 
-                  alt="Dua Trends Logo" 
+                  alt="Dua Trends - Luxury Pakistani Unstitched Lawn & Designer Formal Wear Collection Logo" 
+                  loading="eager"
+                  decoding="async"
                   className="h-full w-auto object-contain dark:brightness-110 scale-105 transition-transform group-hover:scale-110 drop-shadow-sm"
                   onError={(e) => {
                     const parent = (e.target as HTMLElement).parentElement;
