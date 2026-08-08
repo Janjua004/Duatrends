@@ -2,7 +2,7 @@ import React from 'react';
 import { Instagram, Heart, ArrowUpRight } from 'lucide-react';
 
 export const InstagramFeed: React.FC = () => {
-  const INSTAGRAM_URL = "https://www.instagram.com/duatrends.official";
+  const INSTAGRAM_URL = "https://www.instagram.com/dua_trends.pk_?igsh=MW80ajZhaXR5cndvMw==";
 
   const instaImages = [
     "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80",
@@ -24,7 +24,7 @@ export const InstagramFeed: React.FC = () => {
           Follow Us on Instagram
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-          Tag <span className="font-bold text-brand-pink">@duatrends.official</span> on Instagram to be featured on our official fashion wall!
+          Tag <span className="font-bold text-brand-pink">@dua_trends.pk_</span> on Instagram to be featured on our official fashion wall!
         </p>
 
         <a 
@@ -34,7 +34,7 @@ export const InstagramFeed: React.FC = () => {
           className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:opacity-90 transition-opacity"
         >
           <Instagram className="w-4 h-4" />
-          <span>Follow @duatrends.official</span>
+          <span>Follow @dua_trends.pk_</span>
           <ArrowUpRight className="w-4 h-4" />
         </a>
       </div>

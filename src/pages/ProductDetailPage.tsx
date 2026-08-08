@@ -500,6 +500,165 @@ export const ProductDetailPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Customer Reviews & Rating Submission Section */}
+      <ProductReviewsSection product={product} />
+
+    </div>
+  );
+};
+
+// Customer Reviews & Rating Submission Section Component
+const ProductReviewsSection: React.FC<{ product: any }> = ({ product }) => {
+  const { reviews, addReview, currentUser } = useStore();
+  const [userName, setUserName] = useState(currentUser?.name || '');
+  const [userCity, setUserCity] = useState(currentUser?.city || 'Lahore');
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const productReviews = reviews.filter(r => r.productId === product.id && r.status === 'Approved');
+
+  const handleSubmitReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userName.trim() || !comment.trim()) return;
+
+    addReview({
+      productId: product.id,
+      productTitle: product.title,
+      userName: userName.trim(),
+      userCity: userCity.trim() || 'Pakistan',
+      rating,
+      comment: comment.trim()
+    });
+
+    setSubmitted(true);
+    setComment('');
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto space-y-8 pt-12 border-t border-gray-100 dark:border-gray-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="font-serif text-2xl font-bold text-gray-900 dark:text-white">Customer Reviews</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Verified buyer ratings and authentic product feedback</p>
+        </div>
+
+        <button
+          onClick={() => { setShowForm(!showForm); setSubmitted(false); }}
+          className="btn-pink-gradient px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider shadow-md w-fit"
+        >
+          {showForm ? 'Cancel Review' : '★ Write A Review'}
+        </button>
+      </div>
+
+      {/* Review Submission Form */}
+      {showForm && (
+        <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-3xl space-y-4 animate-fadeIn">
+          {submitted ? (
+            <div className="text-center py-6 space-y-2">
+              <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400 flex items-center justify-center mx-auto text-xl font-bold">✓</div>
+              <h4 className="font-bold text-gray-900 dark:text-white text-lg">Thank You For Your Review!</h4>
+              <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+                Your review has been submitted to store administration for approval and will appear here shortly.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmitReview} className="space-y-4">
+              <h4 className="font-bold text-gray-900 dark:text-white text-sm uppercase tracking-wider">Share Your Experience</h4>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Your Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Ayesha Khan"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-xs dark:text-white focus:outline-none focus:border-brand-pink"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">City</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Lahore / Karachi"
+                    value={userCity}
+                    onChange={(e) => setUserCity(e.target.value)}
+                    className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-xs dark:text-white focus:outline-none focus:border-brand-pink"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Rating *</label>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setRating(star)}
+                      className="p-1 text-amber-400 hover:scale-110 transition-transform"
+                    >
+                      <Star className={`w-6 h-6 ${star <= rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300 dark:text-gray-700'}`} />
+                    </button>
+                  ))}
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 ml-2">{rating} / 5 Stars</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Your Feedback Comment *</label>
+                <textarea
+                  required
+                  rows={3}
+                  placeholder="Tell us about fabric quality, embroidery details, or stitching..."
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-xs dark:text-white focus:outline-none focus:border-brand-pink"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="btn-pink-gradient px-8 py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg"
+              >
+                Submit Customer Review
+              </button>
+            </form>
+          )}
+        </div>
+      )}
+
+      {/* Reviews List */}
+      {productReviews.length === 0 ? (
+        <div className="bg-gray-50 dark:bg-gray-900/40 p-8 rounded-3xl text-center border border-gray-100 dark:border-gray-800 space-y-2">
+          <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">No verified customer reviews yet for this dress.</p>
+          <p className="text-xs text-gray-500">Be the first customer to share your feedback by clicking "Write A Review" above!</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {productReviews.map(rev => (
+            <div key={rev.id} className="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 space-y-2 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h5 className="font-bold text-xs text-gray-900 dark:text-white">{rev.userName}</h5>
+                  <span className="text-[10px] text-gray-400">{rev.userCity} • Verified Purchase</span>
+                </div>
+                <div className="flex text-amber-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className={`w-3.5 h-3.5 ${i < rev.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300 dark:text-gray-700'}`} />
+                  ))}
+                </div>
+              </div>
+              <p className="text-xs text-gray-600 dark:text-gray-300 italic">"{rev.comment}"</p>
+              <span className="text-[10px] text-gray-400 block text-right">{rev.date}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

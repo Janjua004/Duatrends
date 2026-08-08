@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Product, Category, CartItem, User } from '../types';
+import { Product, Category, CartItem, User, Review } from '../types';
 
 // Default Supabase / Cloud REST storage keys
 const STORAGE_SUPABASE_URL_KEY = 'stylewing_supabase_url';
@@ -574,6 +574,118 @@ export function subscribeToUsersRealtime(onUsersChange: (users: User[]) => void)
     };
   } catch (err) {
     console.warn('Users realtime subscription error:', err);
+    return () => {};
+  }
+}
+
+/**
+ * Fetch Reviews from Supabase Cloud Database
+ */
+export async function fetchReviewsFromCloud(): Promise<Review[] | null> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (!error && data) {
+        return data.map((r: any) => ({
+          id: r.id,
+          productId: r.product_id || r.productId || '',
+          productTitle: r.product_title || r.productTitle || 'Unstitched Suit',
+          userName: r.user_name || r.userName || 'Verified Customer',
+          userCity: r.user_city || r.userCity || 'Pakistan',
+          rating: Number(r.rating) || 5,
+          comment: r.comment || '',
+          date: r.date || new Date().toISOString().split('T')[0],
+          status: (r.status as Review['status']) || 'Pending'
+        }));
+      }
+    } catch (err) {
+      console.warn('Supabase fetch reviews error:', err);
+    }
+  }
+  return null;
+}
+
+/**
+ * Sync / Upsert Single Review to Supabase Cloud Database
+ */
+export async function syncReviewToCloud(review: Review): Promise<boolean> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .upsert({
+          id: review.id,
+          product_id: review.productId,
+          product_title: review.productTitle,
+          user_name: review.userName,
+          user_city: review.userCity,
+          rating: review.rating,
+          comment: review.comment,
+          date: review.date,
+          status: review.status
+        });
+
+      if (!error) return true;
+    } catch (err) {
+      console.warn('Supabase sync review error:', err);
+    }
+  }
+  return false;
+}
+
+/**
+ * Delete Review from Supabase Cloud Database
+ */
+export async function deleteReviewFromCloud(id: string): Promise<boolean> {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .delete()
+        .eq('id', id);
+
+      if (!error) return true;
+    } catch (err) {
+      console.warn('Supabase delete review error:', err);
+    }
+  }
+  return false;
+}
+
+/**
+ * Subscribe to Realtime Reviews table changes across all devices
+ */
+export function subscribeToReviewsRealtime(onReviewsChange: (reviews: Review[]) => void): () => void {
+  const supabase = getSupabaseClient();
+  if (!supabase) return () => {};
+
+  try {
+    const channel = supabase
+      .channel('realtime-reviews-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'reviews' },
+        async () => {
+          const updatedReviews = await fetchReviewsFromCloud();
+          if (updatedReviews) {
+            onReviewsChange(updatedReviews);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  } catch (err) {
+    console.warn('Reviews realtime subscription error:', err);
     return () => {};
   }
 }

@@ -15,7 +15,11 @@ import {
   fetchUserWishlistFromCloud,
   syncUserWishlistToCloud,
   subscribeToUserCartRealtime,
-  subscribeToUserWishlistRealtime
+  subscribeToUserWishlistRealtime,
+  fetchReviewsFromCloud,
+  syncReviewToCloud,
+  deleteReviewFromCloud,
+  subscribeToReviewsRealtime
 } from '../services/cloudStore';
 import { sanitizeInput, checkDeviceRegistrationLimit, recordDeviceRegistration, checkBotRequestThrottling } from '../utils/security';
 
@@ -228,6 +232,27 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     localStorage.setItem('stylewing_registered_users', JSON.stringify(registeredUsers));
   }, [registeredUsers]);
+
+  useEffect(() => {
+    localStorage.setItem('stylewing_reviews', JSON.stringify(reviews));
+  }, [reviews]);
+
+  // Sync reviews from Supabase Cloud on mount & realtime
+  useEffect(() => {
+    fetchReviewsFromCloud().then(cloudReviews => {
+      if (cloudReviews && cloudReviews.length > 0) {
+        setReviews(cloudReviews);
+      }
+    });
+
+    const unsubscribe = subscribeToReviewsRealtime(updatedReviews => {
+      if (updatedReviews) {
+        setReviews(updatedReviews);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Restore & synchronize active user session directly from Supabase Auth tokens on launch
   useEffect(() => {
@@ -1041,10 +1066,20 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showToast('Coupon deleted.');
   };
 
-  // Review CRUD
+  // Review CRUD with LocalStorage & Cloud Realtime Sync
   const updateReviewStatus = (reviewId: string, status: Review['status']) => {
-    setReviews(prev => prev.map(r => r.id === reviewId ? { ...r, status } : r));
-    showToast(`Review ${status.toLowerCase()}`);
+    setReviews(prev => {
+      const updatedList = prev.map(r => {
+        if (r.id === reviewId) {
+          const updatedRev = { ...r, status };
+          syncReviewToCloud(updatedRev);
+          return updatedRev;
+        }
+        return r;
+      });
+      return updatedList;
+    });
+    showToast(`Review status updated to ${status}`);
   };
 
   const addReview = (rev: Omit<Review, 'id' | 'date' | 'status'>) => {
@@ -1054,7 +1089,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       date: new Date().toISOString().split('T')[0],
       status: 'Pending',
     };
-    setReviews(prev => [created, ...prev]);
+    setReviews(prev => {
+      const updated = [created, ...prev];
+      syncReviewToCloud(created);
+      return updated;
+    });
     showToast('Thank you! Your review has been submitted for approval.');
   };
 

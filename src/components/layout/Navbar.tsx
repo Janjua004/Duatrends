@@ -77,12 +77,12 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         
         {/* Mobile Header Layout (< lg) */}
-        <div className="lg:hidden grid grid-cols-3 items-center h-16 sm:h-20">
+        <div className="lg:hidden grid grid-cols-3 items-center h-20 sm:h-24">
           {/* Mobile Left: Hamburger Menu */}
           <div className="flex items-center justify-start">
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 text-gray-800 dark:text-gray-200 hover:text-brand-pink transition-colors focus:outline-none"
+              className="p-2 text-gray-800 dark:text-gray-200 hover:text-brand-pink transition-colors focus:outline-none"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -97,8 +97,10 @@ export const Navbar: React.FC = () => {
             >
               <img 
                 src="/logo.png" 
-                alt="Dua Trends Logo" 
-                className="h-14 sm:h-16 md:h-18 w-auto object-contain dark:brightness-110 scale-110 sm:scale-115 transition-transform group-hover:scale-120 drop-shadow-sm"
+                alt="Dua Trends - Luxury Pakistani Unstitched Lawn & Designer Formal Wear Collection Logo" 
+                loading="eager"
+                decoding="async"
+                className="h-16 sm:h-20 md:h-22 w-auto object-contain dark:brightness-110 scale-120 sm:scale-125 transition-transform group-hover:scale-130 drop-shadow-md"
                 onError={(e) => {
                   const parent = (e.target as HTMLElement).parentElement;
                   if (parent) {
@@ -113,7 +115,7 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center justify-end gap-1.5">
             <button 
               onClick={() => setActiveView(isCustomerLoggedIn ? 'account' : 'login')}
-              className="p-1.5 rounded-full text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-full text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               aria-label="Account"
             >
               <UserIcon className="w-5 h-5" />
@@ -121,7 +123,7 @@ export const Navbar: React.FC = () => {
 
             <button 
               onClick={() => setDarkMode(!darkMode)}
-              className="p-1.5 rounded-full text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-full text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               aria-label="Toggle Theme"
             >
               {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
@@ -130,7 +132,7 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Desktop Header Layout (>= lg) */}
-        <div className="hidden lg:flex items-center justify-between gap-6 h-24">
+        <div className="hidden lg:flex items-center justify-between gap-6 h-28">
           
           {/* Left: Brand Logo */}
           <div className="flex items-center gap-3">
@@ -138,13 +140,13 @@ export const Navbar: React.FC = () => {
               onClick={() => setActiveView('home')} 
               className="flex items-center group focus:outline-none py-1"
             >
-              <div className="h-20 w-auto max-w-[340px] flex items-center justify-start">
+              <div className="h-24 w-auto max-w-[420px] flex items-center justify-start">
                 <img 
                   src="/logo.png" 
                   alt="Dua Trends - Luxury Pakistani Unstitched Lawn & Designer Formal Wear Collection Logo" 
                   loading="eager"
                   decoding="async"
-                  className="h-full w-auto object-contain dark:brightness-110 scale-105 transition-transform group-hover:scale-110 drop-shadow-sm"
+                  className="h-full w-auto object-contain dark:brightness-110 scale-115 transition-transform group-hover:scale-120 drop-shadow-md"
                   onError={(e) => {
                     const parent = (e.target as HTMLElement).parentElement;
                     if (parent) {

@@ -98,7 +98,7 @@ export const Footer: React.FC = () => {
             {/* Social Icons */}
             <div className="flex items-center gap-3 pt-2">
               <a 
-                href="https://www.instagram.com/stylewing299?igsh=MW1oZm5pYWk4ZmViYg==" 
+                href="https://www.instagram.com/dua_trends.pk_?igsh=MW80ajZhaXR5cndvMw==" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-gray-900 flex items-center justify-center hover:bg-brand-pink hover:text-white transition-colors" 

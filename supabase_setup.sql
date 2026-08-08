@@ -202,9 +202,24 @@ CREATE INDEX IF NOT EXISTS idx_registered_users_created_at ON public.registered_
 CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
 CREATE INDEX IF NOT EXISTS idx_categories_slug ON public.categories(slug);
 
--- 13. Add is_coming_soon Column to Categories Table (For Category Coming Soon Feature)
-ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS is_coming_soon BOOLEAN DEFAULT FALSE;
-ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS description TEXT;
+-- 14. Create Reviews Table (For Customer Product Ratings & Admin Moderation)
+CREATE TABLE IF NOT EXISTS public.reviews (
+  id TEXT PRIMARY KEY,
+  product_id TEXT,
+  product_title TEXT,
+  user_name TEXT NOT NULL,
+  user_city TEXT,
+  rating NUMERIC DEFAULT 5,
+  comment TEXT NOT NULL,
+  date TEXT,
+  status TEXT DEFAULT 'Pending'
+);
+
+ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Read/Insert Reviews" ON public.reviews FOR ALL USING (true);
+ALTER PUBLICATION supabase_realtime ADD TABLE public.reviews;
+CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON public.reviews(product_id);
+CREATE INDEX IF NOT EXISTS idx_reviews_status ON public.reviews(status);
 
 -- ============================================================================
 -- RECOMMENDED SUPABASE DASHBOARD SECURITY SETTINGS:
