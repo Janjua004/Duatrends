@@ -69,7 +69,7 @@ export const ContactPage: React.FC = () => {
               </div>
               <div>
                 <span className="text-xs text-gray-400 block">Official Email</span>
-                <span className="font-semibold">support@stylewing.store</span>
+                <span className="font-semibold">support@duatrends.com</span>
               </div>
             </div>
 

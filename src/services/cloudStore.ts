@@ -2,9 +2,9 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Product, Category, CartItem, User, Review } from '../types';
 
 // Default Supabase / Cloud REST storage keys
-const STORAGE_SUPABASE_URL_KEY = 'stylewing_supabase_url';
-const STORAGE_SUPABASE_ANON_KEY = 'stylewing_supabase_anon_key';
-const STORAGE_CUSTOM_REST_URL_KEY = 'stylewing_custom_rest_url';
+const STORAGE_SUPABASE_URL_KEY = 'duatrends_supabase_url';
+const STORAGE_SUPABASE_ANON_KEY = 'duatrends_supabase_anon_key';
+const STORAGE_CUSTOM_REST_URL_KEY = 'duatrends_custom_rest_url';
 
 const metaEnv = (import.meta as any).env || {};
 const DEFAULT_SUPABASE_URL = metaEnv.VITE_SUPABASE_URL || 'https://iznrzssyzhecqpmxftmy.supabase.co';

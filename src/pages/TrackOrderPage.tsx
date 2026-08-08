@@ -35,10 +35,10 @@ export const TrackOrderPage: React.FC = () => {
           REAL-TIME DISPATCH UPDATES
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
-          Track Your StyleWing Parcel
+          Track Your Dua Trends Parcel
         </h1>
         <p className="text-sm text-gray-500 max-w-md mx-auto">
-          Enter your Order Number (e.g. SW-9821) or phone number to check status.
+          Enter your Order Number (e.g. DT-9821) or phone number to check status.
         </p>
       </div>
 
@@ -47,7 +47,7 @@ export const TrackOrderPage: React.FC = () => {
         <div className="relative flex-1">
           <input 
             type="text" 
-            placeholder="Enter Order # (e.g. SW-9821)"
+            placeholder="Enter Order # (e.g. DT-9821)"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-3 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:outline-none focus:border-brand-pink text-gray-900 dark:text-white shadow-sm"
@@ -130,7 +130,7 @@ export const TrackOrderPage: React.FC = () => {
           <div className="pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
             <span className="text-xs text-gray-500">Need urgent update regarding this shipment?</span>
             <a 
-              href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hello StyleWing! Inquiry for Order ${searchedOrder.orderNumber}`)}`}
+              href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hello Dua Trends! Inquiry for Order ${searchedOrder.orderNumber}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold"
@@ -143,7 +143,7 @@ export const TrackOrderPage: React.FC = () => {
         </div>
       ) : (
         <div className="py-12 text-center text-gray-500 text-sm">
-          No order found matching your search. Try searching for <strong>SW-9821</strong> or <strong>SW-9822</strong>.
+          No order found matching your search. Try searching for <strong>DT-9821</strong> or <strong>DT-9822</strong>.
         </div>
       )}
 

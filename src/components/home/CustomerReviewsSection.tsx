@@ -17,7 +17,7 @@ export const CustomerReviewsSection: React.FC = () => {
     if (userName && comment) {
       addReview({
         productId: 'general',
-        productTitle: 'StyleWing Fashion',
+        productTitle: 'Dua Trends Luxury Apparel',
         userName,
         userCity: userCity || 'Pakistan',
         rating,
@@ -56,7 +56,7 @@ export const CustomerReviewsSection: React.FC = () => {
         {/* Submit Review Form */}
         {showReviewForm && (
           <form onSubmit={handleSubmitReview} className="mb-12 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 space-y-4 max-w-xl animate-fadeIn">
-            <h3 className="font-serif text-xl font-bold text-gray-900 dark:text-white">Share Your StyleWing Experience</h3>
+            <h3 className="font-serif text-xl font-bold text-gray-900 dark:text-white">Share Your Dua Trends Experience</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Your Full Name</label>

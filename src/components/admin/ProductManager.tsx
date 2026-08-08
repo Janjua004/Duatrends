@@ -20,9 +20,9 @@ export const ProductManager: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [isCloudConfigOpen, setIsCloudConfigOpen] = useState(false);
-  const [supabaseUrl, setSupabaseUrl] = useState(() => localStorage.getItem('stylewing_supabase_url') || 'https://iznrzssyzhecqpmxftmy.supabase.co');
-  const [supabaseKey, setSupabaseKey] = useState(() => localStorage.getItem('stylewing_supabase_anon_key') || '');
-  const [customRestUrl, setCustomRestUrl] = useState(() => localStorage.getItem('stylewing_custom_rest_url') || '');
+  const [supabaseUrl, setSupabaseUrl] = useState(() => localStorage.getItem('duatrends_supabase_url') || localStorage.getItem('stylewing_supabase_url') || 'https://iznrzssyzhecqpmxftmy.supabase.co');
+  const [supabaseKey, setSupabaseKey] = useState(() => localStorage.getItem('duatrends_supabase_anon_key') || localStorage.getItem('stylewing_supabase_anon_key') || '');
+  const [customRestUrl, setCustomRestUrl] = useState(() => localStorage.getItem('duatrends_custom_rest_url') || localStorage.getItem('stylewing_custom_rest_url') || '');
   const [testResult, setTestResult] = useState<{ success?: boolean; message?: string } | null>(null);
   const [isTesting, setIsTesting] = useState(false);
   const [syncJsonText, setSyncJsonText] = useState('');

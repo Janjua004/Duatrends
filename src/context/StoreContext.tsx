@@ -152,15 +152,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const sanitizeData = <T,>(list: T[]): T[] => {
     return list.map(item => {
       const str = JSON.stringify(item)
-        .replace(/Parishay/g, 'StyleWing')
-        .replace(/PARISHAY/g, 'STYLEWING')
-        .replace(/parishay/g, 'stylewing');
+        .replace(/StyleWing/g, 'Dua Trends')
+        .replace(/STYLEWING/g, 'DUA TRENDS')
+        .replace(/stylewing/g, 'duatrends')
+        .replace(/Parishay/g, 'Dua Trends')
+        .replace(/PARISHAY/g, 'DUA TRENDS')
+        .replace(/parishay/g, 'duatrends');
       return JSON.parse(str);
     });
   };
 
   const [products, setProducts] = useState<Product[]>(() => {
-    const saved = localStorage.getItem('stylewing_products');
+    const saved = localStorage.getItem('duatrends_products') || localStorage.getItem('stylewing_products');
     if (saved) {
       try { 
         const parsed = JSON.parse(saved); 
@@ -171,50 +174,50 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   });
 
   const [cart, setCart] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('stylewing_cart');
+    const saved = localStorage.getItem('duatrends_cart') || localStorage.getItem('stylewing_cart');
     return saved ? sanitizeData(JSON.parse(saved)) : [];
   });
 
   const [wishlist, setWishlist] = useState<string[]>(() => {
-    const saved = localStorage.getItem('stylewing_wishlist');
+    const saved = localStorage.getItem('duatrends_wishlist') || localStorage.getItem('stylewing_wishlist');
     return saved ? JSON.parse(saved) : [];
   });
 
   const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem('stylewing_orders');
+    const saved = localStorage.getItem('duatrends_orders') || localStorage.getItem('stylewing_orders');
     return saved ? sanitizeData(JSON.parse(saved)) : sanitizeData(INITIAL_ORDERS);
   });
 
   const [coupons, setCoupons] = useState<Coupon[]>(() => {
-    const saved = localStorage.getItem('stylewing_coupons');
+    const saved = localStorage.getItem('duatrends_coupons') || localStorage.getItem('stylewing_coupons');
     return saved ? JSON.parse(saved) : INITIAL_COUPONS;
   });
 
   const [reviews, setReviews] = useState<Review[]>(() => {
-    const saved = localStorage.getItem('stylewing_reviews');
+    const saved = localStorage.getItem('duatrends_reviews') || localStorage.getItem('stylewing_reviews');
     return saved ? JSON.parse(saved) : INITIAL_REVIEWS;
   });
 
   const [whatsappNumber, setWhatsappNumberState] = useState<string>(() => {
-    return localStorage.getItem('stylewing_whatsapp') || '+923000000000';
+    return localStorage.getItem('duatrends_whatsapp') || localStorage.getItem('stylewing_whatsapp') || '+923000000000';
   });
 
   const [announcementText, setAnnouncementTextState] = useState<string>(() => {
-    return localStorage.getItem('stylewing_announcement') || '✨ Flash Sale: Get 10% OFF on all Unstitched Suits using code DUA10 | Free Shipping on orders over Rs 5,000! ✨';
+    return localStorage.getItem('duatrends_announcement') || localStorage.getItem('stylewing_announcement') || '✨ Flash Sale: Get 10% OFF on all Unstitched Suits using code DUA10 | Free Shipping on orders over Rs 5,000! ✨';
   });
 
   const [categories, setCategories] = useState<Category[]>(() => {
-    const saved = localStorage.getItem('stylewing_categories');
+    const saved = localStorage.getItem('duatrends_categories') || localStorage.getItem('stylewing_categories');
     return saved ? JSON.parse(saved) : INITIAL_CATEGORIES;
   });
 
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('stylewing_user');
+    const saved = localStorage.getItem('duatrends_user') || localStorage.getItem('stylewing_user');
     return saved ? JSON.parse(saved) : null;
   });
 
   const [registeredUsers, setRegisteredUsers] = useState<User[]>(() => {
-    const saved = localStorage.getItem('stylewing_registered_users');
+    const saved = localStorage.getItem('duatrends_registered_users') || localStorage.getItem('stylewing_registered_users');
     return saved ? JSON.parse(saved) : [];
   });
 
@@ -222,23 +225,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>('login');
 
   useEffect(() => {
-    localStorage.setItem('stylewing_categories', JSON.stringify(categories));
+    localStorage.setItem('duatrends_categories', JSON.stringify(categories));
   }, [categories]);
 
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem('stylewing_user', JSON.stringify(currentUser));
+      localStorage.setItem('duatrends_user', JSON.stringify(currentUser));
     } else {
-      localStorage.removeItem('stylewing_user');
+      localStorage.removeItem('duatrends_user');
     }
   }, [currentUser]);
 
   useEffect(() => {
-    localStorage.setItem('stylewing_registered_users', JSON.stringify(registeredUsers));
+    localStorage.setItem('duatrends_registered_users', JSON.stringify(registeredUsers));
   }, [registeredUsers]);
 
   useEffect(() => {
-    localStorage.setItem('stylewing_reviews', JSON.stringify(reviews));
+    localStorage.setItem('duatrends_reviews', JSON.stringify(reviews));
   }, [reviews]);
 
   // Sync reviews from Supabase Cloud on mount & realtime
@@ -553,7 +556,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Admin Auth State
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
-    return sessionStorage.getItem('stylewing_admin_session') === 'active';
+    return sessionStorage.getItem('duatrends_admin_session') === 'active' || sessionStorage.getItem('stylewing_admin_session') === 'active';
   });
   const [showAdminLoginModal, setShowAdminLoginModal] = useState<boolean>(false);
 
@@ -818,7 +821,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const logoutAdmin = () => {
     setIsAdminLoggedIn(false);
+    sessionStorage.removeItem('duatrends_admin_session');
     sessionStorage.removeItem('stylewing_admin_session');
+    localStorage.removeItem('duatrends_admin_session');
     localStorage.removeItem('stylewing_admin_session');
     setActiveView('home');
     showToast('Logged out from Admin Panel');
@@ -826,13 +831,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const setWhatsappNumber = (num: string) => {
     setWhatsappNumberState(num);
-    localStorage.setItem('stylewing_whatsapp', num);
+    localStorage.setItem('duatrends_whatsapp', num);
     showToast('WhatsApp number updated!');
   };
 
   const setAnnouncementText = (txt: string) => {
     setAnnouncementTextState(txt);
-    localStorage.setItem('stylewing_announcement', txt);
+    localStorage.setItem('duatrends_announcement', txt);
     showToast('Announcement text updated!');
   };
 
@@ -988,7 +993,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       image: item.product.images[0] || '',
     }));
 
-    const orderNum = `SW-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orderNum = `DT-${Math.floor(1000 + Math.random() * 9000)}`;
 
     let productLines = '';
     cart.forEach((item, index) => {

@@ -31,7 +31,7 @@ export const FlashSale: React.FC = () => {
         <div className="relative rounded-3xl overflow-hidden mb-12 shadow-2xl bg-gradient-to-r from-rose-900 via-gray-900 to-gray-950 text-white min-h-[300px] flex items-center">
           <img 
             src="/images/offer_banner.jpg" 
-            alt="StyleWing Flash Sale" 
+            alt="Dua Trends Flash Sale" 
             className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay"
           />
           <div className="relative z-10 p-8 sm:p-12 max-w-2xl space-y-4">

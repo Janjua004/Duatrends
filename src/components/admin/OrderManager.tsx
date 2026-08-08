@@ -128,10 +128,10 @@ export const OrderManager: React.FC = () => {
             <div className="flex items-center justify-between border-b pb-6">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-gray-900 flex items-center justify-center text-brand-pink font-bold">
-                  SW
+                  DT
                 </div>
                 <div>
-                  <h2 className="font-serif text-2xl font-bold tracking-tight text-gray-900">StyleWing</h2>
+                  <h2 className="font-serif text-2xl font-bold tracking-tight text-gray-900">Dua Trends</h2>
                   <p className="text-xs text-gray-500 uppercase tracking-widest">Official Sales Invoice</p>
                 </div>
               </div>

@@ -8,7 +8,7 @@ export const AboutPage: React.FC = () => {
       <div className="text-center space-y-3">
         <span className="text-xs uppercase font-bold tracking-widest text-brand-pink">OUR HERITAGE</span>
         <h1 className="font-serif text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white">
-          About StyleWing
+          About Dua Trends
         </h1>
         <p className="text-base text-gray-500 max-w-2xl mx-auto">
           "Elegance in Every Style" – Redefining luxury ladies' fashion in Pakistan with unmatched craftsmanship and timeless silhouettes.
@@ -18,7 +18,7 @@ export const AboutPage: React.FC = () => {
       <div className="relative aspect-[16/7] rounded-3xl overflow-hidden shadow-2xl">
         <img 
           src="/images/hero_banner.jpg" 
-          alt="StyleWing Fashion Studio" 
+          alt="Dua Trends Fashion Studio" 
           className="w-full h-full object-cover"
         />
       </div>
@@ -27,7 +27,7 @@ export const AboutPage: React.FC = () => {
         <div className="space-y-4">
           <h2 className="font-serif text-2xl font-bold text-gray-900 dark:text-white">The Brand Story</h2>
           <p className="text-sm">
-            Founded with a vision to celebrate feminine elegance, StyleWing brings together high-fashion aesthetics, premium cotton lawn fabrics, pure silk chiffons, and intricate hand embroidery tailored for modern women across Pakistan.
+            Founded with a vision to celebrate feminine elegance, Dua Trends brings together high-fashion aesthetics, premium cotton lawn fabrics, pure silk chiffons, and intricate hand embroidery tailored for modern women across Pakistan.
           </p>
           <p className="text-sm">
             From regal unstitched festive collections to effortless ready-to-wear prêt outfits, every garment is designed to make a statement of luxury and poise.

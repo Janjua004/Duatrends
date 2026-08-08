@@ -92,8 +92,8 @@ export function clearRateLimit(key: string) {
  * Generate or retrieve a persistent device fingerprint
  */
 export function getDeviceFingerprint(): string {
-  const STORAGE_KEY = 'stylewing_device_fp';
-  let fp = localStorage.getItem(STORAGE_KEY);
+  const STORAGE_KEY = 'duatrends_device_fp';
+  let fp = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('stylewing_device_fp');
   
   if (!fp) {
     // Generate unique device signature based on browser specs & random entropy
@@ -128,13 +128,13 @@ export function getDeviceFingerprint(): string {
  */
 export function checkDeviceRegistrationLimit(): { allowed: boolean; remainingHours: number; message?: string } {
   const fp = getDeviceFingerprint();
-  const STORAGE_KEY = `stylewing_reg_log_${fp}`;
+  const STORAGE_KEY = `duatrends_reg_log_${fp}`;
   const now = Date.now();
   const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
   let rawLogs: number[] = [];
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(`stylewing_reg_log_${fp}`);
     if (saved) {
       rawLogs = JSON.parse(saved);
     }
@@ -166,7 +166,7 @@ export function checkDeviceRegistrationLimit(): { allowed: boolean; remainingHou
  */
 export function recordDeviceRegistration() {
   const fp = getDeviceFingerprint();
-  const STORAGE_KEY = `stylewing_reg_log_${fp}`;
+  const STORAGE_KEY = `duatrends_reg_log_${fp}`;
   const now = Date.now();
   const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 

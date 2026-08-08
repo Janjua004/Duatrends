@@ -173,8 +173,8 @@ export const CMSSettings: React.FC = () => {
             <input 
               type="text"
               placeholder="e.g. dwdnfn1ab"
-              defaultValue={localStorage.getItem('stylewing_cloudinary_cloud_name') || 'dwdnfn1ab'}
-              onChange={(e) => localStorage.setItem('stylewing_cloudinary_cloud_name', e.target.value.trim())}
+              defaultValue={localStorage.getItem('duatrends_cloudinary_cloud_name') || localStorage.getItem('stylewing_cloudinary_cloud_name') || 'dwdnfn1ab'}
+              onChange={(e) => localStorage.setItem('duatrends_cloudinary_cloud_name', e.target.value.trim())}
               className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
             />
           </div>
@@ -185,9 +185,9 @@ export const CMSSettings: React.FC = () => {
             </label>
             <input 
               type="text"
-              placeholder="e.g. stylewing_preset"
-              defaultValue={localStorage.getItem('stylewing_cloudinary_preset') || 'ml_default'}
-              onChange={(e) => localStorage.setItem('stylewing_cloudinary_preset', e.target.value.trim())}
+              placeholder="e.g. duatrends_preset"
+              defaultValue={localStorage.getItem('duatrends_cloudinary_preset') || localStorage.getItem('stylewing_cloudinary_preset') || 'ml_default'}
+              onChange={(e) => localStorage.setItem('duatrends_cloudinary_preset', e.target.value.trim())}
               className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white font-mono text-sm focus:border-brand-pink focus:outline-none"
             />
           </div>

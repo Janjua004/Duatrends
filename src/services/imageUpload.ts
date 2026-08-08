@@ -8,16 +8,16 @@ const metaEnv = (import.meta as any).env || {};
 export async function uploadImageFile(file: File): Promise<{ success: boolean; url: string; message: string }> {
   try {
     // 1. Try Cloudinary REST API if credentials are provided or configured in CMS
-    const cloudName = localStorage.getItem('stylewing_cloudinary_cloud_name') || metaEnv.VITE_CLOUDINARY_CLOUD_NAME || 'dwdnfn1ab';
-    const customPreset = localStorage.getItem('stylewing_cloudinary_preset');
+    const cloudName = localStorage.getItem('duatrends_cloudinary_cloud_name') || localStorage.getItem('stylewing_cloudinary_cloud_name') || metaEnv.VITE_CLOUDINARY_CLOUD_NAME || 'dwdnfn1ab';
+    const customPreset = localStorage.getItem('duatrends_cloudinary_preset') || localStorage.getItem('stylewing_cloudinary_preset');
     
     const uploadPresets = [
       customPreset,
       metaEnv.VITE_CLOUDINARY_UPLOAD_PRESET,
       'ml_default',
-      'stylewing_preset',
+      'duatrends_preset',
       'unsigned_preset',
-      'stylewing'
+      'duatrends'
     ].filter(Boolean);
 
     if (cloudName) {
