@@ -494,47 +494,47 @@ export const ProductManager: React.FC = () => {
               {/* Title & SKU */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Product Title</label>
-                  <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white focus:border-brand-pink focus:outline-none" />
+                  <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-1">Product Title</label>
+                  <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:border-brand-pink focus:outline-none" />
                 </div>
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">SKU Code</label>
-                  <input type="text" required value={sku} onChange={(e) => setSku(e.target.value)} className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white font-mono focus:border-brand-pink focus:outline-none" />
+                  <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-1">SKU Code</label>
+                  <input type="text" required value={sku} onChange={(e) => setSku(e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white font-mono focus:border-brand-pink focus:outline-none" />
                 </div>
               </div>
 
               {/* Price, Compare Price, Stock */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Price (Rs)</label>
-                  <input type="number" required value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white focus:border-brand-pink focus:outline-none" />
+                  <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-1">Price (Rs)</label>
+                  <input type="number" required value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:border-brand-pink focus:outline-none" />
                 </div>
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Compare Price (Rs)</label>
-                  <input type="number" value={compareAtPrice} onChange={(e) => setCompareAtPrice(Number(e.target.value))} className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white focus:border-brand-pink focus:outline-none" />
+                  <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-1">Compare Price (Rs)</label>
+                  <input type="number" value={compareAtPrice} onChange={(e) => setCompareAtPrice(Number(e.target.value))} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:border-brand-pink focus:outline-none" />
                 </div>
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-1">Stock Quantity</label>
-                  <input type="number" required value={stock} onChange={(e) => setStock(Number(e.target.value))} className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white focus:border-brand-pink focus:outline-none" />
+                  <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-1">Stock Quantity</label>
+                  <input type="number" required value={stock} onChange={(e) => setStock(Number(e.target.value))} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:border-brand-pink focus:outline-none" />
                 </div>
               </div>
 
               {/* Category */}
               <div>
-                <label className="block text-gray-300 font-semibold mb-1">Category</label>
-                <input type="text" required value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white focus:border-brand-pink focus:outline-none" />
+                <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-1">Category</label>
+                <input type="text" required value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:border-brand-pink focus:outline-none" />
               </div>
 
               {/* Size Options & Stitching Fee Manager */}
-              <div className="space-y-3 bg-gray-950 p-4 rounded-2xl border border-gray-800">
+              <div className="space-y-3 bg-gray-50 dark:bg-gray-950 p-4 rounded-2xl border border-gray-200 dark:border-gray-800">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Ruler className="w-4 h-4 text-brand-pink" />
-                    <label className="block text-white font-bold uppercase tracking-wider text-xs">
+                    <label className="block text-gray-900 dark:text-white font-bold uppercase tracking-wider text-xs">
                       Size Options & Stitched Variant Manager
                     </label>
                   </div>
-                  <span className="text-[10px] text-gray-400">Check size options available for this suit</span>
+                  <span className="text-[10px] text-gray-500 dark:text-gray-400">Check size options available for this suit</span>
                 </div>
 
                 {/* Size Checkboxes */}
@@ -544,8 +544,8 @@ export const ProductManager: React.FC = () => {
                       key={s.id}
                       className={`flex items-center gap-2 p-2.5 rounded-xl border cursor-pointer transition-colors ${
                         sizes.includes(s.id) 
-                          ? 'bg-rose-950/40 border-brand-pink text-white font-bold' 
-                          : 'bg-gray-900 border-gray-800 text-gray-400 hover:border-gray-700'
+                          ? 'bg-rose-50 dark:bg-rose-950/40 border-brand-pink text-gray-900 dark:text-white font-bold' 
+                          : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700'
                       }`}
                     >
                       <input 
@@ -561,23 +561,23 @@ export const ProductManager: React.FC = () => {
 
                 {/* Stitching Extra Fee Input */}
                 <div className="pt-2 flex items-center gap-3">
-                  <label className="text-gray-300 font-semibold">Stitching Extra Fee for Stitched Suits (Rs):</label>
+                  <label className="text-gray-700 dark:text-gray-300 font-semibold">Stitching Extra Fee for Stitched Suits (Rs):</label>
                   <input 
                     type="number" 
                     value={stitchingFee} 
                     onChange={(e) => setStitchingFee(Number(e.target.value))} 
-                    className="w-32 px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-white font-bold focus:outline-none focus:border-brand-pink"
+                    className="w-32 px-3 py-1.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:border-brand-pink"
                   />
                 </div>
               </div>
 
               {/* Multiple Images Upload & Base64 Converter */}
-              <div className="space-y-3 bg-gray-950 p-4 rounded-2xl border border-gray-800">
+              <div className="space-y-3 bg-gray-50 dark:bg-gray-950 p-4 rounded-2xl border border-gray-200 dark:border-gray-800">
                 <div className="flex items-center justify-between">
-                  <label className="block text-white font-bold uppercase tracking-wider text-xs">
+                  <label className="block text-gray-900 dark:text-white font-bold uppercase tracking-wider text-xs">
                     Product Images ({images.length} Added)
                   </label>
-                  <span className="text-[10px] text-gray-400">Upload photos or paste URLs</span>
+                  <span className="text-[10px] text-gray-500 dark:text-gray-400">Upload photos or paste URLs</span>
                 </div>
 
                 {/* Upload File / Add URL */}
@@ -588,12 +588,12 @@ export const ProductManager: React.FC = () => {
                       placeholder="Paste Image URL..." 
                       value={newImageUrl} 
                       onChange={(e) => setNewImageUrl(e.target.value)} 
-                      className="w-full px-3 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none"
+                      className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:border-brand-pink"
                     />
                     <button 
                       type="button" 
                       onClick={handleAddImageUrl}
-                      className="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-xl flex items-center gap-1"
+                      className="px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-bold rounded-xl flex items-center gap-1"
                     >
                       <Plus className="w-4 h-4" />
                       <span>URL</span>
@@ -618,7 +618,7 @@ export const ProductManager: React.FC = () => {
                 {/* Added Images Thumbnail Grid */}
                 <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 pt-2">
                   {images.map((img, idx) => (
-                    <div key={idx} className="relative group aspect-[3/4] rounded-xl overflow-hidden bg-gray-900 border border-gray-800 shadow">
+                    <div key={idx} className="relative group aspect-[3/4] rounded-xl overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm">
                       <img src={img} alt="" className="w-full h-full object-cover" />
                       <button
                         type="button"
@@ -634,8 +634,8 @@ export const ProductManager: React.FC = () => {
               </div>
 
               {/* Color Variants & Image Link Mapping */}
-              <div className="space-y-3 bg-gray-950 p-4 rounded-2xl border border-gray-800">
-                <label className="block text-white font-bold uppercase tracking-wider text-xs">
+              <div className="space-y-3 bg-gray-50 dark:bg-gray-950 p-4 rounded-2xl border border-gray-200 dark:border-gray-800">
+                <label className="block text-gray-900 dark:text-white font-bold uppercase tracking-wider text-xs">
                   Color Variants & Image Link Mapping
                 </label>
 
@@ -646,12 +646,12 @@ export const ProductManager: React.FC = () => {
                     placeholder="Enter Color (e.g. Jet Black, Ruby Red)..." 
                     value={colorInput} 
                     onChange={(e) => setColorInput(e.target.value)} 
-                    className="w-full px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:border-brand-pink"
                   />
                   <button 
                     type="button" 
                     onClick={handleAddColor}
-                    className="px-3 py-1.5 bg-brand-pink text-white font-bold rounded-xl"
+                    className="px-3 py-1.5 bg-brand-pink text-white font-bold rounded-xl shadow-md"
                   >
                     Add Color
                   </button>
@@ -660,13 +660,13 @@ export const ProductManager: React.FC = () => {
                 {/* Color Buttons & Linked Image Mapping Selector */}
                 <div className="space-y-2 pt-2">
                   {colors.map(color => (
-                    <div key={color} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 bg-gray-900 rounded-xl border border-gray-800">
+                    <div key={color} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-white text-xs">{color}</span>
+                        <span className="font-bold text-gray-900 dark:text-white text-xs">{color}</span>
                         <button 
                           type="button" 
                           onClick={() => handleRemoveColor(color)}
-                          className="text-gray-500 hover:text-red-400 text-xs"
+                          className="text-gray-400 hover:text-red-500 text-xs"
                         >
                           (remove)
                         </button>
@@ -674,11 +674,11 @@ export const ProductManager: React.FC = () => {
 
                       {/* Select Linked Image for this Color */}
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-gray-400">Link Image:</span>
+                        <span className="text-[10px] text-gray-500 dark:text-gray-400">Link Image:</span>
                         <select
                           value={colorImageMap[color] || ''}
                           onChange={(e) => handleLinkColorImage(color, e.target.value)}
-                          className="px-2 py-1 bg-gray-950 border border-gray-800 rounded-lg text-white text-xs focus:outline-none"
+                          className="px-2 py-1 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-gray-900 dark:text-white text-xs focus:outline-none"
                         >
                           <option value="">Default (Image 1)</option>
                           {images.map((img, idx) => (
@@ -695,29 +695,29 @@ export const ProductManager: React.FC = () => {
 
               {/* Description */}
               <div>
-                <label className="block text-gray-300 font-semibold mb-1">Description</label>
-                <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white focus:border-brand-pink focus:outline-none" />
+                <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-1">Description</label>
+                <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl text-gray-900 dark:text-white focus:border-brand-pink focus:outline-none" />
               </div>
 
               {/* Badges */}
               <div className="flex gap-4 pt-2">
-                <label className="flex items-center gap-2 text-gray-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer">
                   <input type="checkbox" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} className="accent-brand-pink" />
                   <span>Featured</span>
                 </label>
-                <label className="flex items-center gap-2 text-gray-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer">
                   <input type="checkbox" checked={isTrending} onChange={(e) => setIsTrending(e.target.checked)} className="accent-brand-pink" />
                   <span>Trending</span>
                 </label>
-                <label className="flex items-center gap-2 text-gray-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 cursor-pointer">
                   <input type="checkbox" checked={isOffer} onChange={(e) => setIsOffer(e.target.checked)} className="accent-brand-pink" />
                   <span>Offer Sale</span>
                 </label>
               </div>
 
               {/* Submit / Cancel Buttons */}
-              <div className="pt-4 flex justify-end gap-2 border-t border-gray-800">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 rounded-xl bg-gray-800 text-gray-300 font-semibold">Cancel</button>
+              <div className="pt-4 flex justify-end gap-2 border-t border-gray-100 dark:border-gray-800">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Cancel</button>
                 <button type="submit" className="btn-pink-gradient px-6 py-2.5 rounded-xl font-bold shadow-lg">Save Product</button>
               </div>
             </form>

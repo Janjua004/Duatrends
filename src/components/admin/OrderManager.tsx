@@ -12,19 +12,19 @@ export const OrderManager: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <h2 className="font-serif text-2xl font-bold text-white">Order Pipeline & WhatsApp Invoices</h2>
-          <p className="text-xs text-gray-400">Total {orders.length} orders received via WhatsApp checkout</p>
+          <h2 className="font-serif text-2xl font-bold text-gray-900 dark:text-white">Order Pipeline & Invoices</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Total {orders.length} orders received via store checkout</p>
         </div>
       </div>
 
-      <div className="bg-gray-950 rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
+      <div className="bg-white dark:bg-gray-950 rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-gray-300">
-            <thead className="bg-gray-900 text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-800">
+          <table className="w-full text-left text-xs text-gray-700 dark:text-gray-300">
+            <thead className="bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-200 dark:border-gray-800">
               <tr>
                 <th className="px-5 py-4">Order #</th>
                 <th className="px-4 py-4">Customer Details</th>
@@ -36,52 +36,52 @@ export const OrderManager: React.FC = () => {
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {orders.map(order => (
-                <tr key={order.id} className="hover:bg-gray-900/50 transition-colors">
+                <tr key={order.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-900/50 transition-colors">
                   <td className="px-5 py-4 font-mono font-bold text-brand-pink">
                     {order.orderNumber}
-                    <span className="block text-[10px] text-gray-500 font-sans font-normal mt-0.5">
+                    <span className="block text-[10px] text-gray-400 font-sans font-normal mt-0.5">
                       {new Date(order.createdAt).toLocaleDateString()}
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <span className="font-semibold text-white block">{order.customerName}</span>
-                    <span className="text-gray-400 block">{order.phone}</span>
-                    {order.email && <span className="text-[11px] text-gray-500 block truncate max-w-[150px]">{order.email}</span>}
+                    <span className="font-semibold text-gray-900 dark:text-white block">{order.customerName}</span>
+                    <span className="text-gray-500 dark:text-gray-400 block">{order.phone}</span>
+                    {order.email && <span className="text-[11px] text-gray-400 block truncate max-w-[150px]">{order.email}</span>}
                   </td>
                   <td className="px-4 py-4 max-w-[200px]">
-                    <span className="text-white block font-medium truncate" title={order.address}>{order.address}</span>
-                    <span className="text-gray-400 text-[11px] block">{order.city}, {order.province}</span>
+                    <span className="text-gray-900 dark:text-white block font-medium truncate" title={order.address}>{order.address}</span>
+                    <span className="text-gray-500 dark:text-gray-400 text-[11px] block">{order.city}, {order.province}</span>
                   </td>
                   <td className="px-4 py-4">
                     <div className="space-y-1">
                       <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
                         order.paymentStatus === 'Paid (Safepay)' || order.paymentMethod.includes('Safepay')
-                          ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                          ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800'
                           : order.paymentMethod.includes('25%')
-                          ? 'bg-blue-950 text-blue-400 border border-blue-800'
-                          : 'bg-amber-950 text-amber-400 border border-amber-800'
+                          ? 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 border border-blue-300 dark:border-blue-800'
+                          : 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800'
                       }`}>
                         {order.paymentStatus || (order.paymentMethod.includes('Safepay') ? 'Paid (Safepay)' : order.paymentMethod)}
                       </span>
 
                       {(order.paymentReference || order.safepayTracker) && (
-                        <span className="block font-mono text-[10px] text-gray-400">
+                        <span className="block font-mono text-[10px] text-gray-500 dark:text-gray-400">
                           Ref: {order.paymentReference || order.safepayTracker}
                         </span>
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-4 font-bold text-emerald-400">Rs {order.grandTotal.toLocaleString()}</td>
+                  <td className="px-4 py-4 font-bold text-emerald-600 dark:text-emerald-400">Rs {order.grandTotal.toLocaleString()}</td>
                   <td className="px-4 py-4">
                     <select
                       value={order.status}
                       onChange={(e) => updateOrderStatus(order.id, e.target.value as Order['status'])}
-                      className={`px-2.5 py-1 rounded-xl text-xs font-bold border bg-gray-900 focus:outline-none ${
-                        order.status === 'Delivered' ? 'border-emerald-500 text-emerald-400' :
-                        order.status === 'Pending' ? 'border-amber-500 text-amber-400' :
-                        order.status === 'Shipped' ? 'border-blue-500 text-blue-400' : 'border-rose-500 text-rose-400'
+                      className={`px-2.5 py-1 rounded-xl text-xs font-bold border bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none ${
+                        order.status === 'Delivered' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400' :
+                        order.status === 'Pending' ? 'border-amber-500 text-amber-600 dark:text-amber-400' :
+                        order.status === 'Shipped' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-rose-500 text-rose-600 dark:text-rose-400'
                       }`}
                     >
                       <option value="Pending">Pending</option>
@@ -95,7 +95,7 @@ export const OrderManager: React.FC = () => {
                   <td className="px-5 py-4 text-right space-x-2">
                     <button
                       onClick={() => setSelectedOrderForInvoice(order)}
-                      className="p-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 inline-flex items-center gap-1 text-xs font-semibold"
+                      className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 inline-flex items-center gap-1 text-xs font-semibold"
                       title="Print Official Invoice"
                     >
                       <Printer className="w-3.5 h-3.5" />

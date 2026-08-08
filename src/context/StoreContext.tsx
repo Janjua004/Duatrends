@@ -549,7 +549,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const newUrl = `${window.location.pathname}?product=${encodeURIComponent(slug)}`;
       window.history.pushState({ productId: p.id, slug }, '', newUrl);
       document.title = `${p.title} - Dua Trends Luxury Collection`;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo(0, 0);
     } else {
       if (window.location.search.includes('product=')) {
         window.history.pushState({}, '', window.location.pathname);
