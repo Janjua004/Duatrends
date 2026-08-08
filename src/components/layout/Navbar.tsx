@@ -77,37 +77,39 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         
         {/* Mobile Header Layout (< lg) */}
-        <div className="lg:hidden grid grid-cols-3 items-center h-20 sm:h-24">
+        <div className="lg:hidden grid grid-cols-3 items-center h-24 sm:h-28 px-1">
           {/* Mobile Left: Hamburger Menu */}
           <div className="flex items-center justify-start">
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-gray-800 dark:text-gray-200 hover:text-brand-pink transition-colors focus:outline-none"
+              className="p-2.5 rounded-full text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
 
-          {/* Mobile Center: Logo centered with exact crown-top border alignment */}
+          {/* Mobile Center: Logo centered with exact top & bottom border clearance */}
           <div className="flex items-center justify-center py-1">
             <button 
               onClick={() => setActiveView('home')} 
-              className="flex items-center justify-center focus:outline-none py-0.5 group"
+              className="flex items-center justify-center focus:outline-none py-1 group w-full"
             >
-              <img 
-                src="/logo.png" 
-                alt="Dua Trends - Luxury Pakistani Unstitched Lawn & Designer Formal Wear Collection Logo" 
-                loading="eager"
-                decoding="async"
-                className="h-16 sm:h-20 md:h-22 w-auto object-contain dark:brightness-110 scale-120 sm:scale-125 transition-transform group-hover:scale-130 drop-shadow-md"
-                onError={(e) => {
-                  const parent = (e.target as HTMLElement).parentElement;
-                  if (parent) {
-                    parent.innerHTML = `<span class="font-serif text-2xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
-                  }
-                }}
-              />
+              <div className="h-20 sm:h-24 w-auto max-w-[280px] flex items-center justify-center">
+                <img 
+                  src="/logo.png" 
+                  alt="Dua Trends - Luxury Pakistani Unstitched Lawn & Designer Formal Wear Collection Logo" 
+                  loading="eager"
+                  decoding="async"
+                  className="h-full w-auto object-contain dark:brightness-110 scale-140 sm:scale-150 transition-transform group-hover:scale-160 drop-shadow-md"
+                  onError={(e) => {
+                    const parent = (e.target as HTMLElement).parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<span class="font-serif text-2xl font-bold tracking-wider text-gray-950 dark:text-white uppercase">Dua <span class="text-rose-600">Trends</span></span>`;
+                    }
+                  }}
+                />
+              </div>
             </button>
           </div>
 

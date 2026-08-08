@@ -5,7 +5,7 @@ import { fetchRegisteredUsersFromCloud, deleteUserFromCloud, subscribeToUsersRea
 import { Users, Trash2, Mail, Phone, MapPin, Calendar, RefreshCw, UserX } from 'lucide-react';
 
 export const UserManager: React.FC = () => {
-  const { showToast } = useStore();
+  const { registeredUsers, showToast } = useStore();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -14,9 +14,17 @@ export const UserManager: React.FC = () => {
   const loadUsers = async () => {
     setLoading(true);
     const cloudUsers = await fetchRegisteredUsersFromCloud();
-    if (cloudUsers) {
-      setUsers(cloudUsers);
-    }
+    
+    // Combine cloud users and local store registeredUsers (deduplicated by email)
+    const combined = [...(cloudUsers || []), ...registeredUsers];
+    const uniqueUsersMap = new Map<string, User>();
+    combined.forEach(u => {
+      if (u.email && !uniqueUsersMap.has(u.email.toLowerCase())) {
+        uniqueUsersMap.set(u.email.toLowerCase(), u);
+      }
+    });
+
+    setUsers(Array.from(uniqueUsersMap.values()));
     setLoading(false);
   };
 
@@ -26,14 +34,21 @@ export const UserManager: React.FC = () => {
     // Subscribe to realtime updates for users
     const unsubscribe = subscribeToUsersRealtime((latestUsers) => {
       if (latestUsers) {
-        setUsers(latestUsers);
+        const combined = [...latestUsers, ...registeredUsers];
+        const uniqueUsersMap = new Map<string, User>();
+        combined.forEach(u => {
+          if (u.email && !uniqueUsersMap.has(u.email.toLowerCase())) {
+            uniqueUsersMap.set(u.email.toLowerCase(), u);
+          }
+        });
+        setUsers(Array.from(uniqueUsersMap.values()));
       }
     });
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [registeredUsers]);
 
   const handleDeleteUser = async (userId: string, userName: string) => {
     if (!window.confirm(`Are you sure you want to delete customer account "${userName}" (${userId}) from the cloud database?`)) {

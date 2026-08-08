@@ -511,6 +511,8 @@ export async function fetchRegisteredUsersFromCloud(): Promise<User[] | null> {
           name: item.name || item.full_name || 'Customer',
           email: item.email,
           phone: item.phone || '',
+          gender: item.gender || 'Female',
+          dob: item.dob || '',
           city: item.city || '',
           province: item.province || '',
           address: item.address || '',
@@ -524,6 +526,39 @@ export async function fetchRegisteredUsersFromCloud(): Promise<User[] | null> {
     }
   }
   return null;
+}
+
+/**
+ * Sync / Upsert Single Registered User to Supabase Database
+ */
+export async function syncUserToCloud(user: User): Promise<boolean> {
+  if (!user || !user.id) return false;
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('registered_users')
+        .upsert({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone || '',
+          gender: user.gender || 'Female',
+          dob: user.dob || '',
+          city: user.city || '',
+          province: user.province || '',
+          address: user.address || '',
+          role: user.role || 'customer',
+          created_at: user.createdAt || new Date().toISOString()
+        });
+
+      if (!error) return true;
+      else console.warn('Supabase sync user error:', error.message);
+    } catch (err) {
+      console.warn('Supabase sync user exception:', err);
+    }
+  }
+  return false;
 }
 
 /**

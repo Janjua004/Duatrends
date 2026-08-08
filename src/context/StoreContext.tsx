@@ -19,7 +19,10 @@ import {
   fetchReviewsFromCloud,
   syncReviewToCloud,
   deleteReviewFromCloud,
-  subscribeToReviewsRealtime
+  subscribeToReviewsRealtime,
+  fetchRegisteredUsersFromCloud,
+  syncUserToCloud,
+  subscribeToUsersRealtime
 } from '../services/cloudStore';
 import { sanitizeInput, checkDeviceRegistrationLimit, recordDeviceRegistration, checkBotRequestThrottling } from '../utils/security';
 
@@ -48,6 +51,7 @@ interface StoreContextType {
 
   // Customer Auth State
   currentUser: User | null;
+  registeredUsers: User[];
   isCustomerLoggedIn: boolean;
   showAuthModal: boolean;
   setShowAuthModal: (show: boolean) => void;
@@ -254,6 +258,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => unsubscribe();
   }, []);
 
+  // Sync registered users from Supabase Cloud on mount & realtime
+  useEffect(() => {
+    fetchRegisteredUsersFromCloud().then(cloudUsers => {
+      if (cloudUsers && cloudUsers.length > 0) {
+        setRegisteredUsers(cloudUsers);
+      }
+    });
+
+    const unsubscribe = subscribeToUsersRealtime(updatedUsers => {
+      if (updatedUsers) {
+        setRegisteredUsers(updatedUsers);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   // Restore & synchronize active user session directly from Supabase Auth tokens on launch
   useEffect(() => {
     const supabase = getSupabaseClient();
@@ -397,9 +418,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Record registration timestamp for this device
     recordDeviceRegistration();
 
-    setRegisteredUsers(prev => [...prev, newUser]);
+    // Sync user account to Supabase Cloud Database Table registered_users
+    syncUserToCloud(newUser);
+
+    setRegisteredUsers(prev => [newUser, ...prev]);
     setCurrentUser(newUser);
-    return { success: true, message: 'Registration successful! (Device security verified)' };
+    return { success: true, message: 'Registration successful! (VIP Account created & synced to database)' };
   };
 
   const loginCustomer = async (email: string, password: string): Promise<{ success: boolean; message: string }> => {
@@ -491,6 +515,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
     setCurrentUser(updated);
     setRegisteredUsers(prev => prev.map(u => u.id === updated.id ? updated : u));
+    syncUserToCloud(updated);
   };
 
   // Category CRUD Implementation with Live Supabase Realtime Database Syncing
@@ -1121,6 +1146,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       // Customer Auth State
       currentUser,
+      registeredUsers,
       isCustomerLoggedIn: Boolean(currentUser),
       showAuthModal,
       setShowAuthModal,
